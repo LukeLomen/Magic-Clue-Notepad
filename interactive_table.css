@@ -1,0 +1,144 @@
+:root {
+  --row-count: 3;
+
+  --vt: calc(1vh + 1vw);
+
+
+  --row-head-width: 10%;
+  --col-head-height: calc(50vh - (5vh * var(--row-count)));
+}
+
+#interactive-table-container span {
+  pointer-events: none;
+}
+
+#interactive-table-container table {
+  user-select: none;
+  touch-action: none;
+
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  width: 100%;
+  height: 100%;
+}
+
+#interactive-table-container th,
+td {
+  border: 1px solid #ccc;
+  /*transition: transform 0.2s ease;*/
+}
+
+#interactive-table-container th {
+  height: var(--col-head-height);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#interactive-table-container .col-head span {
+  display: inline-block;
+  height: 100%;
+
+  writing-mode: sideways-lr;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+
+  text-align: start;
+
+  font-size: var(--vt);
+}
+
+#interactive-table-container td span {
+  display: block;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  text-align: center;
+
+  font-size: var(--vt);
+}
+
+#interactive-table-container .row-head {
+  /*transition: width 0.2s ease;*/
+  width: var(--row-head-width);
+}
+
+/* Zones:
+     Zone 1: Top-left cell
+     Zone 2: Row headers (first column, excluding top-left)
+     Zone 3: All other cells (columns) */
+
+/* Zone 1 */
+.zone1 {
+  transition: transform 0.2s ease;
+}
+
+.zone1.focused {
+  transform: scaleX(100);
+  background-color: #555;
+  color: white;
+}
+
+.zone1.selected {
+  background-color: #555;
+  color: white;
+}
+
+/* Zone 2: Row headers */
+.zone2 {
+  transition: transform 0.2s ease;
+}
+
+.zone2.focused {
+  /*transform: scaleY(1.2);*/
+  background-color: #99c;
+}
+
+.zone2.selected {
+  background-color: rgb(180, 180, 241);
+}
+
+/* Zone 3: Other cells */
+.zone3 {
+  transition: transform 0.2s ease;
+}
+
+.zone3.selected {
+  background-color: rgb(178, 241, 178);
+}
+
+.zone3.focused {
+  /*transform: scaleX(1.5);*/
+  background-color: #9c9;
+}
+
+
+
+.focused-col {
+  transform: scaleX(1.5);
+  background-color: #9c9;
+
+}
+
+.selected-col {
+  background-color: rgb(178, 241, 178);
+
+}
+
+.focused-row {
+  /*transform: scaleY(1.4);*/
+
+}
+
+.selected-row {
+  /*border: 8px solid #ccc;*/
+}
+
+.focused-menu {
+  transform: scaleX(100);
+  background-color: #555;
+}

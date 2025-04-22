@@ -1,0 +1,87 @@
+:root {
+    --outer-margin: 8px;
+
+    --focused-color: #9c9;
+    --selected-color: rgb(178, 241, 178);
+
+    --min-font-size: 10px;
+
+}
+
+html {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.hidden {
+    display: none;
+    visibility: collapse;
+}
+
+
+body {
+    margin: var(--outer-margin);
+
+    /*display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;*/
+}
+
+/*remove .container*/
+.container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    /*padding: 4px;*/
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#control-panel{
+    display: flex;
+    flex-direction: row;
+}
+
+
+button {
+    /*display: flex;
+    justify-content: center;
+    align-items: center;*/
+
+    padding: 6px 12px;
+    min-width: 50px;
+    min-height: 30px;
+    /*width: 100%;*/
+
+    background-color: transparent;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    font-size: clamp(var(--min-font-size), 2vw, 16px);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
+}
+
+button.focused {
+    transform: scale(1.1);
+    background-color: var(--focused-color);
+}
+
+button.selected {
+    transform: scale(1);
+    background-color: var(--selected-color);
+}
