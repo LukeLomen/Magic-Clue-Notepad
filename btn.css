@@ -1,0 +1,139 @@
+:root {
+    /* Theming colors*/
+    --hover-color: #9c9;
+    --selected-color: rgb(178, 241, 178);
+    --disabled-color: #f0f0f0;
+    --ripple-color: rgba(0, 0, 0, 0.1);
+
+    /* Sizing & typography */
+    --btn-padding-y: 8px;
+    --btn-padding-x: 16px;
+    --btn-min-font: 10px;
+    --btn-max-font: 50px;
+    --btn-radius: 4px;
+
+    /* Elevations */
+    --elev-default: 0 2px 4px rgba(0, 0, 0, .1);
+    --elev-hover: 0 4px 8px rgba(0, 0, 0, .15);
+    --elev-pressed: 0 6px 12px rgba(0, 0, 0, .2);
+}
+
+.btn {
+    margin: 8px;
+    min-height: 6vh;
+    max-width: 200px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--btn-padding-y) var(--btn-padding-x);
+    background: white;
+    border: none;
+    border-radius: var(--btn-radius);
+    box-shadow: var(--elev-default);
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    /* clip ripple and overflow */
+    font-size: clamp(var(--btn-min-font),
+            1vw,
+            var(--btn-max-font));
+    line-height: 1;
+    transition:
+        background-color .2s,
+        box-shadow .2s,
+        transform .2s;
+}
+
+/* Icon + text */
+.btn__icon {
+    pointer-events: none;
+
+    flex-shrink: 0;
+    width: 1em;
+    /* matches font‑size */
+    height: 1em;
+    margin-right: .5em;
+}
+
+.btn__text {
+    pointer-events: none;
+
+    flex-shrink: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn--icon-only .btn__text {
+    display: none;
+}
+
+
+/* States */
+.btn--hidden{
+    display: none;
+}
+
+.btn--hovered {
+    background: var(--hover-color);
+    box-shadow: var(--elev-hover);
+    transform: scale(1.05);
+}
+
+.btn--selected {
+    background: var(--selected-color);
+    box-shadow: var(--elev-default);
+    transform: scale(1);
+}
+
+.btn--disabled {
+    background: var(--disabled-color);
+    color: #999;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+}
+
+.btn--pressed {
+    /* bump elevation */
+    box-shadow: var(--elev-pressed);
+}
+
+.btn--pressed::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: var(--ripple-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.4s forwards;
+}
+
+@keyframes ripple {
+    to {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Variants */
+.btn--primary {
+    /* highest hierarchy—white on colored bg if you like */
+    min-height: 10vh;
+}
+
+.btn--secondary {
+    /* back/undo—maybe a subtle gray border */
+}
+
+.btn--secondary .btn__icon {
+    display: none;
+}
+
+.btn--suggestion {
+    /* suggestion buttons—custom colors */
+}

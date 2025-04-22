@@ -1,10 +1,74 @@
 import {
     GameManager
 } from './clue.js';
-let playerNames = ['You', 'ReallyLong PlayerName', 'Player 3', 'Player 4', 'Player 5'];
+
+import {
+    ButtonController
+} from './button_controller.js'
+
+
+const fBtn = new ButtonController({
+    text: "Next",
+    icon: "→",
+    parent: document.getElementById('forward-button-container'),
+    type: "primary",
+    id: "forward-button"
+});
+
+const bBtn = new ButtonController({
+    text: "Back",
+    icon: "<",
+    parent: document.getElementById('back-button-container'),
+    type: "primary",
+    id: "back-button"
+});
+
+const suspectButton = new ButtonController({
+    text: "Suspect",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "suspect-button"
+})
+
+const weapontButton = new ButtonController({
+    text: "Weapon",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "weapon-button"
+})
+
+const roomButton = new ButtonController({
+    text: "Room",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "room-button"
+})
+
+const noneButton = new ButtonController({
+    text: "None",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "none-button"
+})
+
+const unknownButton = new ButtonController({
+    text: "Unknown",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "unknown-button"
+})
+
+unknownButton.setButtonDisplayNone(true);
+fBtn.setHovered(true);
+bBtn.setPressed(true);
+
+
+let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface', 'Player 4', 'Player 5', 'Asshat McGee'];
+//let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface'];
+//let playerNames = ['You'];
 const gm = new GameManager();
 
-gm.SetCardPreset('classic')
+//gm.SetCardPreset('classic')
 gm.CreatePlayers(playerNames);
 gm.CreateGameTable();
 
@@ -23,8 +87,8 @@ gm.AddSuggestion([4, 11, 16], 0, 4, knownVoid);
 gm.AddSuggestion([4, 11, 18], 3, 2, knownVoid);
 
 
-gm.DisplayTurn(100);
-gm.interactiveTable.FocusCol(16);
+gm.DisplayTurn(0);
+//gm.interactiveTable.FocusCol(16);
 
 
 ///////////////////////////////////////////////////////////

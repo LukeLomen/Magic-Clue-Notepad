@@ -7,27 +7,21 @@
   <title>Clue Helper</title>
   <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32x32.png">
   <link rel="stylesheet" href="interactive_table.css">
+  <link rel="stylesheet" href="btn.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div id="interactive-table-container" class="" style="height: 70vh;"></div>
-  <div id="control-panel" style="display: flex; flex-direction: row;align-items: center;justify-content: center;">
-    <button id="back-button" class="">Back Button</button>
-    <div id="suggestion-area" class="">
+  <div id="interactive-table-container"></div>
+  <div id="control-panel">
+    <div id="back-button-container" class="button-container"></div>
+    <div id="suggestion-area">
       <div id="suggestion-text">
-        <h3 id="text-area">Turn [1]: [suggester] is asking if [suggestee] is holding [suspect] [weapon] [room]</h3>
+        <span id="text-area">Welcome to Luke's Clue Helper App</span>
       </div>
-      <div id="suggestion-buttons" class="">
-        <div>
-          <button id="button1" class="">Button 1</button>
-          <button id="button2" class="focused">Button 2</button>
-          <button id="button3" class="">Button 3</button>
-          <button id="button4" class="selected">Button 4</button>
-        </div>
-      </div>
+      <div id="suggestion-buttons-container" class="button-container"></div>
     </div>
-    <button id="forward-button" class="">Forward Button</button>
+    <div id="forward-button-container" class="button-container"></div>
   </div>
 
   <script type="" src="table_symbols.js"></script>

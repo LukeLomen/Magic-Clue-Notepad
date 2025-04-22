@@ -4,6 +4,9 @@ import {
 import {
   cardsAPI
 } from './clue_cards.js';
+import {
+  ControlPanel
+} from './control_panel.js';
 
 class Suggestion {
   constructor(cardArray, suggester, suggestee, response, turn) {
@@ -120,7 +123,6 @@ export class GameManager {
   constructor() {
     this.numPlayers = 0;
     this.players = new Array();
-    this.cardNames = cardsAPI.getCards();
     this.suggestionHistory = new Array();
     this.startingCards = new Array();
     this.extraCards = new Array();
@@ -173,6 +175,16 @@ export class GameManager {
     });
   }
 
+  WriteTableCellDataFromPlayerData() {
+    this.players.forEach((player, index) => {
+      const row = index + 1;
+      player.cardArray.forEach((card, index) => {
+        const col = index + 1;
+        this.interactiveTable.WriteTableData(row, col, card);
+      });
+    });
+  }
+
   /*/// Clue Logic
   "the goal of clue is not to find what other players have it is to find what they don't have"
 
@@ -188,19 +200,6 @@ export class GameManager {
   If the suggestee is you then no info is gained (all row data for you is already filled)
   If the all cards are known for the suggestee there is no need to do any more logic for them
   */
-
-  AddStartingCards(cardArray) {
-    this.startingCards = cardArray;
-  }
-
-  AddExtraCards(cardArray) {
-    this.extraCards = cardArray;
-  }
-
-  AddSuggestion(cardArray, suggester, suggestee, response) {
-    const turn = this.suggestionHistory.length;
-    this.suggestionHistory.push(new Suggestion(cardArray, this.players[suggester], this.players[suggestee], response, turn));
-  }
 
   CheckForHiddenCard(card) {
     let tally = 0;
@@ -259,16 +258,6 @@ export class GameManager {
     this.CheckForHiddenCards();
   }
 
-  WriteTableCellDataFromPlayerData() {
-    this.players.forEach((player, index) => {
-      const row = index + 1;
-      player.cardArray.forEach((card, index) => {
-        const col = index + 1;
-        this.interactiveTable.WriteTableData(row, col, card);
-      });
-    });
-  }
-
   SelectDisplayElementsFromSuggestion(suggestion) {
     const suspectName = cardsAPI.getCardFromIndex(suggestion.cardArray[0]);
     const weaponName = cardsAPI.getCardFromIndex(suggestion.cardArray[1]);
@@ -281,13 +270,14 @@ export class GameManager {
     // highlight 1 table row (suggestee)
     this.interactiveTable.ClearFocus();
     this.interactiveTable.ClearSelection();
-    this.textArea.textContent = `Turn ${suggestion.turn}: ${suggestion.suggester.name} is asking if ${suggestion.suggestee.name} is holding ${suspectName}, ${weaponName}, ${roomName}`;
+    this.textArea.textContent = `[${suggestion.turn}] ${suggestion.suggester.name} suggested to ${suggestion.suggestee.name}: ${suspectName}, ${weaponName}, ${roomName}`;
     suggestion.cardArray.forEach(col => {
       this.interactiveTable.SelectCol(col + 1)
     });
-    this.interactiveTable.SelectRow(suggestion.suggester.index + 1);
-    this.interactiveTable.FocusRow(suggestion.suggestee.index + 1);
+    this.interactiveTable.FocusRow(suggestion.suggester.index + 1);
+    this.interactiveTable.SelectRow(suggestion.suggestee.index + 1);
   }
+  /////////////////////
 
   DisplayTurn(turn) {
     if (turn > this.suggestionHistory.length - 1) {
@@ -313,6 +303,18 @@ export class GameManager {
 
   SetCardPreset(preset) {
     cardsAPI.loadPreset(preset);
-    this.cardNames = cardsAPI.getCards();
+  }
+
+  AddStartingCards(cardArray) {
+    this.startingCards = cardArray;
+  }
+
+  AddExtraCards(cardArray) {
+    this.extraCards = cardArray;
+  }
+
+  AddSuggestion(cardArray, suggester, suggestee, response) {
+    const turn = this.suggestionHistory.length;
+    this.suggestionHistory.push(new Suggestion(cardArray, this.players[suggester], this.players[suggestee], response, turn));
   }
 }

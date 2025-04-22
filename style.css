@@ -4,8 +4,9 @@
     --focused-color: #9c9;
     --selected-color: rgb(178, 241, 178);
 
-    --min-font-size: 10px;
+    --min-font-size: calc(1vw + 1vh);
 
+    --table-height: 70vh;
 }
 
 html {
@@ -17,71 +18,55 @@ html {
     visibility: collapse;
 }
 
-
 body {
     margin: var(--outer-margin);
-
-    /*display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;*/
-}
-
-/*remove .container*/
-.container {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    /*padding: 4px;*/
-    flex: 1 1 50%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-
 }
 
-#control-panel{
+#interactive-table-container {
+    height: var(--table-height);
+}
+
+#control-panel {
+    margin: var(--outer-margin);
+    height: calc(90vh - var(--table-height));
+    width: 100vw;
     display: flex;
     flex-direction: row;
-}
-
-
-button {
-    /*display: flex;
+    align-items: end;
     justify-content: center;
-    align-items: center;*/
-
-    padding: 6px 12px;
-    min-width: 50px;
-    min-height: 30px;
-    /*width: 100%;*/
-
-    background-color: transparent;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-    font-size: clamp(var(--min-font-size), 2vw, 16px);
-    text-align: center;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    cursor: pointer;
 }
 
-button:focus {
-    outline: none;
+
+
+#suggestion-area{
+    margin: 0;
+    width: 78vw;
 }
 
-button.focused {
-    transform: scale(1.1);
-    background-color: var(--focused-color);
+#suggestion-text {
+    font-size: clamp(var(--min-font-size), 2vw, 30px);
+    text-align: center;
+    margin: 4px;
 }
 
-button.selected {
-    transform: scale(1);
-    background-color: var(--selected-color);
+.button-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /*flex-direction: row;*/
+    align-items: start;
+    justify-content: center;
+
+}
+
+#forward-button-container{
+    width: 10vw;
+}
+
+#back-button-container{
+    width: 10vw;
 }
