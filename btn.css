@@ -8,7 +8,7 @@
     /* Sizing & typography */
     --btn-padding-y: 8px;
     --btn-padding-x: 16px;
-    --btn-min-font: 10px;
+    --btn-min-font: 12px;
     --btn-max-font: 50px;
     --btn-radius: 4px;
 
@@ -20,7 +20,8 @@
 
 .btn {
     margin: 8px;
-    min-height: 6vh;
+    /*min-height: 5vh;*/
+    width: 100%;
     max-width: 200px;
     position: relative;
     display: inline-flex;
@@ -36,7 +37,7 @@
     overflow: hidden;
     /* clip ripple and overflow */
     font-size: clamp(var(--btn-min-font),
-            1vw,
+            calc(0.9vw + 0.4vh),
             var(--btn-max-font));
     line-height: 1;
     transition:
@@ -51,7 +52,6 @@
 
     flex-shrink: 0;
     width: 1em;
-    /* matches font‑size */
     height: 1em;
     margin-right: .5em;
 }
@@ -69,10 +69,15 @@
     display: none;
 }
 
-
 /* States */
-.btn--hidden{
+.btn--hidden {
     display: none;
+}
+
+.btn--selected {
+    background: var(--selected-color);
+    box-shadow: var(--elev-pressed);
+    transform: scale(1);
 }
 
 .btn--hovered {
@@ -81,22 +86,14 @@
     transform: scale(1.05);
 }
 
-.btn--selected {
-    background: var(--selected-color);
-    box-shadow: var(--elev-default);
-    transform: scale(1);
-}
-
 .btn--disabled {
     background: var(--disabled-color);
     color: #999;
     box-shadow: none;
     cursor: default;
-    pointer-events: none;
 }
 
 .btn--pressed {
-    /* bump elevation */
     box-shadow: var(--elev-pressed);
 }
 
@@ -123,7 +120,7 @@
 /* Variants */
 .btn--primary {
     /* highest hierarchy—white on colored bg if you like */
-    min-height: 10vh;
+    /*min-height: 8vh;*/
 }
 
 .btn--secondary {
@@ -132,6 +129,7 @@
 
 .btn--secondary .btn__icon {
     display: none;
+    border: solid;
 }
 
 .btn--suggestion {

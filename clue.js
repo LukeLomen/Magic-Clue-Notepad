@@ -1,12 +1,6 @@
 import {
-  CreateInteractiveTable
-} from './interactive_table.js';
-import {
   cardsAPI
 } from './clue_cards.js';
-import {
-  ControlPanel
-} from './control_panel.js';
 
 class Suggestion {
   constructor(cardArray, suggester, suggestee, response, turn) {
@@ -120,17 +114,18 @@ export class GameManager {
   /* The game manager represents all game data and sets the display:
   Functions to modify the data are called from the main script (inputManager) - ex: when buttons/table are selected. Then the data changes the display and thus what is able to be selected by the inputManager.
   */
-  constructor() {
+  constructor(gameTable) {
     this.numPlayers = 0;
     this.players = new Array();
     this.suggestionHistory = new Array();
     this.startingCards = new Array();
     this.extraCards = new Array();
-    this.interactiveTable;
-    this.forwardButton = document.getElementById('forward-button');
-    this.backButton = document.getElementById('back-button');
+    this.interactiveTable = gameTable;
+    //this.forwardButton = document.getElementById('forward-button');
+    //this.backButton = document.getElementById('back-button');
     this.textArea = document.getElementById('text-area');
     this.currentTurn = 0;
+    this.currentState = 0;
   }
 
   CreatePlayers(playerNames) {
@@ -138,20 +133,6 @@ export class GameManager {
     for (let i = 0; i < this.numPlayers; i++) {
       this.players[i] = new Player(playerNames[i], i, this.numPlayers, this.players);
     }
-  }
-
-  CreateGameTable() {
-    const container = document.getElementById('interactive-table-container');
-    this.interactiveTable = CreateInteractiveTable(
-      container,
-      'interactive-table-1',
-      21,
-      this.numPlayers,
-      (colIndex) => {
-        console.log("column selected: ", colIndex);
-      });
-    this.WriteCardNamesToTable();
-    this.WritePlayerNamesToTable();
   }
 
   WriteCardNamesToTable() {
@@ -286,7 +267,7 @@ export class GameManager {
     this.currentTurn = turn;
     this.WritePlayerDataFromSuggestionHistory(turn);
     this.WriteTableCellDataFromPlayerData();
-    this.SelectDisplayElementsFromSuggestion(this.suggestionHistory[turn]);
+    //this.SelectDisplayElementsFromSuggestion(this.suggestionHistory[turn]);
   }
 
   IncreaseTurn() {
@@ -317,4 +298,5 @@ export class GameManager {
     const turn = this.suggestionHistory.length;
     this.suggestionHistory.push(new Suggestion(cardArray, this.players[suggester], this.players[suggestee], response, turn));
   }
+
 }

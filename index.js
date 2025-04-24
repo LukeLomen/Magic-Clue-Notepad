@@ -1,76 +1,113 @@
 import {
+    CreateInteractiveTable,
+    InteractiveTable
+} from './interactive_table.js';
+import {
+    InteractiveButton as InteractiveButton
+} from './interactive_button.js'
+import {
     GameManager
 } from './clue.js';
 
-import {
-    ButtonController
-} from './button_controller.js'
+
+/// Prevent context menu on long press / right-click
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
 
 
-const fBtn = new ButtonController({
+
+
+let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface', 'Player 4', 'Player 5', 'Asshat McGee'];
+//let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface'];
+//let playerNames = ['You'];
+
+
+
+/*const gameTable = CreateInteractiveTable(
+    document.getElementById('interactive-table-container'),
+    'interactive-table-1',
+    21,
+    6,
+    (colIndex) => {
+        console.log("column selected: ", colIndex);
+    });*/
+
+const gameTable = new InteractiveTable({
+    container: document.getElementById('interactive-table-container'),
+    id: 'interactive-table-1',
+    rowCount: 6,
+    colCount: 21,
+})
+
+
+const gm = new GameManager(gameTable);
+
+gm.SetCardPreset('classic');
+gm.WriteCardNamesToTable();
+gm.CreatePlayers(playerNames);
+gm.WritePlayerNamesToTable();
+
+
+const fBtn = new InteractiveButton({
     text: "Next",
     icon: "→",
     parent: document.getElementById('forward-button-container'),
     type: "primary",
-    id: "forward-button"
+    id: "forward-button",
+    //onSelect: () => gm.IncreaseTurn()
 });
 
-const bBtn = new ButtonController({
+const bBtn = new InteractiveButton({
     text: "Back",
     icon: "<",
     parent: document.getElementById('back-button-container'),
     type: "primary",
-    id: "back-button"
+    id: "back-button",
+    //onSelect: () => gm.DecreaseTurn()
 });
 
-const suspectButton = new ButtonController({
+const suspectButton = new InteractiveButton({
     text: "Suspect",
     parent: document.getElementById('suggestion-buttons-container'),
     type: "secondary",
     id: "suspect-button"
 })
 
-const weapontButton = new ButtonController({
+const weapontButton = new InteractiveButton({
     text: "Weapon",
     parent: document.getElementById('suggestion-buttons-container'),
     type: "secondary",
     id: "weapon-button"
 })
 
-const roomButton = new ButtonController({
+const roomButton = new InteractiveButton({
     text: "Room",
     parent: document.getElementById('suggestion-buttons-container'),
     type: "secondary",
     id: "room-button"
 })
 
-const noneButton = new ButtonController({
-    text: "None",
-    parent: document.getElementById('suggestion-buttons-container'),
-    type: "secondary",
-    id: "none-button"
-})
-
-const unknownButton = new ButtonController({
+const unknownButton = new InteractiveButton({
     text: "Unknown",
     parent: document.getElementById('suggestion-buttons-container'),
     type: "secondary",
     id: "unknown-button"
 })
 
-unknownButton.setButtonDisplayNone(true);
-fBtn.setHovered(true);
-bBtn.setPressed(true);
+const noneButton = new InteractiveButton({
+    text: "None",
+    parent: document.getElementById('suggestion-buttons-container'),
+    type: "secondary",
+    id: "none-button"
+})
 
 
-let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface', 'Player 4', 'Player 5', 'Asshat McGee'];
-//let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface'];
-//let playerNames = ['You'];
-const gm = new GameManager();
 
-//gm.SetCardPreset('classic')
-gm.CreatePlayers(playerNames);
-gm.CreateGameTable();
+unknownButton.SetButtonDisplayNone(true);
+//fBtn.SetSelected(true);
+bBtn.SetEnabled(false);
+
 
 
 gm.AddStartingCards([1, 14, 19]);
@@ -86,49 +123,93 @@ gm.AddSuggestion([4, 11, 15], 0, 3, knownVoid);
 gm.AddSuggestion([4, 11, 16], 0, 4, knownVoid);
 gm.AddSuggestion([4, 11, 18], 3, 2, knownVoid);
 
-
-gm.DisplayTurn(0);
+gm.DisplayTurn(100);
 //gm.interactiveTable.FocusCol(16);
 
+//gameTable.HideRows(6, 6, true);
+//gameTable.HideTable(true);
 
 ///////////////////////////////////////////////////////////
 
-/// Prevent context menu on long press / right-click
-document.addEventListener('contextmenu', (event) => {
-    event.preventDefault();
+let hoveredElement = null;
+
+document.addEventListener('pointerdown', onPointerDown, {
+    passive: false
 });
-document.addEventListener('pointerdown', onPointerDown);
 document.addEventListener('pointermove', onPointerMove);
 document.addEventListener('pointerup', onPointerUp);
+
 
 /// Input handle
 function onPointerDown(event) {
     const target = document.elementFromPoint(event.clientX, event.clientY);
-    console.log(`pointer down on target: ${target.id}`)
     if (!target) return;
-    if (target.id === `interactive-table-1`) {
-        //interactiveTable.handlePointerDown(target);
-    } else if (target.id == 'forward-button') {
-        gm.IncreaseTurn();
-    } else if (target.id == 'back-button') {
-        gm.DecreaseTurn();
-    }
+    hoveredElement = target;
+    SetHoverState(hoveredElement, true);
 }
 
 function onPointerMove(event) {
     const target = document.elementFromPoint(event.clientX, event.clientY);
     if (!target) return;
-    if (target.id === `interactive-table-1`) {
-        //gm.interactiveTable.handlePointerMove(target);
-    } else {
-        //interactiveTable.handlePointerLeave();
+    if (hoveredElement && target != hoveredElement) {
+        SetHoverState(hoveredElement, false);
     }
+    hoveredElement = target;
+    SetHoverState(hoveredElement, true);
 }
 
 function onPointerUp(event) {
     const target = document.elementFromPoint(event.clientX, event.clientY);
     if (!target) return;
-    if (target.id === `interactive-table-1`) {
-        //interactiveTable.handlePointerUp();
+    console.log(hoveredElement);
+    SetHoverState(hoveredElement, false);
+    if (hoveredElement._instance instanceof InteractiveButton) {
+        const button = hoveredElement._instance;
+        button.SetPressed(true);
+    } else if (target.tagName === 'TD' || target.tagName === 'TH') {
+        gameTable.SelectTarget(target);
+    }
+}
+
+function SetHoverState(target, hover) {
+    if (target._instance instanceof InteractiveButton) {
+        const button = target._instance;
+        button.SetHovered(hover);
+    } else if (target.tagName === 'TD' || target.tagName === 'TH') {
+        if (hover) {
+            gameTable.FocusTarget(target);
+        } else {
+            gameTable.ClearFocus();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+function ForwardButton() {
+    if (gm.currentState == 0) {
+        /// New Game
+        if (playerNames.length < 3) {
+            /// Not enough players
+        } else {
+            /// Start new game
+            gm.CreatePlayers(playerNames);
+
+        }
+    } else if (gm.currentState == 1) {
+        /// Set Starting Cards
+    } else if (gm.currentState == 2) {
+        /// Set Extra Cards
+    } else if (gm.currentState == 3) {
+        /// New Suggestion
+    } else if (gm.currentState == 4) {
+        /// Suggestion
     }
 }

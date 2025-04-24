@@ -1,5 +1,5 @@
 :root {
-    --outer-margin: 8px;
+    --outer-margin: 6px;
 
     --focused-color: #9c9;
     --selected-color: rgb(178, 241, 178);
@@ -7,6 +7,7 @@
     --min-font-size: calc(1vw + 1vh);
 
     --table-height: 70vh;
+    --contro-panel-height: calc(90vh - var(--table-height));
 }
 
 html {
@@ -19,54 +20,94 @@ html {
 }
 
 body {
-    margin: var(--outer-margin);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    touch-action: none;
+    overscroll-behavior: none;
+}
+
 #interactive-table-container {
+    margin: var(--outer-margin);
     height: var(--table-height);
 }
 
 #control-panel {
     margin: var(--outer-margin);
-    height: calc(90vh - var(--table-height));
+    height: var(--contro-panel-height);
     width: 100vw;
     display: flex;
     flex-direction: row;
-    align-items: end;
-    justify-content: center;
-    overflow: hidden;
+    align-items: center;
+    justify-content: end;
 }
 
-
-
-#suggestion-area{
+#suggestion-area {
+    display: flex;
+    flex-direction: column;
     margin: 0;
     width: 78vw;
+    height: 100%;
 }
 
 #suggestion-text {
-    font-size: clamp(var(--min-font-size), 2vw, 30px);
+    flex: 1 1 50%;
+    user-select: none;
+    font-size: clamp(20px, 2vw, 30px);
     text-align: center;
     margin: 4px;
+    /*white-space: nowrap;*/
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
-.button-container{
-    width: 100%;
-    height: 100%;
+#suggestion-buttons-container{
+    flex: 1 1 50%;
+}
+
+.button-container {
+    /*width: 100%;
+    height: 100%;*/
     display: flex;
-    /*flex-direction: row;*/
-    align-items: start;
     justify-content: center;
+}
+
+#forward-button-container {
+    width: 10vw;
 
 }
 
-#forward-button-container{
+#back-button-container {
     width: 10vw;
+
 }
 
-#back-button-container{
-    width: 10vw;
+@media(orientation:portrait) {
+    #control-panel {
+        flex-wrap: wrap;
+    }
+
+    #forward-button-container,
+    #back-button-container {
+        order: 1;
+        flex: 1 1 50%;
+        height: 10vh;
+    }
+
+    #suggestion-area {
+        order: 2;
+        flex: 1 1 100%;
+        height: calc(var(--contro-panel-height)-10vh);
+    }
+
+    #suggestion-text {
+        white-space: wrap;
+    }
 }

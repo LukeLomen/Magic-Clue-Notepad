@@ -117,12 +117,7 @@ td {
 
 
 
-.focused-col {
-  transform: scaleX(1.5);
-  background-color: #9c9;
-  box-shadow: 0 20px 10px 5px rgba(0, 0, 0, 0.1);
 
-}
 
 .selected-col {
   background-color: rgb(178, 241, 178);
@@ -130,15 +125,22 @@ td {
 
 }
 
-.focused-row {
-  /*transform: scaleY(1.4);*/
-  /*box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);*/
+.selected-row {
+  border: 8px solid #ccc;
+  /*box-shadow: 0 0 .5vw .5vw rgba(0, 0, 0, 0.1);*/
+}
+
+.focused-col {
+  transform: scaleX(1.5);
+  background-color: #9c9;
+  box-shadow: 0 20px 10px 5px rgba(0, 0, 0, 0.1);
 
 }
 
-.selected-row {
-  /*border: 8px solid #ccc;*/
-  /*box-shadow: 0 0 .5vw .5vw rgba(0, 0, 0, 0.1);*/
+.focused-row {
+  /*transform: scaleY(1.4);*/
+  box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 .focused-menu {
