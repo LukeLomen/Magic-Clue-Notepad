@@ -5,7 +5,7 @@ export class InteractiveButton {
         type = "primary",
         parent = document.body,
         id = null,
-        onSelect
+        onPress
     }) {
         this.state = {
             enabled: true,
@@ -13,7 +13,7 @@ export class InteractiveButton {
             selected: false,
             pressed: false
         };
-
+        this.onPress = onPress;
         this.root = document.createElement("button");
         this.root.classList.add("btn", `btn--${type}`);
         if (id) this.root.id = id;
@@ -79,6 +79,7 @@ export class InteractiveButton {
                 }
             );
         }
+        this.onPress();
     }
 
     SetEnabled(enabled) {

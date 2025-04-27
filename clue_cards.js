@@ -68,7 +68,7 @@ export const cardsAPI = {
         return allCards[index];
     },
 
-    // Reset to classic
+    // Reset to default
     reset: () => {
         clueAPI.loadPreset('default');
     }

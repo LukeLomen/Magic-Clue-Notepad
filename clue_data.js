@@ -1,7 +1,3 @@
-import {
-  cardsAPI
-} from './clue_cards.js';
-
 class Suggestion {
   constructor(cardArray, suggester, suggestee, response, turn) {
     this.turn = turn;
@@ -13,16 +9,15 @@ class Suggestion {
 }
 
 class Player {
-  constructor(name, index, numPlayers, playersArray) {
+  constructor(name, index, numPlayers, playersArray, numCards) {
     this.name = name;
     this.index = index;
     this.numPlayers = numPlayers;
     this.playersArray = playersArray;
-    this.numCards = Math.floor(18 / numPlayers);
-    this.numExtraCards = 18 - numPlayers * this.numCards; //remove
+    this.numCards = numCards;
   }
   cardArray = new Array(21).fill(unknown);
-  possibleCards = new Array(0);
+  possibleCards = new Array();
   cardsKnown = 0;
   allCardsKnown = false;
 
@@ -81,7 +76,7 @@ class Player {
   CheckPossibleCards() {
     if (this.possibleCards.length > 0) {
       this.possibleCards.forEach((array, i) => {
-        /// first look through all the arrays. Then compare each item in the nested arrays with this.cardArray; if the number in the possible card array is known void or have then remove that number and setknownvoid; after removing impossible cards if any of the array lengths are 1 then that card has been inferred: setknownhave and remove the 1 length array.
+        /// First look through all the arrays. Then compare each item in the nested arrays with this.cardArray; if the number in the possible card array is known void or have then remove that number and setknownvoid; after removing impossible cards if any of the array lengths are 1 then that card has been inferred: setknownhave and remove the 1 length array.
         array.forEach((card, index) => {
           if (this.cardArray[card] != possibleCard) {
             array.splice(index, 1);
@@ -110,64 +105,65 @@ class Player {
   }
 }
 
-export class GameManager {
-  /* The game manager represents all game data and sets the display:
-  Functions to modify the data are called from the main script (inputManager) - ex: when buttons/table are selected. Then the data changes the display and thus what is able to be selected by the inputManager.
-  */
-  constructor(gameTable) {
+export class DataManager {
+  constructor() {
     this.numPlayers = 0;
     this.players = new Array();
     this.suggestionHistory = new Array();
     this.startingCards = new Array();
     this.extraCards = new Array();
-    this.interactiveTable = gameTable;
-    //this.forwardButton = document.getElementById('forward-button');
-    //this.backButton = document.getElementById('back-button');
-    this.textArea = document.getElementById('text-area');
-    this.currentTurn = 0;
-    this.currentState = 0;
+    this.numCards = 0;
+    this.numExtra = 0;
+  }
+
+  CalculateNumCards(numPlayers) {
+    this.numCards = Math.floor(18 / numPlayers);
+    this.numExtra = 18 - numPlayers * this.numCards;
   }
 
   CreatePlayers(playerNames) {
     this.numPlayers = playerNames.length;
+    this.CalculateNumCards(this.numPlayers)
     for (let i = 0; i < this.numPlayers; i++) {
-      this.players[i] = new Player(playerNames[i], i, this.numPlayers, this.players);
+      this.players[i] = new Player(playerNames[i], i, this.numPlayers, this.players, this.numCards);
     }
   }
 
-  WriteCardNamesToTable() {
-    const allCards = (() => {
-      const {
-        suspects,
-        weapons,
-        rooms
-      } = cardsAPI.getCards();
-      return [...suspects, ...weapons, ...rooms];
-    })();
-
-    allCards.forEach((cardName, index) => {
-      this.interactiveTable.WriteTableData(0, index + 1, cardName);
-    });
+  SetStartingCards(cardArray) {
+    this.startingCards = cardArray;
   }
 
-  WritePlayerNamesToTable() {
-    this.players.forEach((player, index) => {
-      this.interactiveTable.WriteTableData(index + 1, 0, player.name);
-    });
+  SetExtraCards(cardArray) {
+    this.extraCards = cardArray;
   }
 
-  WriteTableCellDataFromPlayerData() {
-    this.players.forEach((player, index) => {
-      const row = index + 1;
-      player.cardArray.forEach((card, index) => {
-        const col = index + 1;
-        this.interactiveTable.WriteTableData(row, col, card);
-      });
-    });
+  DisplayTurn(turn) {
+    if (turn > this.suggestionHistory.length - 1) {
+      turn = this.suggestionHistory.length - 1;
+    }
+    this.currentTurn = turn;
+    this.WritePlayerDataFromSuggestionHistory(turn);
+  }
+
+  IncreaseTurn() {
+    if (this.currentTurn >= this.suggestionHistory.length) return;
+    this.currentTurn++;
+    this.DisplayTurn(this.currentTurn);
+  }
+
+  DecreaseTurn() {
+    if (this.currentTurn <= 0) return;
+    this.currentTurn--;
+    this.DisplayTurn(this.currentTurn);
+  }
+
+  AddSuggestion(cardArray, suggester, suggestee, response) {
+    const turn = this.suggestionHistory.length;
+    this.suggestionHistory.push(new Suggestion(cardArray, this.players[suggester], this.players[suggestee], response, turn));
   }
 
   /*/// Clue Logic
-  "the goal of clue is not to find what other players have it is to find what they don't have"
+  "the goal of clue is not to find what other players have, it is to find what they don't have"
 
   -1 Every card known must be void for all other players
   -2 If the count of known cards = total cards per player then all other player cards must be void
@@ -238,65 +234,4 @@ export class GameManager {
     }
     this.CheckForHiddenCards();
   }
-
-  SelectDisplayElementsFromSuggestion(suggestion) {
-    const suspectName = cardsAPI.getCardFromIndex(suggestion.cardArray[0]);
-    const weaponName = cardsAPI.getCardFromIndex(suggestion.cardArray[1]);
-    const roomName = cardsAPI.getCardFromIndex(suggestion.cardArray[2]);
-    // unselect everything
-    // set turn # (turn)
-    // write text area (all)
-    // select 3 table cols (cardArray)
-    // select 1 table row (suggester)
-    // highlight 1 table row (suggestee)
-    this.interactiveTable.ClearFocus();
-    this.interactiveTable.ClearSelection();
-    this.textArea.textContent = `[${suggestion.turn}] ${suggestion.suggester.name} suggested to ${suggestion.suggestee.name}: ${suspectName}, ${weaponName}, ${roomName}`;
-    suggestion.cardArray.forEach(col => {
-      this.interactiveTable.SelectCol(col + 1)
-    });
-    this.interactiveTable.FocusRow(suggestion.suggester.index + 1);
-    this.interactiveTable.SelectRow(suggestion.suggestee.index + 1);
-  }
-  /////////////////////
-
-  DisplayTurn(turn) {
-    if (turn > this.suggestionHistory.length - 1) {
-      turn = this.suggestionHistory.length - 1;
-    }
-    this.currentTurn = turn;
-    this.WritePlayerDataFromSuggestionHistory(turn);
-    this.WriteTableCellDataFromPlayerData();
-    //this.SelectDisplayElementsFromSuggestion(this.suggestionHistory[turn]);
-  }
-
-  IncreaseTurn() {
-    if (this.currentTurn >= this.suggestionHistory.length) return;
-    this.currentTurn++;
-    this.DisplayTurn(this.currentTurn);
-  }
-
-  DecreaseTurn() {
-    if (this.currentTurn <= 0) return;
-    this.currentTurn--;
-    this.DisplayTurn(this.currentTurn);
-  }
-
-  SetCardPreset(preset) {
-    cardsAPI.loadPreset(preset);
-  }
-
-  AddStartingCards(cardArray) {
-    this.startingCards = cardArray;
-  }
-
-  AddExtraCards(cardArray) {
-    this.extraCards = cardArray;
-  }
-
-  AddSuggestion(cardArray, suggester, suggestee, response) {
-    const turn = this.suggestionHistory.length;
-    this.suggestionHistory.push(new Suggestion(cardArray, this.players[suggester], this.players[suggestee], response, turn));
-  }
-
 }

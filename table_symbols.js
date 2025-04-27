@@ -1,3 +1,4 @@
+///Global
 const unknown = '';
 const knownHave = 'X';
 const knownVoid = '/';

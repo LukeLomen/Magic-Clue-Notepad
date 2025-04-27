@@ -34,9 +34,22 @@ body {
     overscroll-behavior: none;
 }
 
-#interactive-table-container {
+#top-container {
     margin: var(--outer-margin);
     height: var(--table-height);
+}
+
+#interactive-table-container {
+    height: 100%;
+}
+
+#game-setup{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: start;
+    align-items: center;
 }
 
 #control-panel {
