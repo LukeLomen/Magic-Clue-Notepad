@@ -7,12 +7,12 @@ import {
 
 const gm = new GameManager();
 
-//gm.SetCardPreset('classic');
+gm.SetCardPreset('classic');
 
 
 //let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface', 'fuzzy fuck FUCK', 'Asshat McGee'];
 let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface'];
-gm.StartGame(playerNames);
+//gm.StartGame(playerNames);
 
 //gm.SetStartingCards([1, 14, 19]);
 //gm.SetExtraCards([0, 3, 2]);
