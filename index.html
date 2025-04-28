@@ -17,13 +17,13 @@
     <div id="game-setup" class="">
       <h1>Magic Clue Notepad</h1>
       <h3>Enter Player Names in Clockwise Order</h3>
-      <input id="playerName0" type="text" placeholder="your name (optional)">
-      <input id="playerName1" type="text" placeholder="player2 name">
-      <input id="playerName2" type="text" placeholder="player3 name">
-      <input id="playerName3" type="text" placeholder="player4 name">
-      <input id="playerName4" type="text" placeholder="player5 name">
-      <input id="playerName5" type="text" placeholder="player6 name">
-      <p>
+      <input id="playerName0" type="text" maxlength="20" placeholder="your name (optional)">
+      <input id="playerName1" type="text" maxlength="20" placeholder="player2 name">
+      <input id="playerName2" type="text" maxlength="20" placeholder="player3 name">
+      <input id="playerName3" type="text" maxlength="20" placeholder="player4 name (optional)">
+      <input id="playerName4" type="text" maxlength="20" placeholder="player5 name (optional)">
+      <input id="playerName5" type="text" maxlength="20" placeholder="player6 name (optional)">
+      <p class="hidden">
         This is not a game of Clue vs AI. Magic Clue Notepad is a replacement for the paper notepad while playing the
         board game with family and friends (except you want to make it not fun by looking at a screen and winning every
         time). Magic Clue Notepad draws itself automatically, you simply record what happens.
@@ -43,10 +43,13 @@
   </div>
 
   <script type="" src="table_symbols.js"></script>
-  <!-- Not sure if I need these
+  <script type="module" src="interactive_button.js"></script>
   <script type="module" src="interactive_table.js"></script>
+  <script type="module" src="game_setup.js"></script>
+  <script type="module" src="control_panel.js"></script>
   <script type="module" src="clue_cards.js"></script>
-  <script type="module" src="clue_data.js"></script>-->
+  <script type="module" src="clue_data.js"></script>
+  <script type="module" src="game_manager.js"></script>
   <script type="module" src="index.js"></script>
 </body>
 

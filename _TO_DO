@@ -1,0 +1,42 @@
+[HIGH] - functionality complete
+
+GameManager: New Suggestion: Logic, display, and control hookup
+
+BackButton Logic:
+
+InteractiveTable: categorySelectionMode: unselects cols of the same category when a col is selected (only NOT used in starting/extra card selection)
+
+ControlPanel: Validation: Each state requires a different validation
+    - Changing the active state of buttons
+    - Changing the validation text
+    - It is possible for the user in a 3 person game to select all player/weapon cards (accidentally because this is impossible: as at least 1 must be hidden) I don't need to handle accidental player mistakes; if they selected the incorrect things they can go back and change it themselves or suffer the consequences. - I only need to account for user error (validation) when enabling other buttons for them to press (pressing these buttons before validation would result in error / data corruption). If you really wanted to be nice you could check for impossible data (all over the place) and send an alert telling them to go back and fix it (but that is way too much work for this project)
+
+Style:
+    - Set all css files color scheme from index.css
+    - Style should be consistant across all the elements: Start with the table
+        - Instead of raised buttons they should be outlined (border matches table cell border) (maybe raised too Idk, I like how it looks on press right now)
+
+
+[MID]
+
+GameSetup: Card Presets Selection:
+
+Menu: Probably some pop up window
+    - New Game + Warning or snackbar to confirm
+    - Help / Table Symbol Key
+    - ? Card Presets Seletion ?
+    - ? Edit / Delete Suggestion History ?
+
+Style: ControlPanel: Finalize the reactive display
+
+Style: * : 
+    - Pick good font + colors
+    - Consistant animations
+    - ? Icons ?
+
+
+[LOW]
+
+Extra Style for HiddenCards
+
+ClueCards: Write More Presets;

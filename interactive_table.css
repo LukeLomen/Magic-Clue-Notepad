@@ -77,6 +77,7 @@ td {
 }
 
 .focused-col {
+  cursor: pointer;
   /*transform: scaleX(1.5);*/
   background-color: #9c9;
   /*box-shadow: 0 20px 10px 5px rgba(0, 0, 0, 0.1);*/
@@ -85,6 +86,7 @@ td {
 }
 
 .focused-row {
+  cursor: pointer;
   /*transform: scaleY(1.2);*/
   background-color: #9c9;
   /*box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);*/
@@ -92,6 +94,7 @@ td {
 }
 
 .focused-menu {
+  cursor: pointer;
   transform: scaleX(100);
   background-color: #555;
 }

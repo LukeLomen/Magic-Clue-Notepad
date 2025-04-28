@@ -123,38 +123,27 @@ export class DataManager {
 
   CreatePlayers(playerNames) {
     this.numPlayers = playerNames.length;
-    this.CalculateNumCards(this.numPlayers)
+    if (this.numPlayers < 3 || this.numPlayers > 6) {
+      console.warn(`Incorrect # of players to play clue`);
+    }
+    this.CalculateNumCards(this.numPlayers);
     for (let i = 0; i < this.numPlayers; i++) {
       this.players[i] = new Player(playerNames[i], i, this.numPlayers, this.players, this.numCards);
     }
   }
 
   SetStartingCards(cardArray) {
+    if (cardArray.length != this.numCards) {
+      console.warn(`Starting cards set to an array of the wrong length`);
+    }
     this.startingCards = cardArray;
   }
 
   SetExtraCards(cardArray) {
-    this.extraCards = cardArray;
-  }
-
-  DisplayTurn(turn) {
-    if (turn > this.suggestionHistory.length - 1) {
-      turn = this.suggestionHistory.length - 1;
+    if (cardArray.length != this.numExtra) {
+      console.warn(`Extra cards set to an array of the wrong length`);
     }
-    this.currentTurn = turn;
-    this.WritePlayerDataFromSuggestionHistory(turn);
-  }
-
-  IncreaseTurn() {
-    if (this.currentTurn >= this.suggestionHistory.length) return;
-    this.currentTurn++;
-    this.DisplayTurn(this.currentTurn);
-  }
-
-  DecreaseTurn() {
-    if (this.currentTurn <= 0) return;
-    this.currentTurn--;
-    this.DisplayTurn(this.currentTurn);
+    this.extraCards = cardArray;
   }
 
   AddSuggestion(cardArray, suggester, suggestee, response) {
@@ -226,6 +215,8 @@ export class DataManager {
       this.startingCards.forEach(card => {
         if (player.index == 0) {
           player.SetKnownHave(card);
+        } else {
+          player.SetKnownVoid(card);
         }
       });
     });

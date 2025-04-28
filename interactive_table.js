@@ -12,9 +12,10 @@ export class InteractiveTable {
     this.OnToggleCol = OnToggleCol;
     this.OnToggleRow = OnToggleRow;
     this.OnToggleMenu = OnToggleMenu;
-    this.colSelectionActive = false;
-    this.rowSelectionActive = false;
-    this.menuSelectionActive = false;
+    this.colTargetActive = false;
+    this.rowTargetActive = false;
+    this.menuTargetActive = false;
+    this.categorySelectionMode = false;
 
     this.colTotal = colCount + 1;
     this.rowCount = rowCount;
@@ -118,6 +119,23 @@ export class InteractiveTable {
     }
   }
 
+  GetSelectedCols(){
+    let returnArray = new Array();
+    this.selectedColumns.forEach(col => {
+      returnArray.push(col-1);
+    });
+    return returnArray
+  }
+
+  GetSelectedRows(){
+    let returnArray = new Array();
+    this.selectedRows.forEach(row => {
+      returnArray.push(row-1);
+    });
+    return returnArray
+  }
+
+  /// Hide
   HideTable(hide) {
     if (hide) {
       this.container.classList.add('hidden');
@@ -149,7 +167,7 @@ export class InteractiveTable {
     }
   }
 
-  /// Selection and Focus API
+  /// Focus
   ClearFocus() {
     if (this.focus == null) return;
     if (this.focus[0] == "col") {
@@ -165,7 +183,6 @@ export class InteractiveTable {
   }
 
   FocusCol(col) {
-    if (!this.colSelectionActive) return;
     this.ClearFocus();
     this._GetColCellArray(col).forEach(cell => {
       cell.classList.add('focused-col');
@@ -174,7 +191,6 @@ export class InteractiveTable {
   }
 
   FocusRow(row) {
-    if (!this.rowSelectionActive) return;
     this.ClearFocus();
     this._GetRowCellArray(row).forEach(cell => {
       cell.classList.add('focused-row');
@@ -182,6 +198,7 @@ export class InteractiveTable {
     this.focus = ["row", row]
   }
 
+  /// Select
   UnSelectCol(col) {
     this._GetColCellArray(col).forEach(cell => {
       cell.classList.remove('selected-col');
@@ -196,12 +213,33 @@ export class InteractiveTable {
     this.selectedRows.delete(row);
   }
 
-  ClearAllSelection() {
-    //this.UnSelectRow(selectedRow)
-    this._GetSelectedColumns().forEach(col => {
+  ClearColSelection() {
+    this.selectedColumns.forEach(col => {
       this.UnSelectCol(col);
     });
-    this.selectedColumns = new Set();
+  }
+
+  ClearRowSelection() {
+    this.selectedRows.forEach(row => {
+      this.UnSelectRow(row);
+    })
+  }
+
+  ClearAllSelection() {
+    this.ClearColSelection();
+    this.ClearRowSelection();
+
+  }
+
+  SelectColCategory(col){
+    /*this.selectedColumns.forEach(c =>{
+      console.log(c);
+      if(c < 7){
+        this.UnSelectCol(c);
+      }
+    });*/
+
+    this.SelectCol(col);
   }
 
   SelectCol(col) {
@@ -218,10 +256,14 @@ export class InteractiveTable {
     this.selectedRows.add(row);
   }
 
+  /// Toggle
   ToggleRow(row) {
     if (this.selectedRows.has(row)) {
       this.UnSelectRow(row)
     } else {
+      if (this.categorySelectionMode) {
+        this.ClearRowSelection();
+      }
       this.SelectRow(row);
     }
   }
@@ -230,10 +272,15 @@ export class InteractiveTable {
     if (this.selectedColumns.has(col)) {
       this.UnSelectCol(col)
     } else {
-      this.SelectCol(col);
+      if (this.categorySelectionMode) {
+        this.SelectColCategory(col);
+      }else{
+        this.SelectCol(col);
+      }
     }
   }
 
+  /// Target from pointer events elementFromPoint
   FocusTarget(target) {
     const row = parseInt(target.dataset.row, 10);
     const col = parseInt(target.dataset.col, 10);
@@ -241,8 +288,10 @@ export class InteractiveTable {
     if (row === 0 && col === 0) {
       //Corner Menu
     } else if (col === 0) {
+      if (!this.rowTargetActive) return;
       this.FocusRow(row);
     } else {
+      if (!this.colTargetActive) return;
       this.FocusCol(col);
     }
   }
@@ -252,12 +301,13 @@ export class InteractiveTable {
     const col = parseInt(target.dataset.col, 10);
     if (row === 0 && col === 0) {
       //Corner Menu
+      console.log('Table mennu toggled')
     } else if (col === 0) {
-      if (!this.rowSelectionActive) return;
+      if (!this.rowTargetActive) return;
       this.ToggleRow(row);
       this.OnToggleCol(this.selectedRows);
     } else {
-      if (!this.colSelectionActive) return;
+      if (!this.colTargetActive) return;
       this.ToggleCol(col);
       this.OnToggleCol(this.selectedColumns);
     }

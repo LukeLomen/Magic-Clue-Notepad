@@ -7,40 +7,9 @@ import {
 
 const gm = new GameManager();
 
-gm.SetCardPreset('classic');
-
-
-//let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface', 'fuzzy fuck FUCK', 'Asshat McGee'];
-let playerNames = ['You', 'ReallyLong PlayerName', 'Durf McDurfface'];
-//gm.StartGame(playerNames);
-
-//gm.SetStartingCards([1, 14, 19]);
-//gm.SetExtraCards([0, 3, 2]);
-/*
-gm.AddSuggestion([1, 6, 12], 0, 1, knownVoid);
-gm.AddSuggestion([1, 6, 12], 0, 2, 12);
-gm.AddSuggestion([1, 8, 20], 1, 2, possibleCard);
-gm.AddSuggestion([0, 8, 13], 0, 2, possibleCard);
-gm.AddSuggestion([3, 8, 20], 0, 3, 8);
-gm.AddSuggestion([4, 11, 15], 0, 1, knownVoid);
-gm.AddSuggestion([4, 11, 15], 0, 3, knownVoid);
-gm.AddSuggestion([4, 11, 16], 0, 4, knownVoid);
-gm.AddSuggestion([4, 11, 18], 3, 2, knownVoid);
-
-
-gm.DisplayTurn(100);*/
-
-//gm.interactiveTable.FocusCol(16);
-/*
-gameTable.HideRow(6, true);
-gameTable.HideRow(5, true);*/
-//gameTable.HideTable(true);
-
-/////////////////////////////////////////////////////////////
 /// Input handle
-
-/// Prevent context menu on long press / right-click
 document.addEventListener('contextmenu', (event) => {
+    /// Prevent context menu on long press / right-click
     event.preventDefault();
 });
 document.addEventListener('pointerdown', onPointerDown);
@@ -91,4 +60,55 @@ function onPointerUp(event) {
     } else if (hoveredElement.tagName === 'TD' || hoveredElement.tagName === 'TH') {
         gm.interactiveTable.ToggleTarget(hoveredElement);
     }
+}
+
+////////////////////////////////////////////////////////DEBUG
+
+DebugGame0();
+//DebugGameA();
+//DebugGameB();
+//DebugGameC();
+
+function DebugGame0() {
+    gm.StartGame(['You', 'p2', 'p3']);
+}
+
+function DebugGameA() {
+    gm.SetCardPreset('simpsons');
+    gm.StartGame(['DEBUG A', 'ReallyLong PlayerName', 'Durf McDurfface']);
+    gm.SetStartingCards([1, 14, 19, 20, 2, 3]);
+}
+
+function DebugGameB() {
+    gm.SetCardPreset('2016');
+    gm.StartGame(['DEBUG B', 'ReallyLong PlayerName', 'Durf McDurfface', 'Asshat McGee']);
+    gm.SetStartingCards([5, 6, 9, 13]);
+    gm.SetExtraCards([0, 3]);
+
+
+
+    //gm.interactiveTable.FocusCol(16);
+    /*
+    gameTable.HideRow(6, true);
+    gameTable.HideRow(5, true);*/
+    //gameTable.HideTable(true);
+}
+
+function DebugGameC() {
+    gm.SetCardPreset('classic');
+    gm.StartGame(['DEBUG C', 'Knob Gobbler 5000', 'Mothalicka', 'Pants-Way', 'Crumbum']);
+    gm.SetStartingCards([0, 1, 2]);
+    gm.SetExtraCards([20, 19, 18]);
+
+    gm.AddSuggestion([4, 6, 12], 0, 2, 12);
+    gm.AddSuggestion([1, 8, 20], 1, 2, possibleCard);
+    gm.AddSuggestion([0, 8, 13], 0, 2, possibleCard);
+    gm.AddSuggestion([3, 8, 20], 0, 3, 8);
+    gm.AddSuggestion([5, 11, 15], 0, 1, knownVoid);
+    gm.AddSuggestion([4, 11, 15], 0, 4, knownVoid);
+    gm.AddSuggestion([4, 11, 16], 0, 4, knownVoid);
+    gm.AddSuggestion([4, 11, 18], 3, 2, knownVoid);
+
+    gm.DisplayTurn(100);
+
 }

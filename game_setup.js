@@ -1,7 +1,11 @@
+import {
+    InteractiveButton
+} from './interactive_button.js';
+
 export class GameSetup {
     constructor() {
         this.container = document.getElementById('game-setup');
-        this.container.addEventListener('input', this._HandleTextInput.bind(this));
+        this.container.addEventListener('input', this._HandleInput.bind(this));
 
         this.input1 = document.getElementById('playerName0');
         this.input2 = document.getElementById('playerName1');
@@ -11,9 +15,20 @@ export class GameSetup {
         this.input6 = document.getElementById('playerName5');
 
         this.entries = 0;
+
+        this.resetButton = new InteractiveButton({
+            text: "Reset",
+            icon: "x",
+            parent: this.container,
+            type: "primary",
+            id: "clear-button",
+            onPress: () => this.ResetValues()
+        });
+
+        this.ResetValues();
     }
 
-    _HandleTextInput(event) {
+    _HandleInput(event) {
         /// Sets the number of filled entries on change
         const target = event.target;
         if (!target) return;
@@ -41,5 +56,14 @@ export class GameSetup {
         } else {
             this.container.classList.remove('hidden');
         }
+    }
+
+    ResetValues(){
+        this.input1.value = "You";
+        this.input2.value = "";
+        this.input3.value = "";
+        this.input4.value = "";
+        this.input5.value = "";
+        this.input6.value = "";
     }
 }

@@ -17,16 +17,6 @@ import {
     cardsAPI
 } from './clue_cards.js';
 
-const GameState = {
-    NEW_GAME: 0,
-    STARTING_CARDS: 1,
-    EXTRA_CARDS: 2,
-    NEW_SUGGESTION: 3,
-    SUGGESTION: 4,
-    HISTORY: 5,
-    MENU: 6
-};
-
 export class GameManager {
     constructor() {
         this.dm = new DataManager();
@@ -40,7 +30,10 @@ export class GameManager {
             OnToggleRow: (selectedCols) => console.log(selectedCols),
         });
         this.controlPanel = new ControlPanel({
-            OnPressForward: () => this.StartGame(this.gameSetup.GetTextInputArray()),
+            OnPressStart: () => this.StartGame(this.gameSetup.GetTextInputArray()),
+            OnPressConfirmStarting: () => this.SetStartingCards(this.interactiveTable.GetSelectedCols()),
+            OnPressConfirmExtra: () => this.SetExtraCards(this.interactiveTable.GetSelectedCols()),
+            //OnPressForward: () => ,
             OnPressBack: () => this.NewGame(),
             OnPressSuspect: () => this.SuspectButton(),
             OnPressWeapon: () => this.WeaponButton(),
@@ -53,6 +46,8 @@ export class GameManager {
         this.gameSetup = new GameSetup();
         this.textInputArray = new Array(6);
 
+        this.currentTurn = 0;
+
         this.NewGame();
     }
 
@@ -62,31 +57,40 @@ export class GameManager {
         this.controlPanel.SetValidationText(`${selectedRowsSet.size} / ${requirement}`)
         if (selectedRowsSet.size == requirement) {
             console.log('confirm button should now be active')
-        } else{
+        } else {
             console.log('confirm button should now be disabled')
         }
     }
 
     DisplayNewGame() {
+        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.HideTable(true);
         this.gameSetup.HideGameSetup(false);
-        this.controlPanel.ShowNewGameScreen();
+        this.controlPanel.ChangeState(this.controlPanel.NEW_GAME)
     }
 
     DisplayStartingCards() {
+        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.HideTable(false);
         this.gameSetup.HideGameSetup(true);
-        this.controlPanel.ShowStartingCardsScreen();
-        this.interactiveTable.colSelectionActive = true;
-        //this.interactiveTable.SelectRow(1);
+        this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS)
+        this.interactiveTable.colTargetActive = true;
     }
 
     DisplayExtraCards() {
+        this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS)
 
     }
 
     DisplayNewSuggestion() {
-
+        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.WriteTableCellDataFromPlayerData();
+        this.controlPanel.ChangeState(this.controlPanel.NEW_SUGGESTION)
+        this.interactiveTable.colTargetActive = true;
+        this.interactiveTable.rowTargetActive = true;
+        this.interactiveTable.categorySelectionMode = true;
     }
 
     DisplayCurrentSuggestion() {
@@ -98,7 +102,6 @@ export class GameManager {
     }
 
     NewGame() {
-        //console.log(this.textInputArray)
         this.dm = new DataManager();
         this.DisplayNewGame();
         this.interactiveTable.HideRows(0, 6, false);
@@ -111,6 +114,32 @@ export class GameManager {
         this.DisplayStartingCards();
     }
 
+    SetStartingCards(cardArray) {
+        this.dm.SetStartingCards(cardArray);
+        if (this.dm.numExtra > 0) {
+            this.DisplayExtraCards();
+        } else {
+            this.DisplayNewSuggestion();
+        }
+        this.interactiveTable.ClearAllSelection();
+        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.WriteTableCellDataFromPlayerData();
+    }
+
+    SetExtraCards(cardArray) {
+        this.dm.SetExtraCards(cardArray);
+        this.DisplayNewSuggestion();
+        this.interactiveTable.ClearAllSelection();
+        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.WriteTableCellDataFromPlayerData();
+    }
+
+    AddSuggestion(cardArray, suggester, suggestee, response) {
+        this.dm.AddSuggestion(cardArray, suggester, suggestee, response)
+    }
+
+
+    /////////
     SetCardPreset(preset) {
         cardsAPI.loadPreset(preset);
         this.WriteCardNamesToTable();
@@ -147,6 +176,34 @@ export class GameManager {
             });
         });
     }
+
+    DisplayTurn(turn) {
+        if (turn > this.dm.suggestionHistory.length - 1) {
+            turn = this.dm.suggestionHistory.length - 1;
+        }
+        this.currentTurn = turn;
+        this.dm.WritePlayerDataFromSuggestionHistory(turn);
+        this.WriteTableCellDataFromPlayerData()
+    }
+
+    IncreaseTurn() {
+        if (this.currentTurn >= this.dm.suggestionHistory.length) return;
+        this.currentTurn++;
+        this.DisplayTurn(this.currentTurn);
+    }
+
+    DecreaseTurn() {
+        if (this.currentTurn <= 0) return;
+        this.currentTurn--;
+        this.DisplayTurn(this.currentTurn);
+    }
+
+
+
+
+
+
+
 
 
 

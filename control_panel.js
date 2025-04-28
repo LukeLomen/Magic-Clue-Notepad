@@ -2,8 +2,33 @@ import {
     InteractiveButton
 } from './interactive_button.js';
 
+class State{
+    constructor({
+        mainText = "",
+        validationText = "",
+        suggestionButtonContainerHidden = true,
+        backButtonContainerHidden = false,
+        forwardButtonText = "Next",
+        backButtonText = "Back",
+        forwardButtonFunction
+
+    }){
+        this.mainText = mainText;
+        this.validationText = validationText;
+        this.suggestionButtonContainerHidden = suggestionButtonContainerHidden;
+        this.backButtonContainerHidden = backButtonContainerHidden;
+        this.forwardButtonText = forwardButtonText;
+        this.backButtonText = backButtonText;
+        this.forwardButtonFunction = forwardButtonFunction;
+    }
+}
+
 export class ControlPanel {
     constructor({
+        OnPressStart,
+        OnPressConfirmStarting,
+        OnPressConfirmExtra,
+        OnPressNewSuggestion,
         OnPressForward,
         OnPressBack,
         OnPressSuspect,
@@ -24,7 +49,7 @@ export class ControlPanel {
             parent: this.forwardButtonContainer,
             type: "primary",
             id: "forward-button",
-            onPress: () => OnPressForward()
+            onPress: () => OnPressStart()
         });
 
         this.backButton = new InteractiveButton({
@@ -75,6 +100,48 @@ export class ControlPanel {
             id: "none-button",
             onPress: () => OnPressNone()
         });
+
+        /// States
+        this.NEW_GAME = new State({
+            mainText: "",
+            forwardButtonText: "Start",
+            forwardButtonFunction: () => OnPressStart(),
+            backButtonContainerHidden: true
+        });
+
+        this.STARTING_CARDS = new State({
+            mainText: "Select Starting Cards",
+            forwardButtonText: "Confirm",
+            backButtonText: "Back",
+            backButtonContainerHidden: false,
+            forwardButtonFunction: () => OnPressConfirmStarting()
+        });
+
+        this.EXTRA_CARDS = new State({
+            mainText: "Select Extra Cards",
+            forwardButtonText: "Confirm",
+            backButtonText: "Back",
+            backButtonContainerHidden: false,
+            forwardButtonFunction: () => OnPressConfirmExtra()
+        });
+
+        this.NEW_SUGGESTION = new State({
+            mainText: "New Suggestion",
+            forwardButtonText: "Confirm",
+            backButtonText: "Back",
+            backButtonContainerHidden: false,
+            forwardButtonFunction: () => OnPressNewSuggestion()
+        });
+    }
+
+    ChangeState(state){
+        this.SetMainText(state.mainText);
+        this.SetValidationText(state.validationText);
+        this.HideSuggestionButtonContainer(state.suggestionButtonContainerHidden);
+        this.HideBackButtonContainer(state.backButtonContainerHidden);
+        this.forwardButton.SetText(state.forwardButtonText);
+        this.forwardButton.onPress = state.forwardButtonFunction;
+        this.backButton.SetText(state.backButtonText);
     }
 
     HideSuggestionButtonContainer(hide) {
@@ -99,44 +166,5 @@ export class ControlPanel {
 
     SetValidationText(text) {
         this.validationText.textContent = text;
-    }
-
-    /// States
-    ShowNewGameScreen() {
-        this.HideSuggestionButtonContainer(true);
-        this.HideBackButtonContainer(true);
-        this.SetMainText("3 Players Required to Play Clue");
-        //this.forwardButton.SetEnabled(false);
-        this.forwardButton.SetText('Start Game');
-        this.forwardButton.onSelect = () => this.ShowStartingCardsScreen();
-    }
-
-    ShowStartingCardsScreen() {
-        this.HideBackButtonContainer(false);
-        this.SetMainText("Select starting cards");
-        //this.forwardButton.SetEnabled(false);
-        this.forwardButton.SetText('Confirm');
-        this.backButton.SetText('Back');
-
-    }
-
-    ShowExtraCardsScreen() {
-        this.HideBackButtonContainer(false);
-        this.SetMainText("Select extra cards");
-        //this.forwardButton.SetEnabled(false);
-        this.forwardButton.SetText('Confirm');
-    }
-
-    ShowNewSuggestionScreen(history) {
-        this.HideBackButtonContainer(false);
-        this.HideSuggestionButtonContainer(false);
-        this.SetMainText("New Suggestion");
-        this.forwardButton.SetText('New Suggestion');
-        if (history) {
-            this.backButton.SetText('History');
-        } else {
-            this.backButton.SetText('Back');
-
-        }
     }
 }
