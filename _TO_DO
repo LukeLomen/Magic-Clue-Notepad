@@ -5,11 +5,7 @@ GameSetup: Move Start Button from control panel to game setup and completly hide
     - Back Button only hidden for game setup: can completly remove this from states
     - Start Button On click animations move to starting cards confirm button and it looks strange and disjointed
 
-GameManager: New Suggestion: Suggestion needs to continue if none button is pressed and round hasn't gone around the circle. Display should be set correctly in the GM
-
 BackButton Logic: - Might need to build at least a temp menu to hold them
-
-InteractiveTable: categorySelectionMode: unselects cols of the same category when a col is selected (only NOT used in starting/extra card selection)
 
 ControlPanel: Validation: Each state requires a different validation
     - Changing the active state of buttons
@@ -20,9 +16,6 @@ Style:
     - Set all css files color scheme from index.css
     - Style should be consistant across all the elements: Start with the table
         - Instead of raised buttons they should be outlined (border matches table cell border) (maybe raised too Idk, I like how it looks on press right now)
-
-
-Data: Problem with setting known have when checking possible cards or is it just a display issue?
 
 
 [MID]
@@ -51,4 +44,10 @@ ClueCards: Write More Presets;
 
 TextInput Style: It really is fine how it is
 
+
+[EXTRA]
+
 Style: Transition animations
+
+Voice control:
+- col selection for new suggestions: ex - "mr green with the knife in the hall"

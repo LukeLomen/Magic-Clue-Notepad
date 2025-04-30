@@ -17,6 +17,8 @@ export class InteractiveTable {
     this.menuTargetActive = false;
     this.categorySelectionMode = false;
 
+    this.colCatetoryMap = new Map();
+
     this.colTotal = colCount + 1;
     this.rowCount = rowCount;
     this.catetoryStarts = catetoryStarts;
@@ -39,6 +41,7 @@ export class InteractiveTable {
   }
 
   _CreateTable() {
+    let currentCategory = -1
     /// Build table header (the first row)
     const thead = this.table.createTHead();
     const headerRow = thead.insertRow();
@@ -49,8 +52,10 @@ export class InteractiveTable {
       } else { /// Column header cells
         th.classList.add('col-head');
         if (this.catetoryStarts.has(c)) {
+          currentCategory++;
           th.classList.add('category-start');
         }
+        this.colCatetoryMap.set(c, currentCategory)
       }
       th.dataset.row = "0";
       th.dataset.col = c.toString();
@@ -232,13 +237,12 @@ export class InteractiveTable {
   }
 
   SelectColCategory(col) {
-    /*this.selectedColumns.forEach(c =>{
-      console.log(c);
-      if(c < 7){
-        this.UnSelectCol(c);
+    const categoryOfCol = this.colCatetoryMap.get(col);
+    this.selectedColumns.forEach(sCol => {
+      if (this.colCatetoryMap.get(sCol) == categoryOfCol) {
+        this.UnSelectCol(sCol)
       }
-    });*/
-
+    });
     this.SelectCol(col);
   }
 

@@ -315,6 +315,5 @@ export class DataManager {
       }
     });
     this.CheckForHiddenCards();
-    console.log(this.suggestionHistory)
   }
 }
