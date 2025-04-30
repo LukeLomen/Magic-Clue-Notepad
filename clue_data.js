@@ -24,7 +24,7 @@ export class Suggestion {
       response: this.response,
       turn: this.turn
     })
-    return clone
+    return clone;
   }
 }
 
@@ -200,7 +200,7 @@ export class DataManager {
     } else if (newResponse == 'room') {
       newResponse = this.newSuggestion.cardArray[2];
     } else {
-      return console.warn(`Can't ConfirmSuggestionResponse: ${newResponse} is not a valid response`)
+      return console.warn(`Can't ConfirmSuggestionResponse: ${newResponse} is not a valid response`);
     }
     this.newSuggestion.response = newResponse;
     this.suggestionHistory.push(this.newSuggestion.Clone());
@@ -214,10 +214,10 @@ export class DataManager {
 
   EndSuggestion() {
     if (this.newSuggestion.response != SYMBOLS.knownVoid || this.newSuggestion.suggester == this.newSuggestion.suggestee.GetNextPlayer()) {
-      return true
+      return true;
     } else {
       this.ContinueSuggestion();
-      return false
+      return false;
     }
   }
 

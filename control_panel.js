@@ -152,17 +152,17 @@ export class ControlPanel {
 
     HideSuggestionButtonContainer(hide) {
         if (hide) {
-            this.suggestionButtonContainer.classList.add('hidden')
+            this.suggestionButtonContainer.classList.add('hidden');
         } else {
-            this.suggestionButtonContainer.classList.remove('hidden')
+            this.suggestionButtonContainer.classList.remove('hidden');
         }
     }
 
     HideBackButtonContainer(hide) {
         if (hide) {
-            this.backButtonContainer.classList.add('hidden')
+            this.backButtonContainer.classList.add('hidden');
         } else {
-            this.backButtonContainer.classList.remove('hidden')
+            this.backButtonContainer.classList.remove('hidden');
         }
     }
 

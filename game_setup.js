@@ -60,7 +60,7 @@ export class GameSetup {
                 }
             }
         })
-        return returnArray
+        return returnArray;
     }
 
     HideGameSetup(hide) {
@@ -81,6 +81,6 @@ export class GameSetup {
     }
 
     StartGame(){
-        this.onStartGame()
+        this.onStartGame();
     }
 }

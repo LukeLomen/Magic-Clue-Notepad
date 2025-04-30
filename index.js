@@ -1,11 +1,12 @@
-import { SYMBOLS } from './table_symbols.js';
+import {
+    SYMBOLS
+} from './table_symbols.js';
 import {
     InteractiveButton
 } from './interactive_button.js';
 import {
     GameManager
 } from "./game_manager.js";
-
 
 const gm = new GameManager();
 
@@ -108,6 +109,6 @@ function DebugGameC() {
     gm.dm.AddSuggestion([4, 9, 18], 1, 4, SYMBOLS.possibleCard);
     gm.dm.AddSuggestion([4, 9, 19], 2, 4, SYMBOLS.knownVoid);
 
-    gm.DisplayTurn(400);
+    gm.DisplayTurn(100);
 
 }

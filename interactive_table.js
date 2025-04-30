@@ -41,7 +41,7 @@ export class InteractiveTable {
   }
 
   _CreateTable() {
-    let currentCategory = -1
+    let currentCategory = -1;
     /// Build table header (the first row)
     const thead = this.table.createTHead();
     const headerRow = thead.insertRow();
@@ -55,7 +55,7 @@ export class InteractiveTable {
           currentCategory++;
           th.classList.add('category-start');
         }
-        this.colCatetoryMap.set(c, currentCategory)
+        this.colCatetoryMap.set(c, currentCategory);
       }
       th.dataset.row = "0";
       th.dataset.col = c.toString();
@@ -129,7 +129,7 @@ export class InteractiveTable {
     this.selectedColumns.forEach(col => {
       returnArray.push(col - 1);
     });
-    return returnArray
+    return returnArray;
   }
 
   GetSelectedRows() {
@@ -137,7 +137,7 @@ export class InteractiveTable {
     this.selectedRows.forEach(row => {
       returnArray.push(row - 1);
     });
-    return returnArray
+    return returnArray;
   }
 
   /// Hide
@@ -163,7 +163,7 @@ export class InteractiveTable {
     } else {
       this.hiddenRows.delete(row);
     }
-    this._ResizeTopRow()
+    this._ResizeTopRow();
   }
 
   HideRows(indexStart, indexEnd, hide) {
@@ -177,11 +177,11 @@ export class InteractiveTable {
     if (this.focus == null) return;
     if (this.focus[0] == "col") {
       this._GetColCellArray(this.focus[1]).forEach(cell => {
-        cell.classList.remove('focused-col')
+        cell.classList.remove('focused-col');
       });
     } else if (this.focus[0] == "row") {
       this._GetRowCellArray(this.focus[1]).forEach(cell => {
-        cell.classList.remove('focused-row')
+        cell.classList.remove('focused-row');
       });
     }
     this.focus = null;
@@ -200,7 +200,7 @@ export class InteractiveTable {
     this._GetRowCellArray(row).forEach(cell => {
       cell.classList.add('focused-row');
     });
-    this.focus = ["row", row]
+    this.focus = ["row", row];
   }
 
   /// Select
@@ -240,7 +240,7 @@ export class InteractiveTable {
     const categoryOfCol = this.colCatetoryMap.get(col);
     this.selectedColumns.forEach(sCol => {
       if (this.colCatetoryMap.get(sCol) == categoryOfCol) {
-        this.UnSelectCol(sCol)
+        this.UnSelectCol(sCol);
       }
     });
     this.SelectCol(col);
@@ -263,7 +263,7 @@ export class InteractiveTable {
   /// Toggle
   ToggleRow(row) {
     if (this.selectedRows.has(row)) {
-      this.UnSelectRow(row)
+      this.UnSelectRow(row);
     } else {
       if (this.categorySelectionMode) {
         this.ClearRowSelection();
@@ -274,7 +274,7 @@ export class InteractiveTable {
 
   ToggleCol(col) {
     if (this.selectedColumns.has(col)) {
-      this.UnSelectCol(col)
+      this.UnSelectCol(col);
     } else {
       if (this.categorySelectionMode) {
         this.SelectColCategory(col);
