@@ -7,7 +7,7 @@ class State{
         mainText = "",
         validationText = "",
         suggestionButtonContainerHidden = true,
-        backButtonContainerHidden = false,
+        backButtonContainerHidden = true,
         forwardButtonText = "Next",
         backButtonText = "Back",
         forwardButtonFunction
@@ -30,12 +30,9 @@ export class ControlPanel {
         OnPressConfirmExtra,
         OnPressNewSuggestion,
         OnPressForward,
+        OnPressNewGame,
         OnPressBack,
-        OnPressSuspect,
-        OnPressWeapon,
-        OnPressRoom,
-        OnPressUnknown,
-        OnPressNone
+        OnPressSuggestionResponse,
     }) {
         this.validationText = document.getElementById('validation-text');
         this.mainText = document.getElementById('main-text');
@@ -66,7 +63,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "suspect-button",
-            onPress: () => OnPressSuspect()
+            onPress: () => OnPressSuggestionResponse('suspect')
         });
 
         this.weaponButton = new InteractiveButton({
@@ -74,7 +71,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "weapon-button",
-            onPress: () => OnPressWeapon()
+            onPress: () => OnPressSuggestionResponse('weapon')
         });
 
         this.roomButton = new InteractiveButton({
@@ -82,7 +79,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "room-button",
-            onPress: () => OnPressRoom()
+            onPress: () => OnPressSuggestionResponse('room')
         });
 
         this.unknownButton = new InteractiveButton({
@@ -90,7 +87,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "unknown-button",
-            onPress: () => OnPressUnknown()
+            onPress: () => OnPressSuggestionResponse(possibleCard)
         });
 
         this.noneButton = new InteractiveButton({
@@ -98,7 +95,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "none-button",
-            onPress: () => OnPressNone()
+            onPress: () => OnPressSuggestionResponse(knownVoid)
         });
 
         /// States
@@ -113,7 +110,7 @@ export class ControlPanel {
             mainText: "Select Starting Cards",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: false,
+            backButtonContainerHidden: true,
             forwardButtonFunction: () => OnPressConfirmStarting()
         });
 
@@ -121,7 +118,7 @@ export class ControlPanel {
             mainText: "Select Extra Cards",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: false,
+            backButtonContainerHidden: true,
             forwardButtonFunction: () => OnPressConfirmExtra()
         });
 
@@ -129,8 +126,13 @@ export class ControlPanel {
             mainText: "New Suggestion",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: false,
+            backButtonContainerHidden: true,
             forwardButtonFunction: () => OnPressNewSuggestion()
+        });
+
+        this.SUGGESTION = new State({
+            suggestionButtonContainerHidden: false,
+
         });
     }
 

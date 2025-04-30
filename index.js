@@ -64,10 +64,10 @@ function onPointerUp(event) {
 
 ////////////////////////////////////////////////////////DEBUG
 
-DebugGame0();
+//DebugGame0();
 //DebugGameA();
 //DebugGameB();
-//DebugGameC();
+DebugGameC();
 
 function DebugGame0() {
     gm.StartGame(['You', 'p2', 'p3']);
@@ -84,31 +84,22 @@ function DebugGameB() {
     gm.StartGame(['DEBUG B', 'ReallyLong PlayerName', 'Durf McDurfface', 'Asshat McGee']);
     gm.SetStartingCards([5, 6, 9, 13]);
     gm.SetExtraCards([0, 3]);
-
-
-
-    //gm.interactiveTable.FocusCol(16);
-    /*
-    gameTable.HideRow(6, true);
-    gameTable.HideRow(5, true);*/
-    //gameTable.HideTable(true);
 }
 
 function DebugGameC() {
     gm.SetCardPreset('classic');
-    gm.StartGame(['DEBUG C', 'Knob Gobbler 5000', 'Mothalicka', 'Pants-Way', 'Crumbum']);
-    gm.SetStartingCards([0, 1, 2]);
+    gm.StartGame(['DEBUG C', 'KnobGobbler5000', 'Sarah', 'John', 'Samwise']);
+    gm.SetStartingCards([0, 1, 7]);
     gm.SetExtraCards([20, 19, 18]);
 
-    gm.AddSuggestion([4, 6, 12], 0, 2, 12);
-    gm.AddSuggestion([1, 8, 20], 1, 2, possibleCard);
-    gm.AddSuggestion([0, 8, 13], 0, 2, possibleCard);
-    gm.AddSuggestion([3, 8, 20], 0, 3, 8);
-    gm.AddSuggestion([5, 11, 15], 0, 1, knownVoid);
-    gm.AddSuggestion([4, 11, 15], 0, 4, knownVoid);
-    gm.AddSuggestion([4, 11, 16], 0, 4, knownVoid);
-    gm.AddSuggestion([4, 11, 18], 3, 2, knownVoid);
+    //gm.dm.AddSuggestion([4, 6, 12], 0, 1, knownVoid);
+    //gm.dm.AddSuggestion([4, 6, 12], 0, 2, 4);
+    //gm.dm.AddSuggestion([5, 7, 13], 1, 2, knownVoid);
+    gm.dm.AddSuggestion([1, 6, 20], 1, 3, possibleCard);
+    gm.dm.AddSuggestion([5, 7, 14], 2, 2, knownVoid);
+    //gm.dm.AddSuggestion([4, 9, 18], 1, 4, possibleCard);
+    //gm.dm.AddSuggestion([4, 9, 19], 2, 4, knownVoid);
 
-    gm.DisplayTurn(100);
+    gm.DisplayTurn(400);
 
 }

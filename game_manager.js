@@ -34,13 +34,10 @@ export class GameManager {
             OnPressConfirmStarting: () => this.SetStartingCards(this.interactiveTable.GetSelectedCols()),
             OnPressConfirmExtra: () => this.SetExtraCards(this.interactiveTable.GetSelectedCols()),
             //OnPressForward: () => ,
-            OnPressBack: () => this.NewGame(),
-            OnPressSuspect: () => this.SuspectButton(),
-            OnPressWeapon: () => this.WeaponButton(),
-            OnPressRoom: () => this.RoomButton(),
-            OnPressUnknown: () => this.UnknownButton(),
-            OnPressNone: () => this.NoneButton()
-            // All validaiton of presses can be done here before sending to gm
+            OnPressNewSuggestion: () => this.StartNewSuggestion(),
+            OnPressNewGame: () => this.NewGame(),
+            OnPressBack: () => this.DisplayTurn(100),
+            OnPressSuggestionResponse: (responseButton) => this.ConfirmSuggestionResponse(responseButton)
         });
 
         this.gameSetup = new GameSetup();
@@ -56,23 +53,23 @@ export class GameManager {
         //If state == starting or extra cards
         this.controlPanel.SetValidationText(`${selectedRowsSet.size} / ${requirement}`)
         if (selectedRowsSet.size == requirement) {
-            console.log('confirm button should now be active')
+            //console.log('confirm button should now be active')
         } else {
-            console.log('confirm button should now be disabled')
+            //console.log('confirm button should now be disabled')
         }
     }
 
+    /// Display States
     DisplayNewGame() {
-        this.dm.WritePlayerDataFromSuggestionHistory();
-        this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.HideTable(true);
         this.gameSetup.HideGameSetup(false);
         this.controlPanel.ChangeState(this.controlPanel.NEW_GAME)
     }
 
     DisplayStartingCards() {
-        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.dm.WritePlayerDataFromSuggestionHistory(0);
         this.WriteTableCellDataFromPlayerData();
+
         this.interactiveTable.HideTable(false);
         this.gameSetup.HideGameSetup(true);
         this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS)
@@ -80,34 +77,64 @@ export class GameManager {
     }
 
     DisplayExtraCards() {
-        this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS)
+        this.dm.WritePlayerDataFromSuggestionHistory(0);
+        this.WriteTableCellDataFromPlayerData();
 
+        this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS)
     }
 
     DisplayNewSuggestion() {
-        this.dm.WritePlayerDataFromSuggestionHistory();
+        this.dm.WritePlayerDataFromSuggestionHistory(10000);
         this.WriteTableCellDataFromPlayerData();
+
         this.controlPanel.ChangeState(this.controlPanel.NEW_SUGGESTION)
         this.interactiveTable.colTargetActive = true;
         this.interactiveTable.rowTargetActive = true;
         this.interactiveTable.categorySelectionMode = true;
+        this.interactiveTable.ClearAllSelection();
     }
 
-    DisplayCurrentSuggestion() {
+    DisplaySuggestion(suggestion) {
+        // unselect everything
+        // set turn # (turn)
+        // write text area (all)
+        // select 3 table cols (cardArray)
+        // select 1 table row (suggester)
+        // highlight 1 table row (suggestee)
 
+        //console.log(`displaying suggestion #: ${suggestion.turn}`)
+        //console.log(suggestion)
+
+        this.dm.WritePlayerDataFromSuggestionHistory(100000);
+        this.WriteTableCellDataFromPlayerData();
+
+        this.interactiveTable.colTargetActive = false;
+        this.interactiveTable.rowTargetActive = false;
+
+        const suggesterName = suggestion.suggester.name;
+        const suggesteeName = suggestion.suggestee.name;
+        const suspectName = cardsAPI.getCardFromIndex(suggestion.cardArray[0]);
+        const weaponName = cardsAPI.getCardFromIndex(suggestion.cardArray[1]);
+        const roomName = cardsAPI.getCardFromIndex(suggestion.cardArray[2]);
+
+        this.controlPanel.ChangeState(this.controlPanel.SUGGESTION);
+        this.interactiveTable.ClearAllSelection();
+        this.controlPanel.mainText.textContent = `[${suggestion.turn}] ${suggesterName} suggested to ${suggesteeName}: ${suspectName}, ${weaponName}, ${roomName}`;
+        suggestion.cardArray.forEach(col => {
+            this.interactiveTable.SelectCol(col + 1)
+        });
+        this.interactiveTable.SelectRow(suggestion.suggestee.index + 1);
     }
 
-    DisplaySuggestionHistory() {
 
-    }
-
+    /// Actions
     NewGame() {
-        this.dm = new DataManager();
         this.DisplayNewGame();
         this.interactiveTable.HideRows(0, 6, false);
     }
 
     StartGame(playerNames) {
+        this.dm = new DataManager();
         this.dm.CreatePlayers(playerNames);
         this.WritePlayerNamesToTable();
         this.WriteCardNamesToTable();
@@ -122,8 +149,6 @@ export class GameManager {
             this.DisplayNewSuggestion();
         }
         this.interactiveTable.ClearAllSelection();
-        this.dm.WritePlayerDataFromSuggestionHistory();
-        this.WriteTableCellDataFromPlayerData();
     }
 
     SetExtraCards(cardArray) {
@@ -134,12 +159,38 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
     }
 
-    AddSuggestion(cardArray, suggester, suggestee, response) {
-        this.dm.AddSuggestion(cardArray, suggester, suggestee, response)
+    StartNewSuggestion() {
+        const suggester = this.interactiveTable.GetSelectedRows().shift();
+        const cards = this.interactiveTable.GetSelectedCols().sort((a, b) => a - b);
+        if (suggester == undefined || cards.length != 3) {
+            console.warn(`Cant start new suggestion: selection invalid`);
+            return;
+        }
+        this.dm.StartNewSuggestion(cards, suggester);
+        this.DisplaySuggestion(this.dm.newSuggestion);
+    }
+
+    ContinueSuggestion() {
+        this.DisplaySuggestion(this.dm.newSuggestion);
+    }
+
+    EndSuggestion() {
+        this.DisplayNewSuggestion();
+    }
+
+    ConfirmSuggestionResponse(responseButton) {
+        this.IncreaseTurn();
+
+        this.dm.ConfirmSuggestionResponse(responseButton);
+        if (this.dm.EndSuggestion()) {
+            this.EndSuggestion();
+        } else {
+            this.ContinueSuggestion();
+        }
     }
 
 
-    /////////
+    /// Methods for writing to table
     SetCardPreset(preset) {
         cardsAPI.loadPreset(preset);
         this.WriteCardNamesToTable();
@@ -196,34 +247,5 @@ export class GameManager {
         if (this.currentTurn <= 0) return;
         this.currentTurn--;
         this.DisplayTurn(this.currentTurn);
-    }
-
-
-
-
-
-
-
-
-
-
-    SelectDisplayElementsFromSuggestion(suggestion) {
-        const suspectName = cardsAPI.getCardFromIndex(suggestion.cardArray[0]);
-        const weaponName = cardsAPI.getCardFromIndex(suggestion.cardArray[1]);
-        const roomName = cardsAPI.getCardFromIndex(suggestion.cardArray[2]);
-        // unselect everything
-        // set turn # (turn)
-        // write text area (all)
-        // select 3 table cols (cardArray)
-        // select 1 table row (suggester)
-        // highlight 1 table row (suggestee)
-        this.interactiveTable.ClearFocus();
-        this.interactiveTable.ClearSelection();
-        this.textArea.textContent = `[${suggestion.turn}] ${suggestion.suggester.name} suggested to ${suggestion.suggestee.name}: ${suspectName}, ${weaponName}, ${roomName}`;
-        suggestion.cardArray.forEach(col => {
-            this.interactiveTable.SelectCol(col + 1)
-        });
-        this.interactiveTable.FocusRow(suggestion.suggester.index + 1);
-        this.interactiveTable.SelectRow(suggestion.suggestee.index + 1);
     }
 }

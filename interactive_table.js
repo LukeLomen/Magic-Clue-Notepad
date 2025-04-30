@@ -119,18 +119,18 @@ export class InteractiveTable {
     }
   }
 
-  GetSelectedCols(){
+  GetSelectedCols() {
     let returnArray = new Array();
     this.selectedColumns.forEach(col => {
-      returnArray.push(col-1);
+      returnArray.push(col - 1);
     });
     return returnArray
   }
 
-  GetSelectedRows(){
+  GetSelectedRows() {
     let returnArray = new Array();
     this.selectedRows.forEach(row => {
-      returnArray.push(row-1);
+      returnArray.push(row - 1);
     });
     return returnArray
   }
@@ -231,7 +231,7 @@ export class InteractiveTable {
 
   }
 
-  SelectColCategory(col){
+  SelectColCategory(col) {
     /*this.selectedColumns.forEach(c =>{
       console.log(c);
       if(c < 7){
@@ -274,7 +274,7 @@ export class InteractiveTable {
     } else {
       if (this.categorySelectionMode) {
         this.SelectColCategory(col);
-      }else{
+      } else {
         this.SelectCol(col);
       }
     }
