@@ -1,8 +1,11 @@
 import {
+    SYMBOLS
+} from './table_symbols.js';
+import {
     InteractiveButton
 } from './interactive_button.js';
 
-class State{
+class State {
     constructor({
         mainText = "",
         validationText = "",
@@ -12,7 +15,7 @@ class State{
         backButtonText = "Back",
         forwardButtonFunction
 
-    }){
+    }) {
         this.mainText = mainText;
         this.validationText = validationText;
         this.suggestionButtonContainerHidden = suggestionButtonContainerHidden;
@@ -87,7 +90,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "unknown-button",
-            onPress: () => OnPressSuggestionResponse(possibleCard)
+            onPress: () => OnPressSuggestionResponse(SYMBOLS.possibleCard)
         });
 
         this.noneButton = new InteractiveButton({
@@ -95,7 +98,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "none-button",
-            onPress: () => OnPressSuggestionResponse(knownVoid)
+            onPress: () => OnPressSuggestionResponse(SYMBOLS.knownVoid)
         });
 
         /// States
@@ -137,7 +140,7 @@ export class ControlPanel {
         });
     }
 
-    ChangeState(state){
+    ChangeState(state) {
         this.SetMainText(state.mainText);
         this.SetValidationText(state.validationText);
         this.HideSuggestionButtonContainer(state.suggestionButtonContainerHidden);

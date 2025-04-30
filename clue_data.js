@@ -1,3 +1,7 @@
+import {
+  SYMBOLS
+} from "./table_symbols.js";
+
 export class Suggestion {
   constructor({
     cardArray,
@@ -32,7 +36,7 @@ class Player {
     this.playersArray = playersArray;
     this.numCards = numCards;
 
-    this.cardArray = new Array(21).fill(unknown);
+    this.cardArray = new Array(21).fill(SYMBOLS.unknown);
     this.possibleCards = new Array();
     this.cardsKnown = 0;
     this.allCardsKnown = false;
@@ -43,7 +47,7 @@ class Player {
   }
 
   ClearData() {
-    this.cardArray.fill(unknown);
+    this.cardArray.fill(SYMBOLS.unknown);
     this.possibleCards = new Array();
     this.cardsKnown = 0;
     this.allCardsKnown = false;
@@ -54,19 +58,19 @@ class Player {
   }
 
   SetExtra(card) {
-    this.SetCardArray(card, extraCard);
+    this.SetCardArray(card, SYMBOLS.extraCard);
   }
 
   SetKnownVoid(card) {
-    if (this.cardArray[card] == extraCard) {
+    if (this.cardArray[card] == SYMBOLS.extraCard) {
       return;
     }
-    this.SetCardArray(card, knownVoid);
+    this.SetCardArray(card, SYMBOLS.knownVoid);
     this.CheckPossibleCards();
   }
 
   SetKnownHave(card) {
-    this.SetCardArray(card, knownHave);
+    this.SetCardArray(card, SYMBOLS.knownHave);
     this.cardsKnown++;
     if (this.cardsKnown == this.numCards) {
       this.AllCardsKnown();
@@ -83,8 +87,8 @@ class Player {
   SetPossible(possibleCardsArray) {
     this.possibleCards.push(structuredClone(possibleCardsArray));
     possibleCardsArray.forEach(card => {
-      if (this.cardArray[card] == unknown) {
-        this.SetCardArray(card, possibleCard);
+      if (this.cardArray[card] == SYMBOLS.unknown) {
+        this.SetCardArray(card, SYMBOLS.possibleCard);
       }
     });
     this.CheckPossibleCards();
@@ -94,7 +98,7 @@ class Player {
     this.possibleCards.forEach((array, i) => {
       /// First look through all the arrays. Then compare each item in the nested arrays with this.cardArray; if the number in the possible card array is known void or have then remove that number and setknownvoid; after removing impossible cards if any of the array lengths are 1 then that card has been inferred: setknownhave and remove the 1 length array.
       array.forEach((card, index) => {
-        if (this.cardArray[card] != possibleCard) {
+        if (this.cardArray[card] != SYMBOLS.possibleCard) {
           array.splice(index, 1);
         }
       });
@@ -107,14 +111,14 @@ class Player {
   }
 
   SetHidden(card) {
-    this.SetCardArray(card, hiddenCard);
+    this.SetCardArray(card, SYMBOLS.hiddenCard);
   }
 
   AllCardsKnown() {
     this.allCardsKnown = true;
     this.possibleCards = new Array();
     this.cardArray.forEach((card, index) => {
-      if (card != knownHave) {
+      if (card != SYMBOLS.knownHave) {
         this.SetKnownVoid(index);
       }
     });
@@ -187,7 +191,7 @@ export class DataManager {
   }
 
   ConfirmSuggestionResponse(newResponse) {
-    if (newResponse == knownVoid || newResponse == possibleCard) {
+    if (newResponse == SYMBOLS.knownVoid || newResponse == SYMBOLS.possibleCard) {
 
     } else if (newResponse == 'suspect') {
       newResponse = this.newSuggestion.cardArray[0];
@@ -209,7 +213,7 @@ export class DataManager {
   }
 
   EndSuggestion() {
-    if (this.newSuggestion.response != knownVoid || this.newSuggestion.suggester == this.newSuggestion.suggestee.GetNextPlayer()) {
+    if (this.newSuggestion.response != SYMBOLS.knownVoid || this.newSuggestion.suggester == this.newSuggestion.suggestee.GetNextPlayer()) {
       return true
     } else {
       this.ContinueSuggestion();
@@ -243,7 +247,7 @@ export class DataManager {
   CheckForHiddenCard(card) {
     let tally = 0;
     this.players.forEach(player => {
-      if (player.cardArray[card] == knownVoid) {
+      if (player.cardArray[card] == SYMBOLS.knownVoid) {
         tally++;
       }
     })
@@ -261,7 +265,7 @@ export class DataManager {
     categoryArrays.forEach((categoryArray) => {
       categoryArray.forEach((card) => {
         this.players.forEach(player => {
-          if (player.cardArray[card] == knownHave || player.cardArray[card] == extraCard) {
+          if (player.cardArray[card] == SYMBOLS.knownHave || player.cardArray[card] == SYMBOLS.extraCard) {
             categoryArray.delete(card);
           }
         });
@@ -286,11 +290,11 @@ export class DataManager {
     }
     if (suggestion.response >= 0) {
       suggestee.SetKnownHave(suggestion.response);
-    } else if (suggestion.response == knownVoid) {
+    } else if (suggestion.response == SYMBOLS.knownVoid) {
       suggestion.cardArray.forEach(card => {
         suggestee.SetKnownVoid(card);
       });
-    } else if (suggestion.response == possibleCard) {
+    } else if (suggestion.response == SYMBOLS.possibleCard) {
       suggestee.SetPossible(suggestion.cardArray);
     }
   }

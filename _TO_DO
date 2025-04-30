@@ -1,7 +1,5 @@
 [HIGH]
 
-Change table symbols from global to an object (going to need to find and change every occurance)
-
 BackButton Logic: - Might need to build at least a temp menu to hold them
 
 ControlPanel: Validation from suggestion: Each state requires a different validation

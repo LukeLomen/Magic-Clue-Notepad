@@ -1,3 +1,4 @@
+import { SYMBOLS } from './table_symbols.js';
 import {
     InteractiveButton
 } from './interactive_button.js';
@@ -99,13 +100,13 @@ function DebugGameC() {
     gm.SetExtraCards([20, 19, 18]);
     //gm.SetExtraCards([2, 3, 4]);
 
-    gm.dm.AddSuggestion([4, 6, 12], 0, 1, knownVoid);
+    gm.dm.AddSuggestion([4, 6, 12], 0, 1, SYMBOLS.knownVoid);
     gm.dm.AddSuggestion([4, 6, 12], 0, 2, 4);
-    gm.dm.AddSuggestion([5, 7, 13], 1, 2, knownVoid);
-    gm.dm.AddSuggestion([1, 6, 20], 1, 3, possibleCard);
-    gm.dm.AddSuggestion([5, 7, 14], 2, 2, knownVoid);
-    gm.dm.AddSuggestion([4, 9, 18], 1, 4, possibleCard);
-    gm.dm.AddSuggestion([4, 9, 19], 2, 4, knownVoid);
+    gm.dm.AddSuggestion([5, 7, 13], 1, 2, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([1, 6, 20], 1, 3, SYMBOLS.possibleCard);
+    gm.dm.AddSuggestion([5, 7, 14], 2, 2, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([4, 9, 18], 1, 4, SYMBOLS.possibleCard);
+    gm.dm.AddSuggestion([4, 9, 19], 2, 4, SYMBOLS.knownVoid);
 
     gm.DisplayTurn(400);
 
