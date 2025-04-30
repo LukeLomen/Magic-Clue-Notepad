@@ -5,6 +5,7 @@ import {
     GameManager
 } from "./game_manager.js";
 
+
 const gm = new GameManager();
 
 /// Input handle
@@ -64,13 +65,18 @@ function onPointerUp(event) {
 
 ////////////////////////////////////////////////////////DEBUG
 
+function DisplayTurn(turn) {
+    gm.DisplayTurn(turn);
+}
+window.DisplayTurn = DisplayTurn;
+
 //DebugGame0();
 //DebugGameA();
 //DebugGameB();
 DebugGameC();
 
 function DebugGame0() {
-    gm.StartGame(['You', 'p2', 'p3']);
+    gm.StartGame(['You', 'Tim', 'Dallas', 'Andrew']);
 }
 
 function DebugGameA() {
@@ -91,14 +97,15 @@ function DebugGameC() {
     gm.StartGame(['DEBUG C', 'KnobGobbler5000', 'Sarah', 'John', 'Samwise']);
     gm.SetStartingCards([0, 1, 7]);
     gm.SetExtraCards([20, 19, 18]);
+    //gm.SetExtraCards([2, 3, 4]);
 
-    //gm.dm.AddSuggestion([4, 6, 12], 0, 1, knownVoid);
-    //gm.dm.AddSuggestion([4, 6, 12], 0, 2, 4);
-    //gm.dm.AddSuggestion([5, 7, 13], 1, 2, knownVoid);
+    gm.dm.AddSuggestion([4, 6, 12], 0, 1, knownVoid);
+    gm.dm.AddSuggestion([4, 6, 12], 0, 2, 4);
+    gm.dm.AddSuggestion([5, 7, 13], 1, 2, knownVoid);
     gm.dm.AddSuggestion([1, 6, 20], 1, 3, possibleCard);
     gm.dm.AddSuggestion([5, 7, 14], 2, 2, knownVoid);
-    //gm.dm.AddSuggestion([4, 9, 18], 1, 4, possibleCard);
-    //gm.dm.AddSuggestion([4, 9, 19], 2, 4, knownVoid);
+    gm.dm.AddSuggestion([4, 9, 18], 1, 4, possibleCard);
+    gm.dm.AddSuggestion([4, 9, 19], 2, 4, knownVoid);
 
     gm.DisplayTurn(400);
 

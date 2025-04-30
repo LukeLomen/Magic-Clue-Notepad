@@ -3,7 +3,9 @@ import {
 } from './interactive_button.js';
 
 export class GameSetup {
-    constructor() {
+    constructor({
+        onStartGame
+    }) {
         this.container = document.getElementById('game-setup');
         this.container.addEventListener('input', this._HandleInput.bind(this));
 
@@ -20,10 +22,21 @@ export class GameSetup {
             text: "Reset",
             icon: "x",
             parent: this.container,
-            type: "primary",
+            type: "secondary",
             id: "clear-button",
             onPress: () => this.ResetValues()
         });
+
+        this.StartButton = new InteractiveButton({
+            text: "Start Game",
+            icon: "+",
+            parent: this.container,
+            type: "primary",
+            id: "start-button",
+            onPress: () => this.StartGame()
+        });
+
+        this.onStartGame = onStartGame;
 
         this.ResetValues();
     }
@@ -65,5 +78,9 @@ export class GameSetup {
         this.input4.value = "";
         this.input5.value = "";
         this.input6.value = "";
+    }
+
+    StartGame(){
+        this.onStartGame()
     }
 }

@@ -1,13 +1,11 @@
-[HIGH] - functionality complete
+[HIGH]
 
-GameSetup: Move Start Button from control panel to game setup and completly hide cp on new game screen
-    - It will be easier to flex the display when only GameSetup is showing
-    - Back Button only hidden for game setup: can completly remove this from states
-    - Start Button On click animations move to starting cards confirm button and it looks strange and disjointed
+Change table symbols from global to an object (going to need to find and change every occurance)
 
 BackButton Logic: - Might need to build at least a temp menu to hold them
 
-ControlPanel: Validation: Each state requires a different validation
+ControlPanel: Validation from suggestion: Each state requires a different validation
+    - Hide control panel on new game screen
     - Changing the active state of buttons
     - Changing the validation text
     - It is possible for the user in a 3 person game to select all player/weapon cards (accidentally because this is impossible: as at least 1 must be hidden) I don't need to handle accidental player mistakes; if they selected the incorrect things they can go back and change it themselves or suffer the consequences. - I only need to account for user error (validation) when enabling other buttons for them to press (pressing these buttons before validation would result in error / data corruption). If you really wanted to be nice you could check for impossible data (all over the place) and send an alert telling them to go back and fix it (but that is way too much work for this project)
@@ -20,7 +18,10 @@ Style:
 
 [MID]
 
-GameSetup: Card Presets Selection:
+GameSetup:
+    - Internal Start Game validation
+    - Sources say that a form reset button is not recomended as it can frustrate users trying to confirm. Maybe don't need one
+    - Responsive layout
 
 Menu: Probably some pop up window
     - New Game + Warning or snackbar to confirm
@@ -38,6 +39,8 @@ Style: * :
 
 [LOW]
 
+Cards Preset Selection Menu
+
 Style: Extra Style for HiddenCards
 
 ClueCards: Write More Presets;
@@ -46,6 +49,8 @@ TextInput Style: It really is fine how it is
 
 
 [EXTRA]
+
+Snackbar undo
 
 Style: Transition animations
 

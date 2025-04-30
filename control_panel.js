@@ -46,7 +46,7 @@ export class ControlPanel {
             parent: this.forwardButtonContainer,
             type: "primary",
             id: "forward-button",
-            onPress: () => OnPressStart()
+            onPress: () => OnPressForward()
         });
 
         this.backButton = new InteractiveButton({
@@ -110,7 +110,7 @@ export class ControlPanel {
             mainText: "Select Starting Cards",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: true,
+            backButtonContainerHidden: false,
             forwardButtonFunction: () => OnPressConfirmStarting()
         });
 
@@ -118,7 +118,7 @@ export class ControlPanel {
             mainText: "Select Extra Cards",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: true,
+            backButtonContainerHidden: false,
             forwardButtonFunction: () => OnPressConfirmExtra()
         });
 
@@ -126,8 +126,9 @@ export class ControlPanel {
             mainText: "New Suggestion",
             forwardButtonText: "Confirm",
             backButtonText: "Back",
-            backButtonContainerHidden: true,
-            forwardButtonFunction: () => OnPressNewSuggestion()
+            backButtonContainerHidden: false,
+            //forwardButtonFunction: () => OnPressNewSuggestion()
+            forwardButtonFunction: () => OnPressForward()
         });
 
         this.SUGGESTION = new State({

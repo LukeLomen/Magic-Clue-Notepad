@@ -30,18 +30,19 @@ export class GameManager {
             OnToggleRow: (selectedCols) => console.log(selectedCols),
         });
         this.controlPanel = new ControlPanel({
-            OnPressStart: () => this.StartGame(this.gameSetup.GetTextInputArray()),
+            //OnPressStart: () => this.StartGame(this.gameSetup.GetTextInputArray()),
             OnPressConfirmStarting: () => this.SetStartingCards(this.interactiveTable.GetSelectedCols()),
             OnPressConfirmExtra: () => this.SetExtraCards(this.interactiveTable.GetSelectedCols()),
-            //OnPressForward: () => ,
+            OnPressForward: () => this.IncreaseTurn(),
             OnPressNewSuggestion: () => this.StartNewSuggestion(),
             OnPressNewGame: () => this.NewGame(),
-            OnPressBack: () => this.DisplayTurn(100),
+            OnPressBack: () => this.DecreaseTurn(),
             OnPressSuggestionResponse: (responseButton) => this.ConfirmSuggestionResponse(responseButton)
         });
 
-        this.gameSetup = new GameSetup();
-        this.textInputArray = new Array(6);
+        this.gameSetup = new GameSetup({
+            onStartGame: () => this.StartGame(this.gameSetup.GetTextInputArray())
+        });
 
         this.currentTurn = 0;
 
