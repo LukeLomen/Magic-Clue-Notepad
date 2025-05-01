@@ -1,4 +1,7 @@
 import {
+    SYMBOLS
+} from "./table_symbols.js";
+import {
     InteractiveButton
 } from './interactive_button.js';
 import {
@@ -63,7 +66,7 @@ export class GameManager {
     /// Display States
     DisplayNewGame() {
         this.interactiveTable.HideTable(true);
-        this.gameSetup.HideGameSetup(false);
+        this.gameSetup.ShowGameSetup();
         this.controlPanel.ChangeState(this.controlPanel.NEW_GAME)
     }
 
@@ -72,7 +75,7 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
 
         this.interactiveTable.HideTable(false);
-        this.gameSetup.HideGameSetup(true);
+        this.gameSetup.HideGameSetup();
         this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS)
         this.interactiveTable.colTargetActive = true;
     }
@@ -96,16 +99,6 @@ export class GameManager {
     }
 
     DisplaySuggestion(suggestion) {
-        // unselect everything
-        // set turn # (turn)
-        // write text area (all)
-        // select 3 table cols (cardArray)
-        // select 1 table row (suggester)
-        // highlight 1 table row (suggestee)
-
-        //console.log(`displaying suggestion #: ${suggestion.turn}`)
-        //console.log(suggestion)
-
         this.dm.WritePlayerDataFromSuggestionHistory(100000);
         this.WriteTableCellDataFromPlayerData();
 
@@ -235,7 +228,7 @@ export class GameManager {
         }
         this.currentTurn = turn;
         this.dm.WritePlayerDataFromSuggestionHistory(turn);
-        this.WriteTableCellDataFromPlayerData()
+        this.WriteTableCellDataFromPlayerData();
     }
 
     IncreaseTurn() {

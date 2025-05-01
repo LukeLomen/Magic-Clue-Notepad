@@ -37,6 +37,7 @@ export class ControlPanel {
         OnPressBack,
         OnPressSuggestionResponse,
     }) {
+        this.controlPanel = document.getElementById('control-panel');
         this.validationText = document.getElementById('validation-text');
         this.mainText = document.getElementById('main-text');
         this.forwardButtonContainer = document.getElementById('forward-button-container');
@@ -59,6 +60,15 @@ export class ControlPanel {
             type: "primary",
             id: "back-button",
             onPress: () => OnPressBack()
+        });
+
+        this.confirmButton = new InteractiveButton({
+            text: "Confirm",
+            icon: "✓",
+            parent: this.forwardButtonContainer,
+            type: "primary",
+            id: "forward-button",
+            onPress: () => OnPressNewSuggestion()
         });
 
         this.suspectButton = new InteractiveButton({
@@ -127,7 +137,7 @@ export class ControlPanel {
 
         this.NEW_SUGGESTION = new State({
             mainText: "New Suggestion",
-            forwardButtonText: "Confirm",
+            //forwardButtonText: "Confirm",
             backButtonText: "Back",
             backButtonContainerHidden: false,
             //forwardButtonFunction: () => OnPressNewSuggestion()
@@ -138,6 +148,10 @@ export class ControlPanel {
             suggestionButtonContainerHidden: false,
 
         });
+
+
+        this.HideElement(this.controlPanel);
+        //this.HideElement(this.forwardButtonContainer)
     }
 
     ChangeState(state) {
@@ -148,6 +162,22 @@ export class ControlPanel {
         this.forwardButton.SetText(state.forwardButtonText);
         this.forwardButton.onPress = state.forwardButtonFunction;
         this.backButton.SetText(state.backButtonText);
+    }
+
+    HideElement(element) {
+        if (element instanceof HTMLElement) {
+            element.classList.add('hidden');
+        } else {
+            console.warn(`Can't hide element: ${element} is not an HtmlElement`);
+        }
+    }
+
+    ShowElement(element) {
+        if (element instanceof HTMLElement) {
+            element.classList.remove('hidden');
+        } else {
+            console.warn(`Can't show element: ${element} is not an HtmlElement`);
+        }
     }
 
     HideSuggestionButtonContainer(hide) {

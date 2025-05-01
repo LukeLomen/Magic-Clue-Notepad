@@ -64,11 +64,13 @@ export class InteractiveButton {
     }
 
     SetHovered(hovered) {
+        if(!this.state.enabled) return;
         this.state.hovered = hovered;
         this._ApplyStateClass("hovered", hovered);
     }
 
     SetPressed(pressed) {
+        if(!this.state.enabled) return;
         this.state.pressed = pressed;
         this._ApplyStateClass("pressed", pressed);
         if (pressed) {

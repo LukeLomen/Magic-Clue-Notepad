@@ -11,7 +11,8 @@
 }
 
 html {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    /*font-family: 'Segoe UI', sans-serif;*/
+    font-family: 'Inter', sans-serif;
 }
 
 .hidden {
@@ -34,6 +35,13 @@ body {
     overscroll-behavior: none;
 }
 
+.elevated-container {
+    margin: 4rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
 #top-container {
     margin: var(--outer-margin);
     height: var(--table-height);
@@ -41,15 +49,6 @@ body {
 
 #interactive-table-container {
     height: 100%;
-}
-
-#game-setup{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    justify-content: start;
-    align-items: center;
 }
 
 #control-panel {
@@ -81,7 +80,7 @@ body {
     overflow: hidden;
 }
 
-#suggestion-buttons-container{
+#suggestion-buttons-container {
     flex: 1 1 50%;
 }
 

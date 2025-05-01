@@ -6,29 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Magic Clue Notepad</title>
   <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32x32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
   <link rel="stylesheet" href="interactive_table.css">
   <link rel="stylesheet" href="interactive_button.css">
+  <link rel="stylesheet" href="game_setup.css">
 </head>
 
 <body>
+  <div id="game-setup">
+    <h1 id="title">Magic Clue Notepad</h1>
+    <h3>Enter Player Names in Clockwise Order</h3>
+    <input id="playerName0" type="text" maxlength="20" placeholder="Your Name (optional)">
+    <input id="playerName1" type="text" maxlength="20" placeholder="Player 2 Name">
+    <input id="playerName2" type="text" maxlength="20" placeholder="Player 3 Name">
+    <input id="playerName3" type="text" maxlength="20" placeholder="Player 4 Name (optional)">
+    <input id="playerName4" type="text" maxlength="20" placeholder="Player 5 Name (optional)">
+    <input id="playerName5" type="text" maxlength="20" placeholder="Player 6 Name (optional)">
+    <p class="hidden">
+      This is not a game of Clue vs AI. Magic Clue Notepad is a replacement for the paper notepad while playing the
+      board game with family and friends (except you want to make it not fun by looking at a screen and winning every
+      time). Magic Clue Notepad draws itself automatically, you simply record what happens.
+    </p>
+  </div>
   <div id="top-container">
     <div id="interactive-table-container"></div>
-    <div id="game-setup" class="">
-      <h1>Magic Clue Notepad</h1>
-      <h3>Enter Player Names in Clockwise Order</h3>
-      <input id="playerName0" type="text" maxlength="20" placeholder="your name (optional)">
-      <input id="playerName1" type="text" maxlength="20" placeholder="player2 name">
-      <input id="playerName2" type="text" maxlength="20" placeholder="player3 name">
-      <input id="playerName3" type="text" maxlength="20" placeholder="player4 name (optional)">
-      <input id="playerName4" type="text" maxlength="20" placeholder="player5 name (optional)">
-      <input id="playerName5" type="text" maxlength="20" placeholder="player6 name (optional)">
-      <p class="hidden">
-        This is not a game of Clue vs AI. Magic Clue Notepad is a replacement for the paper notepad while playing the
-        board game with family and friends (except you want to make it not fun by looking at a screen and winning every
-        time). Magic Clue Notepad draws itself automatically, you simply record what happens.
-      </p>
-    </div>
   </div>
   <div id="control-panel">
     <div id="back-button-container" class="button-container"></div>

@@ -1,7 +1,5 @@
 [HIGH]
 
-BackButton Logic: - Might need to build at least a temp menu to hold them
-
 ControlPanel: Validation from suggestion: Each state requires a different validation
     - Hide control panel on new game screen
     - Changing the active state of buttons

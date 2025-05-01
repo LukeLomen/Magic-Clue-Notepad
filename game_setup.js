@@ -6,6 +6,8 @@ export class GameSetup {
     constructor({
         onStartGame
     }) {
+        this.onStartGame = onStartGame;
+
         this.container = document.getElementById('game-setup');
         this.container.addEventListener('input', this._HandleInput.bind(this));
 
@@ -18,14 +20,14 @@ export class GameSetup {
 
         this.entries = 0;
 
-        this.resetButton = new InteractiveButton({
+        /*this.resetButton = new InteractiveButton({
             text: "Reset",
             icon: "x",
             parent: this.container,
             type: "secondary",
             id: "clear-button",
             onPress: () => this.ResetValues()
-        });
+        });*/
 
         this.StartButton = new InteractiveButton({
             text: "Start Game",
@@ -36,8 +38,7 @@ export class GameSetup {
             onPress: () => this.StartGame()
         });
 
-        this.onStartGame = onStartGame;
-
+        this.DisableStartButton();
         this.ResetValues();
     }
 
@@ -46,6 +47,11 @@ export class GameSetup {
         const target = event.target;
         if (!target) return;
         this.entries = this.GetTextInputArray().length;
+        if(this.entries < 3){
+            this.DisableStartButton();
+        }else{
+            this.EnableStartButton()
+        }
     }
 
     GetTextInputArray() {
@@ -63,15 +69,15 @@ export class GameSetup {
         return returnArray;
     }
 
-    HideGameSetup(hide) {
-        if (hide) {
-            this.container.classList.add('hidden');
-        } else {
-            this.container.classList.remove('hidden');
-        }
+    HideGameSetup() {
+        this.container.classList.add('hidden');
     }
 
-    ResetValues(){
+    ShowGameSetup() {
+        this.container.classList.remove('hidden');
+    }
+
+    ResetValues() {
         this.input1.value = "You";
         this.input2.value = "";
         this.input3.value = "";
@@ -80,7 +86,15 @@ export class GameSetup {
         this.input6.value = "";
     }
 
-    StartGame(){
+    StartGame() {
         this.onStartGame();
+    }
+
+    EnableStartButton(){
+        this.StartButton.SetEnabled(true);
+    }
+
+    DisableStartButton(){
+        this.StartButton.SetEnabled(false);
     }
 }

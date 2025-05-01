@@ -11,13 +11,25 @@ import {
 const gm = new GameManager();
 
 /// Input handle
+document.addEventListener('pointerdown', onPointerDown);
+document.addEventListener('pointermove', onPointerMove);
+document.addEventListener('pointerup', onPointerUp);
+
+/*
 document.addEventListener('contextmenu', (event) => {
     /// Prevent context menu on long press / right-click
     event.preventDefault();
 });
-document.addEventListener('pointerdown', onPointerDown);
-document.addEventListener('pointermove', onPointerMove);
-document.addEventListener('pointerup', onPointerUp);
+*/
+
+/*
+document.addEventListener('keypress', (event) =>{
+    const _key = (event.key)
+    if (_key == 'Enter'){
+
+    }
+})
+*/
 
 let hoveredElement = null;
 
@@ -75,7 +87,7 @@ window.DisplayTurn = DisplayTurn;
 //DebugGame0();
 //DebugGameA();
 //DebugGameB();
-DebugGameC();
+//ebugGameC();
 
 function DebugGame0() {
     gm.StartGame(['You', 'Tim', 'Dallas', 'Andrew']);
@@ -110,5 +122,6 @@ function DebugGameC() {
     gm.dm.AddSuggestion([4, 9, 19], 2, 4, SYMBOLS.knownVoid);
 
     gm.DisplayTurn(100);
+
 
 }
