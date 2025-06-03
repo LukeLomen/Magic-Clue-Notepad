@@ -1,13 +1,10 @@
-:root {
-    --focused-color: rgb(0, 255, 0);
-}
-
 #game-setup {
+    --focused-color: var(--primary-color);
+    
     max-width: 400px;
-
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
 }
 
@@ -28,7 +25,7 @@
 #game-setup input[type="text"] {
     position: relative;
     width: 100%;
-    max-width: 300px;
+    max-width: 180px;
     padding: 0.75rem 0.75rem;
     margin-bottom: 1rem;
     font-size: 1rem;
@@ -37,6 +34,7 @@
     outline: none;
     background: transparent;
     transition: border 0.4s ease;
+    transition: box-shadow 0.2s ease;
 }
 
 #game-setup input[type="text"]::placeholder {

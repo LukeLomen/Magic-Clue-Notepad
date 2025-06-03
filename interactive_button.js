@@ -33,18 +33,22 @@ export class InteractiveButton {
 
         this._ObserveResize();
 
-        /*this.root.addEventListener('pointerenter', e => this._HandleMove(e));
-        this.root.addEventListener('pointerup', e => this._HandleUp(e));
+        this.root.addEventListener('pointerenter', e => this._HandleMove(e));
         this.root.addEventListener('pointerleave', e => this._HandleLeave(e));
-
-        this.onSelect = onSelect;*/
+        this.root.addEventListener('pointerup', e => this._HandleSubmit(e));
+        this.root.addEventListener('keydown', e => this._HandleSubmit(e));
     }
 
-    _HandleMove(event) {
+    _HandleMove() {
         this.SetHovered(true);
     }
 
-    _HandleUp() {
+    _HandleLeave() {
+        this.SetHovered(false);
+    }
+
+    _HandleSubmit(e) {
+        if (e.type === 'keydown' && e.key !== 'Enter') return;
         this.SetPressed(true);
         if (this.state.selected) {
             this.SetSelected(false);
@@ -53,24 +57,22 @@ export class InteractiveButton {
         }
     }
 
-    _HandleLeave() {
-        this.SetHovered(false);
-    }
-
     SetSelected(selected) {
         this.state.selected = selected;
         this._ApplyStateClass("selected", selected);
-        this.onSelect?.();
+        if (this.onSelect) {
+            this.onSelect();
+        }
     }
 
     SetHovered(hovered) {
-        if(!this.state.enabled) return;
+        if (!this.state.enabled) return;
         this.state.hovered = hovered;
         this._ApplyStateClass("hovered", hovered);
     }
 
     SetPressed(pressed) {
-        if(!this.state.enabled) return;
+        if (!this.state.enabled) return;
         this.state.pressed = pressed;
         this._ApplyStateClass("pressed", pressed);
         if (pressed) {

@@ -1,8 +1,8 @@
 :root {
     --outer-margin: 6px;
 
-    --focused-color: #9c9;
-    --selected-color: rgb(178, 241, 178);
+    --primary-color: #9c9;
+    --secondary-color: rgb(178, 241, 178);
 
     --min-font-size: calc(1vw + 1vh);
 
@@ -11,7 +11,6 @@
 }
 
 html {
-    /*font-family: 'Segoe UI', sans-serif;*/
     font-family: 'Inter', sans-serif;
 }
 

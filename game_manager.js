@@ -1,10 +1,4 @@
 import {
-    SYMBOLS
-} from "./table_symbols.js";
-import {
-    InteractiveButton
-} from './interactive_button.js';
-import {
     InteractiveTable
 } from './interactive_table.js';
 import {
@@ -37,7 +31,10 @@ export class GameManager {
             OnPressConfirmStarting: () => this.SetStartingCards(this.interactiveTable.GetSelectedCols()),
             OnPressConfirmExtra: () => this.SetExtraCards(this.interactiveTable.GetSelectedCols()),
             OnPressForward: () => this.IncreaseTurn(),
-            OnPressNewSuggestion: () => this.StartNewSuggestion(),
+            OnPressNewSuggestion: () => this.StartNewSuggestion(
+                this.interactiveTable.GetSelectedRows().shift(),
+                this.interactiveTable.GetSelectedCols().sort((a, b) => a - b)
+            ),
             OnPressNewGame: () => this.NewGame(),
             OnPressBack: () => this.DecreaseTurn(),
             OnPressSuggestionResponse: (responseButton) => this.ConfirmSuggestionResponse(responseButton)
@@ -98,8 +95,16 @@ export class GameManager {
         this.interactiveTable.ClearAllSelection();
     }
 
+    /*
+        Instead of having a confirm button for new suggestions, if the suggestion is the first suggestion (table interaction not avaliable if round continues past the first person) of the round: Text & Buttons are displayed and written as table cols + rows are selected - once all 4 requirements have been selected buttons become active according to the dm possible check
+        - when displaying history: no table interaction for first suggestion
+
+        - suggestion text and buttons should be written by the suggestion object in suggestionHistory that is currently displayed. Selecting table rows and cols should instantly modify the suggestion that is displayed which in turn tells the suggestion area what to write.
+        - maybe in suggestion add bools for changing the active state of buttons (possibility check done internally in DM somehow)
+    */
+   
     DisplaySuggestion(suggestion) {
-        this.dm.WritePlayerDataFromSuggestionHistory(100000);
+        this.dm.WritePlayerDataFromSuggestionHistory(suggestion.turn);
         this.WriteTableCellDataFromPlayerData();
 
         this.interactiveTable.colTargetActive = false;
@@ -113,7 +118,7 @@ export class GameManager {
 
         this.controlPanel.ChangeState(this.controlPanel.SUGGESTION);
         this.interactiveTable.ClearAllSelection();
-        this.controlPanel.mainText.textContent = `[${suggestion.turn}] ${suggesterName} suggested to ${suggesteeName}: ${suspectName}, ${weaponName}, ${roomName}`;
+        this.controlPanel.mainText.textContent = `[${suggestion.turn}] ${suggesterName} suggested to ${suggesteeName}:`;
         suggestion.cardArray.forEach(col => {
             this.interactiveTable.SelectCol(col + 1)
         });
@@ -153,12 +158,9 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
     }
 
-    StartNewSuggestion() {
-        const suggester = this.interactiveTable.GetSelectedRows().shift();
-        const cards = this.interactiveTable.GetSelectedCols().sort((a, b) => a - b);
+    StartNewSuggestion(suggester, cards) {
         if (suggester == undefined || cards.length != 3) {
-            console.warn(`Cant start new suggestion: selection invalid`);
-            return;
+            return console.warn(`Cant start new suggestion: selection invalid`);
         }
         this.dm.StartNewSuggestion(cards, suggester);
         this.DisplaySuggestion(this.dm.newSuggestion);
@@ -223,23 +225,25 @@ export class GameManager {
     }
 
     DisplayTurn(turn) {
-        if (turn > this.dm.suggestionHistory.length - 1) {
+        /*if (turn > this.dm.suggestionHistory.length - 1) {
             turn = this.dm.suggestionHistory.length - 1;
-        }
-        this.currentTurn = turn;
+        }*/
+        //this.currentTurn = turn;
         this.dm.WritePlayerDataFromSuggestionHistory(turn);
         this.WriteTableCellDataFromPlayerData();
     }
 
     IncreaseTurn() {
-        if (this.currentTurn >= this.dm.suggestionHistory.length) return;
-        this.currentTurn++;
+        if (this.currentTurn < this.dm.suggestionHistory.length){
+            this.currentTurn++;
+        }
         this.DisplayTurn(this.currentTurn);
     }
 
     DecreaseTurn() {
-        if (this.currentTurn <= 0) return;
-        this.currentTurn--;
+        if (this.currentTurn > 0){
+            this.currentTurn--;
+        }
         this.DisplayTurn(this.currentTurn);
     }
 }

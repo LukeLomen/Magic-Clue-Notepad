@@ -10,26 +10,12 @@ import {
 
 const gm = new GameManager();
 
+
 /// Input handle
 document.addEventListener('pointerdown', onPointerDown);
 document.addEventListener('pointermove', onPointerMove);
 document.addEventListener('pointerup', onPointerUp);
 
-/*
-document.addEventListener('contextmenu', (event) => {
-    /// Prevent context menu on long press / right-click
-    event.preventDefault();
-});
-*/
-
-/*
-document.addEventListener('keypress', (event) =>{
-    const _key = (event.key)
-    if (_key == 'Enter'){
-
-    }
-})
-*/
 
 let hoveredElement = null;
 
@@ -66,8 +52,10 @@ function onPointerMove(event) {
 
 /// Press
 function onPointerUp(event) {
-    const target = document.elementFromPoint(event.clientX, event.clientY);
-    if (!target) return;
+    /*const target = document.elementFromPoint(event.clientX, event.clientY);
+    if (!target) return;*/
+
+    
     SetHoverState(hoveredElement, false);
     if (hoveredElement._instance instanceof InteractiveButton) {
         const button = hoveredElement._instance;
@@ -87,16 +75,18 @@ window.DisplayTurn = DisplayTurn;
 //DebugGame0();
 //DebugGameA();
 //DebugGameB();
-//ebugGameC();
+//DebugGameC();
 
 function DebugGame0() {
     gm.StartGame(['You', 'Tim', 'Dallas', 'Andrew']);
 }
 
 function DebugGameA() {
-    gm.SetCardPreset('simpsons');
-    gm.StartGame(['DEBUG A', 'ReallyLong PlayerName', 'Durf McDurfface']);
-    gm.SetStartingCards([1, 14, 19, 20, 2, 3]);
+    gm.SetCardPreset('default');
+    gm.StartGame(['You', 'ReallyLongName', 'Durf McDurfface', 'Jesus Christ', 'Your Mom', 'Billy']);
+    gm.SetStartingCards([1, 14, 20]);
+
+    gm.StartNewSuggestion(1, [0, 9, 17]);
 }
 
 function DebugGameB() {
@@ -108,7 +98,7 @@ function DebugGameB() {
 
 function DebugGameC() {
     gm.SetCardPreset('classic');
-    gm.StartGame(['DEBUG C', 'KnobGobbler5000', 'Sarah', 'John', 'Samwise']);
+    gm.StartGame(['DEBUG C', 'Nancy', 'Sarah', 'John', 'Samwise', 'JimBob']);
     gm.SetStartingCards([0, 1, 7]);
     gm.SetExtraCards([20, 19, 18]);
     //gm.SetExtraCards([2, 3, 4]);
@@ -119,7 +109,15 @@ function DebugGameC() {
     gm.dm.AddSuggestion([1, 6, 20], 1, 3, SYMBOLS.possibleCard);
     gm.dm.AddSuggestion([5, 7, 14], 2, 2, SYMBOLS.knownVoid);
     gm.dm.AddSuggestion([4, 9, 18], 1, 4, SYMBOLS.possibleCard);
-    gm.dm.AddSuggestion([4, 9, 19], 2, 4, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([4, 10, 19], 2, 4, SYMBOLS.knownVoid);
+
+
+    gm.dm.AddSuggestion([0, 7, 16], 0, 1, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([0, 7, 16], 0, 2, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([0, 7, 16], 0, 3, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([0, 7, 16], 0, 4, SYMBOLS.knownVoid);
+    gm.dm.AddSuggestion([0, 7, 16], 0, 5, SYMBOLS.knownVoid);
+
 
     gm.DisplayTurn(100);
 

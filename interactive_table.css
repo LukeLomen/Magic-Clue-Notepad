@@ -9,6 +9,9 @@
 }
 
 #interactive-table-container table {
+  --focused-color: var(--primary-color);
+  --selected-color: var(--secondary-color);
+
   width: 100%;
   height: 100%;
   user-select: none;
@@ -46,6 +49,13 @@ td {
   white-space: nowrap;
 }
 
+#interactive-table-container td span {
+  display: block;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: var(--vt);
+}
+
 #interactive-table-container .col-head span {
   height: 100%;
   display: inline-block;
@@ -55,22 +65,21 @@ td {
   font-size: var(--vt);
 }
 
-#interactive-table-container td span {
-  display: block;
-  text-overflow: ellipsis;
-  text-align: center;
-  font-size: var(--vt);
+#interactive-table-container .row-head span{
+  text-align: start;
+  padding: 4px;
+
 }
 
 .selected-col {
-  background-color: rgb(178, 241, 178);
+  background-color: var(--secondary-color);
   /*box-shadow: 0 0 4vw rgba(0, 0, 0, 0.1);*/
   /*border-left-color:  black;
   border-right-color:  black;*/
 }
 
 .selected-row {
-  background-color: rgb(178, 241, 178);
+  background-color: var(--secondary-color);
   /*box-shadow: 0 0 .5vw .5vw rgba(0, 0, 0, 0.1);*/
   /*border-top:  black;
   border-bottom:  black;*/
@@ -79,7 +88,7 @@ td {
 .focused-col {
   cursor: pointer;
   /*transform: scaleX(1.5);*/
-  background-color: #9c9;
+  background-color: var(--focused-color);
   /*box-shadow: 0 20px 10px 5px rgba(0, 0, 0, 0.1);*/
   /*border-left-style: dashed;
   border-right-style: dashed;*/
@@ -88,13 +97,14 @@ td {
 .focused-row {
   cursor: pointer;
   /*transform: scaleY(1.2);*/
-  background-color: #9c9;
+  background-color: var(--focused-color);
   /*box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);*/
 
 }
 
+/*
 .focused-menu {
   cursor: pointer;
   transform: scaleX(100);
   background-color: #555;
-}
+}*/

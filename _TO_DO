@@ -1,54 +1,66 @@
 [HIGH]
 
+
+
+
+
+
+
 ControlPanel: Validation from suggestion: Each state requires a different validation
     - Hide control panel on new game screen
     - Changing the active state of buttons
+    - Set button text
     - Changing the validation text
-    - It is possible for the user in a 3 person game to select all player/weapon cards (accidentally because this is impossible: as at least 1 must be hidden) I don't need to handle accidental player mistakes; if they selected the incorrect things they can go back and change it themselves or suffer the consequences. - I only need to account for user error (validation) when enabling other buttons for them to press (pressing these buttons before validation would result in error / data corruption). If you really wanted to be nice you could check for impossible data (all over the place) and send an alert telling them to go back and fix it (but that is way too much work for this project)
+    - Table interaction only active for newSuggestion, starting/extra cards (not when viewing history)
 
-Style:
-    - Set all css files color scheme from index.css
-    - Style should be consistant across all the elements: Start with the table
-        - Instead of raised buttons they should be outlined (border matches table cell border) (maybe raised too Idk, I like how it looks on press right now)
+    - It is possible for the user in a 3 person game to select all player/weapon cards (accidentally because this is impossible: as at least 1 must be hidden) I don't need to handle accidental player mistakes; if they selected the incorrect things they can go back and change it themselves or suffer the consequences. - I only need to account for user error (validation) when enabling other buttons for them to press (pressing these buttons before validation would result in error / data corruption).
+
+    - I kinda want to remove the control panel or make it more specific to just suggestion but I want the buttons to be consistant and not be hidden and replaced with another button because then I can't do animations (I guess I could just animate the buttons entering and exiting the screen)
+
+interactive_table: add the display element for cardsKnown/ cards total (badge?)
+    - Instead of x / y you could maybe just have x (you could display y somewhere else like the top menu corner but it sholuld be apparent because for "your" row x = y)
+    - You could maybe have it always locked to top right corner but on top of the text (if row height becomes too small the 'badge' can cover the text with its background color not transparent) 
 
 
 [MID]
 
-GameSetup:
-    - Internal Start Game validation
-    - Sources say that a form reset button is not recomended as it can frustrate users trying to confirm. Maybe don't need one
-    - Responsive layout
 
-Menu: Probably some pop up window
-    - New Game + Warning or snackbar to confirm
-    - Help / Table Symbol Key
-    - ? Card Presets Seletion ?
-    - ? Edit / Delete Suggestion History ?
-
-Style: ControlPanel: Finalize the reactive display
-
-Style: * : 
-    - Pick good font + colors
-    - Consistant animations
-    - ? Icons ?
 
 
 [LOW]
 
+GameSetup: Responsive layout for screen height (doesn't fit screens in lanscape rotation)
+- This is low priority because it currently works except landscape mode; but no one types in landscape mode anyways. I still want it to work both ways eventually.
+    - game setup should be in the center of the screen
+    - responsive width is fine except text fields should not have a min-width and instead just try to fit width of container that has a max-width
+    - If the height is too low
+        - Remove the headers (or make them smaller or switch to a col layout)
+        - Shrink the input fields and decrease the padding
+        - Start button could be the 3rd col if using a col layout
+        - If possible I would rather just shrink or hid the headers and keep the layout
+
 Cards Preset Selection Menu
 
-Style: Extra Style for HiddenCards
+Style: Extra Style for HiddenCards?
 
 ClueCards: Write More Presets;
 
-TextInput Style: It really is fine how it is
+Clean up code and check line endings
 
 
 [EXTRA]
 
+Manual KnownHave entry (would have to create an array and apply at the end of writing player data)
+
+Fully Modularize interactive_table + interactive_button: test in another project
+
 Snackbar undo
 
 Style: Transition animations
+
+Table zoom: density should be opt in
+
+Suggestion Helper Ai: selects the suggestion cards for you
 
 Voice control:
 - col selection for new suggestions: ex - "mr green with the knife in the hall"

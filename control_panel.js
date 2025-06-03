@@ -10,7 +10,7 @@ class State {
         mainText = "",
         validationText = "",
         suggestionButtonContainerHidden = true,
-        backButtonContainerHidden = true,
+        backButtonContainerHidden = false,
         forwardButtonText = "Next",
         backButtonText = "Back",
         forwardButtonFunction
@@ -150,8 +150,7 @@ export class ControlPanel {
         });
 
 
-        this.HideElement(this.controlPanel);
-        //this.HideElement(this.forwardButtonContainer)
+        //this.HideElement(this.controlPanel);
     }
 
     ChangeState(state) {
