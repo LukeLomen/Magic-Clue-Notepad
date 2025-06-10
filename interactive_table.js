@@ -9,37 +9,94 @@ export class InteractiveTable {
     OnToggleRow,
     OnToggleMenu
   }) {
+    /// Constructor Functions
     this.OnToggleCol = OnToggleCol;
     this.OnToggleRow = OnToggleRow;
     this.OnToggleMenu = OnToggleMenu;
+    /// Table Selection Modes
     this.colTargetActive = false;
     this.rowTargetActive = false;
     this.menuTargetActive = false;
     this.categorySelectionMode = false;
-
-    this.colCatetoryMap = new Map();
-
+    /// Builder Variables
     this.colTotal = colCount + 1;
     this.rowCount = rowCount;
-    this.catetoryStarts = catetoryStarts;
+    /// Lookup
     this.cellArray = [];
     this.spanArray = [];
-
+    this.catetoryStarts = catetoryStarts;
+    this.colCatetoryMap = new Map();
+    /// Selection
     this.selectedColumns = new Set();
     this.selectedRows = new Set();
     this.focus = null;
     this.hiddenRows = new Set();
-
+    /// Html Construction
     this.container = container;
     this.table = document.createElement('table');
     if (id) this.table.id = id;
     this.container.appendChild(this.table);
     this.table.innerHTML = "";
-
     this._CreateTable();
     this._ResizeTopRow();
+    /// Event listeners
+    this.pointerIsDown = false;
+    document.addEventListener('pointerdown', this._onGlobalPointerDown.bind(this));
+    document.addEventListener('pointerup', this._onGlobalPointerUp.bind(this));
+    document.addEventListener('pointercancel', this._onGlobalPointerUp.bind(this));
+    this.table.addEventListener('pointerdown', this._onPointerDown.bind(this));
+    this.table.addEventListener('pointermove', this._onPointerMove.bind(this));
+    this.table.addEventListener('pointerup', this._onPointerUp.bind(this));
+    this.table.addEventListener('pointerleave', this._onPointerLeave.bind(this));
   }
 
+  /// Event handlers
+  _onGlobalPointerDown(e) {
+    this.pointerIsDown = true;
+  }
+
+  _onGlobalPointerUp(e) {
+    this.pointerIsDown = false;
+  }
+
+  _onPointerDown(e) {
+    const target = this._GetTableCellFromEvent(e);
+    if (!target) return;
+    this.FocusTarget(target);
+  }
+
+  _onPointerMove(e) {
+    if (!this.pointerIsDown) return;
+    const target = this._GetTableCellFromEvent(e);
+    if (!target) return;
+    this.FocusTarget(target);
+  }
+
+  _onPointerUp(e) {
+    if (!this.pointerIsDown) return;
+    const target = this._GetTableCellFromEvent(e);
+    if (target) {
+      this.ToggleTarget(target);
+    }
+    this.ClearFocus();
+  }
+  
+  _onPointerLeave(e) {
+    if (this.pointerIsDown) {
+      this.ClearFocus();
+    }
+  }
+
+  _GetTableCellFromEvent(e) {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el) return null;
+    if (el.tagName === 'TD' || el.tagName === 'TH') {
+      return el;
+    }
+    return el.closest('td, th'); /// Fallback if clicking on child elements inside cell
+  }
+  
+  /// Table Creation
   _CreateTable() {
     let currentCategory = -1;
     /// Build table header (the first row)
@@ -95,6 +152,7 @@ export class InteractiveTable {
     const numRows = this.rowCount - this.hiddenRows.size;
     document.documentElement.style.setProperty('--row-count', numRows);
   }
+  /// 
   _GetColCellArray(col) {
     let colCellArray = [];
     for (let r = 0; r <= this.rowCount; r++) {
@@ -290,7 +348,7 @@ export class InteractiveTable {
     const col = parseInt(target.dataset.col, 10);
     if (row == null || col == null) return;
     if (row === 0 && col === 0) {
-      //Corner Menu
+      /// Corner Menu
     } else if (col === 0) {
       if (!this.rowTargetActive) return;
       this.FocusRow(row);

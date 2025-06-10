@@ -1,12 +1,15 @@
 [HIGH]
+Interactive Table:
+    - Display total cards (corner cell - bottom right) per player and # currently known (player name cells - bottom right) could use a badge and have it move position responsivly
+
+Starting Cards:
+    - Seperate buttons for starting/ extra cards from functions for suggestions. Will need seperate classes for suggestions and starting cards.
+    - Starting cards should be buit in a way where the table is not needed. Could be replaced with a seperate scrollable menu to increase the button size.
+    - Don't need to show player names or card totals until main screen.
 
 
 
-
-
-
-
-ControlPanel: Validation from suggestion: Each state requires a different validation
+ControlPanel (suggestions): Validation from suggestion: Each state requires a different validation
     - Hide control panel on new game screen
     - Changing the active state of buttons
     - Set button text

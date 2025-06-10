@@ -14,6 +14,7 @@ import {
     cardsAPI
 } from './clue_cards.js';
 
+
 export class GameManager {
     constructor() {
         this.dm = new DataManager();
@@ -102,7 +103,7 @@ export class GameManager {
         - suggestion text and buttons should be written by the suggestion object in suggestionHistory that is currently displayed. Selecting table rows and cols should instantly modify the suggestion that is displayed which in turn tells the suggestion area what to write.
         - maybe in suggestion add bools for changing the active state of buttons (possibility check done internally in DM somehow)
     */
-   
+
     DisplaySuggestion(suggestion) {
         this.dm.WritePlayerDataFromSuggestionHistory(suggestion.turn);
         this.WriteTableCellDataFromPlayerData();
@@ -234,16 +235,17 @@ export class GameManager {
     }
 
     IncreaseTurn() {
-        if (this.currentTurn < this.dm.suggestionHistory.length){
+        if (this.currentTurn < this.dm.suggestionHistory.length) {
             this.currentTurn++;
         }
         this.DisplayTurn(this.currentTurn);
     }
 
     DecreaseTurn() {
-        if (this.currentTurn > 0){
+        if (this.currentTurn > 0) {
             this.currentTurn--;
         }
         this.DisplayTurn(this.currentTurn);
     }
+
 }
