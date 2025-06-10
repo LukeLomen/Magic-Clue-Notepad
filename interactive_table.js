@@ -199,11 +199,11 @@ export class InteractiveTable {
   }
 
   /// Hide
-  HideTable(hide) {
-    if (hide) {
-      this.container.classList.add('hidden');
-    } else {
+  DisplayTable(displayed) {
+    if (displayed) {
       this.container.classList.remove('hidden');
+    } else {
+      this.container.classList.add('hidden');
     }
   }
 

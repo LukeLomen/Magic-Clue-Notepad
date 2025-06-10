@@ -5,8 +5,8 @@ import {
     ControlPanel
 } from './control_panel.js';
 import {
-    GameSetup
-} from './game_setup.js'
+    NameSetup
+} from './name_setup.js'
 import {
     DataManager
 } from './clue_data.js';
@@ -28,7 +28,6 @@ export class GameManager {
             OnToggleRow: (selectedCols) => console.log(selectedCols),
         });
         this.controlPanel = new ControlPanel({
-            //OnPressStart: () => this.StartGame(this.gameSetup.GetTextInputArray()),
             OnPressConfirmStarting: () => this.SetStartingCards(this.interactiveTable.GetSelectedCols()),
             OnPressConfirmExtra: () => this.SetExtraCards(this.interactiveTable.GetSelectedCols()),
             OnPressForward: () => this.IncreaseTurn(),
@@ -41,8 +40,8 @@ export class GameManager {
             OnPressSuggestionResponse: (responseButton) => this.ConfirmSuggestionResponse(responseButton)
         });
 
-        this.gameSetup = new GameSetup({
-            onStartGame: () => this.StartGame(this.gameSetup.GetTextInputArray())
+        this.nameSetup = new NameSetup({
+            onStartGame: () => this.StartGame(this.nameSetup.GetTextInputArray())
         });
 
         this.currentTurn = 0;
@@ -50,6 +49,7 @@ export class GameManager {
         this.NewGame();
     }
 
+    // NOT SURE WHY THIS IS HERE
     _HandleTableRowToggle(selectedRowsSet) {
         const requirement = this.dm.numCards;
         //If state == starting or extra cards
@@ -62,30 +62,35 @@ export class GameManager {
     }
 
     /// Display States
-    DisplayNewGame() {
-        this.interactiveTable.HideTable(true);
-        this.gameSetup.ShowGameSetup();
-        this.controlPanel.ChangeState(this.controlPanel.NEW_GAME)
+    DisplayNameSetup() {
+        this.nameSetup.DisplayNameSetup(true);
+        this.interactiveTable.DisplayTable(false);
+        //this.controlPanel.ChangeState(this.controlPanel.NEW_GAME)
     }
 
     DisplayStartingCards() {
-        this.dm.WritePlayerDataFromSuggestionHistory(0);
-        this.WriteTableCellDataFromPlayerData();
+        //this.dm.WritePlayerDataFromSuggestionHistory(0);
+        //this.WriteTableCellDataFromPlayerData();
+        this.nameSetup.DisplayNameSetup(false);
+        this.interactiveTable.DisplayTable(false);
 
-        this.interactiveTable.HideTable(false);
-        this.gameSetup.HideGameSetup();
-        this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS)
-        this.interactiveTable.colTargetActive = true;
+        //this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS)
+        //this.interactiveTable.colTargetActive = true;
     }
 
     DisplayExtraCards() {
-        this.dm.WritePlayerDataFromSuggestionHistory(0);
-        this.WriteTableCellDataFromPlayerData();
+        //this.dm.WritePlayerDataFromSuggestionHistory(0);
+        //this.WriteTableCellDataFromPlayerData();
+        this.nameSetup.DisplayNameSetup(false);
+        this.interactiveTable.DisplayTable(false);
 
-        this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS)
+        //this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS)
     }
 
     DisplayNewSuggestion() {
+        this.nameSetup.DisplayNameSetup(false);
+        this.interactiveTable.DisplayTable(true);
+        
         this.dm.WritePlayerDataFromSuggestionHistory(10000);
         this.WriteTableCellDataFromPlayerData();
 
@@ -129,13 +134,12 @@ export class GameManager {
 
     /// Actions
     NewGame() {
-        this.DisplayNewGame();
-        this.interactiveTable.HideRows(0, 6, false);
+        this.DisplayNameSetup();
     }
 
-    StartGame(playerNames) {
+    StartGame(playerNamesArr) {
         this.dm = new DataManager();
-        this.dm.CreatePlayers(playerNames);
+        this.dm.CreatePlayers(playerNamesArr);
         this.WritePlayerNamesToTable();
         this.WriteCardNamesToTable();
         this.DisplayStartingCards();
@@ -159,6 +163,7 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
     }
 
+    /// Suggestions
     StartNewSuggestion(suggester, cards) {
         if (suggester == undefined || cards.length != 3) {
             return console.warn(`Cant start new suggestion: selection invalid`);
@@ -186,8 +191,7 @@ export class GameManager {
         }
     }
 
-
-    /// Methods for writing to table
+    /// Writing game data to table
     SetCardPreset(preset) {
         cardsAPI.loadPreset(preset);
         this.WriteCardNamesToTable();
@@ -247,5 +251,4 @@ export class GameManager {
         }
         this.DisplayTurn(this.currentTurn);
     }
-
 }

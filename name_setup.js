@@ -2,13 +2,13 @@ import {
     InteractiveButton
 } from './interactive_button.js';
 
-export class GameSetup {
+export class NameSetup {
     constructor({
         onStartGame
     }) {
         this.onStartGame = onStartGame;
 
-        this.container = document.getElementById('game-setup');
+        this.container = document.getElementById('name-setup');
 
         this.inputs = [
             this.input1 = document.getElementById('playerName0'),
@@ -61,12 +61,20 @@ export class GameSetup {
         }
     }
 
-    HideGameSetup() {
+    HideNameSetup() {
         this.container.classList.add('hidden');
     }
 
-    ShowGameSetup() {
+    ShowNameSetup() {
         this.container.classList.remove('hidden');
+    }
+
+    DisplayNameSetup(displayed) {
+        if (displayed) {
+            this.container.classList.remove('hidden');
+        } else {
+            this.container.classList.add('hidden');
+        }
     }
 
     EnableStartButton() {

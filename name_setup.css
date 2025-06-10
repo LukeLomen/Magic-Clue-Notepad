@@ -1,4 +1,4 @@
-#game-setup {
+#name-setup {
     --focused-color: var(--primary-color);
     
     max-width: 400px;
@@ -8,21 +8,21 @@
     align-items: center;
 }
 
-#game-setup h1 {
+#name-setup h1 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
     margin-top: 4rem;
     text-align: center;
 }
 
-#game-setup h3 {
+#name-setup h3 {
     font-size: 1rem;
     color: #666;
     margin-bottom: 2rem;
     text-align: center;
 }
 
-#game-setup input[type="text"] {
+#name-setup input[type="text"] {
     position: relative;
     width: 100%;
     max-width: 180px;
@@ -37,24 +37,24 @@
     transition: box-shadow 0.2s ease;
 }
 
-#game-setup input[type="text"]::placeholder {
+#name-setup input[type="text"]::placeholder {
     color: #999;
     transition: opacity 0.2s ease;
 }
 
-#game-setup input[type="text"]:focus {
+#name-setup input[type="text"]:focus {
     border-color: var(--focused-color);
     box-shadow: 0 0 0 2px rgba(100, 100, 100, 0.1);
 }
 
-#game-setup p {
+#name-setup p {
     font-size: 0.9rem;
     color: #444;
     line-height: 1.4;
     margin-top: 2rem;
 }
 
-#game-setup button {
+#name-setup button {
     margin-top: 1rem;
     max-width: 200px;
     height: 3rem;

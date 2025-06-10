@@ -44,7 +44,6 @@ function DebugGameC() {
     gm.SetCardPreset('classic');
     gm.StartGame(['DEBUG C', 'Nancy', 'Sarah', 'John', 'Samwise', 'JimBob']);
     gm.SetStartingCards([0, 1, 7]);
-    gm.SetExtraCards([20, 19, 18]);
     //gm.SetExtraCards([2, 3, 4]);
 
     gm.dm.AddSuggestion([4, 6, 12], 0, 1, SYMBOLS.knownVoid);
