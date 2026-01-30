@@ -28,7 +28,7 @@ function DebugGame0() {
 function DebugGameA() {
     gm.SetCardPreset('default');
     gm.StartGame(['You', 'ReallyLongName', 'Durf McDurfface', 'Jesus Christ', 'Your Mom', 'Billy']);
-    gm.SetStartingCards([1, 14, 20]);
+    gm.SetStartingCards([1, 8, 20]);
 
     //gm.StartNewSuggestion(1, [0, 9, 17]);
 }

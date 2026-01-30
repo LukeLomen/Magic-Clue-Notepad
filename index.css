@@ -54,7 +54,7 @@ body {
     width: calc(100% - (var(--outer-margin)*2));
     margin-bottom: var(--outer-margin);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -67,7 +67,7 @@ body {
 
 #suggestion-text {
     /*flex: 1 1 50%;*/
-    margin: var(--outer-margin);
+    /*margin: var(--outer-margin);*/
     user-select: none;
     font-size: clamp(20px, 2vw, 30px);
     text-align: center;
@@ -81,7 +81,7 @@ body {
     display: flex;
     flex: 1 1 100%;
     /*width: 80%;*/
-    height: 0px;
+    /*height: 0px;*/
 }
 
 .button-container {
@@ -92,27 +92,21 @@ body {
 }
 
 #forward-button-container {
-    width: 20%;
-}
-
-#back-button-container {
-    width: 0%;
+    /*width: 20%;*/
 }
 
 @media(orientation:portrait) {
     #control-panel {
-        flex-wrap: wrap;
-        height: 10px;
     }
 
     #forward-button-container,
     #back-button-container {
-        order: 2;
-        flex: 1 1 100%;
+        /*order: 2;
+        flex: 1 1 100%;*/
     }
 
     #suggestion-area {
-        order: 1;
-        flex: 1 1 100%;
+        /*order: 1;
+        flex: 1 1 100%;*/
     }
 }

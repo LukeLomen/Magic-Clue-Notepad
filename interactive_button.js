@@ -97,6 +97,10 @@ export class InteractiveButton {
     SetEnabled(enabled) {
         this.state.enabled = enabled;
         this._ApplyStateClass("disabled", !enabled);
+        if(this.state.selected){
+            this.onPress();
+            this.SetSelected(false);
+        }
     }
 
     SetButtonDisplayNone(display) {
