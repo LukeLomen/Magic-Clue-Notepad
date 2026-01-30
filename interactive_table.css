@@ -52,7 +52,7 @@ td {
 
 #interactive-table-container td span {
   display: block;
-  text-overflow: ellipsis;
+  text-overflow: '';
   text-align: center;
   font-size: var(--vt);
 }

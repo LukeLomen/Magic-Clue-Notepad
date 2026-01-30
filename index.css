@@ -4,10 +4,10 @@
     --primary-color: #9c9;
     --secondary-color: rgb(178, 241, 178);
 
-    --min-font-size: calc(1vw + 1vh);
+    --min-font-size: calc(1dvw + 1dvh);
 
-    --table-height: 70vh;
-    --contro-panel-height: calc(90vh - var(--table-height));
+    --table-height: 70dvh;
+    --contro-panel-height: calc(100dvh - var(--table-height));
 }
 
 html {
@@ -51,36 +51,37 @@ body {
 }
 
 #control-panel {
-    margin: var(--outer-margin);
-    height: var(--contro-panel-height);
-    width: 100vw;
+    width: calc(100% - (var(--outer-margin)*2));
+    margin-bottom: var(--outer-margin);
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: end;
+    justify-content: center;
 }
 
 #suggestion-area {
     display: flex;
     flex-direction: column;
-    margin: 0;
-    width: 78vw;
-    height: 100%;
+    width: 100dvw;
 }
 
 #suggestion-text {
-    flex: 1 1 50%;
+    /*flex: 1 1 50%;*/
+    margin: var(--outer-margin);
     user-select: none;
     font-size: clamp(20px, 2vw, 30px);
     text-align: center;
-    margin: 4px;
-    /*white-space: nowrap;*/
+    /*margin: 4px;*/
+    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
 #suggestion-buttons-container {
-    flex: 1 1 50%;
+    display: flex;
+    flex: 1 1 100%;
+    /*width: 80%;*/
+    height: 0px;
 }
 
 .button-container {
@@ -91,34 +92,27 @@ body {
 }
 
 #forward-button-container {
-    width: 10vw;
-
+    width: 20%;
 }
 
 #back-button-container {
-    width: 10vw;
-
+    width: 0%;
 }
 
 @media(orientation:portrait) {
     #control-panel {
         flex-wrap: wrap;
+        height: 10px;
     }
 
     #forward-button-container,
     #back-button-container {
-        order: 1;
-        flex: 1 1 50%;
-        height: 10vh;
+        order: 2;
+        flex: 1 1 100%;
     }
 
     #suggestion-area {
-        order: 2;
+        order: 1;
         flex: 1 1 100%;
-        height: calc(var(--contro-panel-height)-10vh);
-    }
-
-    #suggestion-text {
-        white-space: wrap;
     }
 }

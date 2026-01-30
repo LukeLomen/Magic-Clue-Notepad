@@ -1,3 +1,27 @@
+Interactive Table:
+    - Stronger border around cells that are in both selected row and col
+
+Menu:
+    - Manual selection: select 1 row and 1 col then press confirm to manual entry. Back button exits the manual entry mode
+    - New Game: triggers a 2nd confirmation prompt which starts a new game
+    - 
+
+GameManager:
+    - Keeps track of states: name_setup, starting_cards_setup, extra_cards_setup, initial_suggestion, continued_suggestion
+    I want the suggestion buttons to always be shown (after starting/extra cards setup). 
+    `${suggester} asked ${suggestee} 
+    ${suspect} ${weapon} ${room} none
+    
+
+
+
+
+
+
+
+
+
+
 [HIGH]
 Interactive Table:
     - Display total cards (corner cell - bottom right) per player and # currently known (player name cells - bottom right) could use a badge and have it move position responsivly

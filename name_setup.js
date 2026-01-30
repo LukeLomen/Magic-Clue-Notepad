@@ -61,14 +61,6 @@ export class NameSetup {
         }
     }
 
-    HideNameSetup() {
-        this.container.classList.add('hidden');
-    }
-
-    ShowNameSetup() {
-        this.container.classList.remove('hidden');
-    }
-
     DisplayNameSetup(displayed) {
         if (displayed) {
             this.container.classList.remove('hidden');
@@ -92,6 +84,7 @@ export class NameSetup {
     }
 
     StartGame() {
+        this.DisplayNameSetup(false);
         this.onStartGame();
     }
 

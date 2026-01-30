@@ -1,6 +1,9 @@
 import {
   SYMBOLS
 } from "./table_symbols.js";
+import {
+  cardsAPI
+} from './clue_cards.js';
 
 export class Suggestion {
   constructor({
@@ -15,6 +18,10 @@ export class Suggestion {
     this.suggester = suggester;
     this.suggestee = suggestee;
     this.response = response;
+
+    if (cardArray == undefined) {
+      this.cardArray = ['', '', ''];
+    }
   }
   Clone() {
     const clone = new Suggestion({
@@ -51,6 +58,10 @@ class Player {
     this.possibleCards = new Array();
     this.cardsKnown = 0;
     this.allCardsKnown = false;
+  }
+
+  GetCardSymbol(index){
+    return this.cardArray[index];
   }
 
   SetCardArray(card, value) {
@@ -134,8 +145,11 @@ export class DataManager {
     this.extraCards = new Array();
     this.numCards = 0;
     this.numExtra = 0;
+  }
 
-    this.newSuggestion
+  GetNextPlayer(index) {
+    const nextPlayer = this.players[index].GetNextPlayer();
+    return nextPlayer
   }
 
   CalculateNumCards(numPlayers) {
@@ -168,57 +182,68 @@ export class DataManager {
     this.extraCards = cardArray;
   }
 
-  AddSuggestion(cardArray, suggester, suggestee, response, turn) {
-    if (turn == undefined) {
-      turn = this.suggestionHistory.length + 1;
-    }
+  AddSuggestion(cardArray, suggester, suggestee, response) {
     this.suggestionHistory.push(new Suggestion({
       cardArray: cardArray,
       suggester: this.players[suggester],
       suggestee: this.players[suggestee],
       response: response,
-      turn: turn
+      turn: this.suggestionHistory.length
     }));
   }
 
-  StartNewSuggestion(newCardArray, suggesterIndex) {
-    this.newSuggestion = new Suggestion({
-      cardArray: newCardArray,
-      suggester: this.players[suggesterIndex],
-      suggestee: this.players[suggesterIndex].GetNextPlayer(),
-      turn: this.suggestionHistory.length + 1
-    });
+  CreateNewSuggestion() {
+    this.suggestionHistory.push(new Suggestion({
+      turn: this.suggestionHistory.length
+    }))
+    console.log(`Creating suggestion # : ${this.suggestionHistory.length}`)
   }
 
-  ConfirmSuggestionResponse(newResponse) {
-    if (newResponse == SYMBOLS.knownVoid || newResponse == SYMBOLS.possibleCard) {
+  SetCardArray(turn, cardArray) {
+    this.GetSuggestion(turn).cardArray = cardArray;
+  }
 
+  SetSuggester(turn, index) {
+    this.GetSuggestion(turn).suggester = this.players[index];
+  }
+
+  SetSuggestee(turn, suggestee) {
+    this.GetSuggestion(turn).suggestee = suggestee;
+  }
+
+  ConfirmSuggestionResponse(turn, newResponse) {
+    const selectedSuggestion = this.GetSuggestion(turn);
+
+    console.log(`Suggestion ${selectedSuggestion.turn+1}: ${selectedSuggestion.suggester.name} asked ${selectedSuggestion.suggestee.name} [${cardsAPI.getCardFromIndex(selectedSuggestion.cardArray[0])}, ${cardsAPI.getCardFromIndex(selectedSuggestion.cardArray[1])}, ${cardsAPI.getCardFromIndex(selectedSuggestion.cardArray[2])}] response: ${newResponse}`);
+
+    if (newResponse == SYMBOLS.knownVoid || newResponse == SYMBOLS.possibleCard) {
+      //
     } else if (newResponse == 'suspect') {
-      newResponse = this.newSuggestion.cardArray[0];
+      newResponse = selectedSuggestion.cardArray[0];
     } else if (newResponse == 'weapon') {
-      newResponse = this.newSuggestion.cardArray[1];
+      newResponse = selectedSuggestion.cardArray[1];
     } else if (newResponse == 'room') {
-      newResponse = this.newSuggestion.cardArray[2];
+      newResponse = selectedSuggestion.cardArray[2];
     } else {
       return console.warn(`Can't ConfirmSuggestionResponse: ${newResponse} is not a valid response`);
     }
-    this.newSuggestion.response = newResponse;
-    this.suggestionHistory.push(this.newSuggestion.Clone());
+    selectedSuggestion.response = newResponse;
   }
 
   ContinueSuggestion() {
-    this.newSuggestion.suggestee = this.newSuggestion.suggestee.GetNextPlayer();
-    this.newSuggestion.response = null;
-    this.newSuggestion.turn++;
+    this.CreateNewSuggestion();
+    const previousSuggestion = this.GetSuggestion(this.suggestionHistory.length - 2);
+    this.GetMostRecentSuggestion().suggester = previousSuggestion.suggester;
+    this.GetMostRecentSuggestion().suggestee = previousSuggestion.suggestee.GetNextPlayer();
+    this.GetMostRecentSuggestion().cardArray = previousSuggestion.cardArray;
   }
 
-  EndSuggestion() {
-    if (this.newSuggestion.response != SYMBOLS.knownVoid || this.newSuggestion.suggester == this.newSuggestion.suggestee.GetNextPlayer()) {
-      return true;
-    } else {
-      this.ContinueSuggestion();
-      return false;
-    }
+  GetSuggestion(index) {
+    return this.suggestionHistory[index];
+  }
+
+  GetMostRecentSuggestion() {
+    return this.GetSuggestion(this.suggestionHistory.length - 1)
   }
 
   /*/// Clue Logic

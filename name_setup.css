@@ -1,11 +1,16 @@
 #name-setup {
     --focused-color: var(--primary-color);
-    
-    max-width: 400px;
+
+    /*max-width: 400px;*/
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /*flex-wrap: wrap;*/
+
+    height: 100%;
+    width: 100%;
+
 }
 
 #name-setup h1 {
@@ -20,6 +25,16 @@
     color: #666;
     margin-bottom: 2rem;
     text-align: center;
+}
+
+#name-input-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 40dvh;
+    width: 100%;
+    align-items: center;
 }
 
 #name-setup input[type="text"] {

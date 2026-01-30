@@ -367,7 +367,7 @@ export class InteractiveTable {
     } else if (col === 0) {
       if (!this.rowTargetActive) return;
       this.ToggleRow(row);
-      this.OnToggleCol(this.selectedRows);
+      this.OnToggleRow(this.selectedRows);
     } else {
       if (!this.colTargetActive) return;
       this.ToggleCol(col);

@@ -17,7 +17,7 @@ function DisplayTurn(turn) {
 window.DisplayTurn = DisplayTurn;
 
 //DebugGame0();
-//DebugGameA();
+DebugGameA();
 //DebugGameB();
 //DebugGameC();
 
@@ -30,7 +30,7 @@ function DebugGameA() {
     gm.StartGame(['You', 'ReallyLongName', 'Durf McDurfface', 'Jesus Christ', 'Your Mom', 'Billy']);
     gm.SetStartingCards([1, 14, 20]);
 
-    gm.StartNewSuggestion(1, [0, 9, 17]);
+    //gm.StartNewSuggestion(1, [0, 9, 17]);
 }
 
 function DebugGameB() {
@@ -44,7 +44,6 @@ function DebugGameC() {
     gm.SetCardPreset('classic');
     gm.StartGame(['DEBUG C', 'Nancy', 'Sarah', 'John', 'Samwise', 'JimBob']);
     gm.SetStartingCards([0, 1, 7]);
-    //gm.SetExtraCards([2, 3, 4]);
 
     gm.dm.AddSuggestion([4, 6, 12], 0, 1, SYMBOLS.knownVoid);
     gm.dm.AddSuggestion([4, 6, 12], 0, 2, 4);

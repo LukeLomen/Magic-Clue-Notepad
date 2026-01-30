@@ -60,9 +60,9 @@ export class InteractiveButton {
     SetSelected(selected) {
         this.state.selected = selected;
         this._ApplyStateClass("selected", selected);
-        if (this.onSelect) {
+        /*if (this.onSelect) {
             this.onSelect();
-        }
+        }*/
     }
 
     SetHovered(hovered) {
@@ -84,6 +84,14 @@ export class InteractiveButton {
             );
         }
         this.onPress();
+    }
+
+    HideButton(hide) {
+        if (hide) {
+            this.root.classList.add("hidden")
+        } else {
+            this.root.classList.remove("hidden")
+        }
     }
 
     SetEnabled(enabled) {
@@ -114,7 +122,7 @@ export class InteractiveButton {
             setTimeout(() => {
                 this.iconEl.textContent = icon;
                 this.iconEl.style.opacity = 1;
-            }, 100); // smooth fade
+            }, 100);
         } else {
             this.iconEl.textContent = icon;
         }
@@ -138,6 +146,8 @@ export class InteractiveButton {
 
     _CheckTextOverflow() {
         const shouldHide = this.textEl.scrollWidth > this.root.clientWidth;
-        this.root.classList.toggle("btn--icon-only", shouldHide);
+        //this.root.classList.toggle("btn--icon-only", shouldHide);
+
+        //////////I dont think this or observe resize is nessicary
     }
 }

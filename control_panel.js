@@ -10,65 +10,37 @@ class State {
         mainText = "",
         validationText = "",
         suggestionButtonContainerHidden = true,
-        backButtonContainerHidden = false,
-        forwardButtonText = "Next",
-        backButtonText = "Back",
-        forwardButtonFunction
-
+        forwardButtonText = "Confirm",
+        forwardButtonFunction,
+        hidden = false
     }) {
         this.mainText = mainText;
         this.validationText = validationText;
         this.suggestionButtonContainerHidden = suggestionButtonContainerHidden;
-        this.backButtonContainerHidden = backButtonContainerHidden;
         this.forwardButtonText = forwardButtonText;
-        this.backButtonText = backButtonText;
         this.forwardButtonFunction = forwardButtonFunction;
+        this.hidden = hidden;
     }
 }
 
 export class ControlPanel {
     constructor({
-        OnPressStart,
         OnPressConfirmStarting,
         OnPressConfirmExtra,
-        OnPressNewSuggestion,
-        OnPressForward,
-        OnPressNewGame,
-        OnPressBack,
-        OnPressSuggestionResponse,
+        OnPressConfirmSuggestionResponse
     }) {
         this.controlPanel = document.getElementById('control-panel');
         this.validationText = document.getElementById('validation-text');
         this.mainText = document.getElementById('main-text');
         this.forwardButtonContainer = document.getElementById('forward-button-container');
-        this.backButtonContainer = document.getElementById('back-button-container');
         this.suggestionButtonContainer = document.getElementById('suggestion-buttons-container');
 
         this.forwardButton = new InteractiveButton({
-            text: "Next",
-            icon: "→",
-            parent: this.forwardButtonContainer,
-            type: "primary",
-            id: "forward-button",
-            onPress: () => OnPressForward()
-        });
-
-        this.backButton = new InteractiveButton({
-            text: "Back",
-            icon: "<",
-            parent: this.backButtonContainer,
-            type: "primary",
-            id: "back-button",
-            onPress: () => OnPressBack()
-        });
-
-        this.confirmButton = new InteractiveButton({
             text: "Confirm",
-            icon: "✓",
+            //icon: "→",
             parent: this.forwardButtonContainer,
-            type: "primary",
+            type: "secondary",
             id: "forward-button",
-            onPress: () => OnPressNewSuggestion()
         });
 
         this.suspectButton = new InteractiveButton({
@@ -76,7 +48,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "suspect-button",
-            onPress: () => OnPressSuggestionResponse('suspect')
+            onPress: () => this.SelectSuggestionResponse(this.suspectButton)
         });
 
         this.weaponButton = new InteractiveButton({
@@ -84,7 +56,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "weapon-button",
-            onPress: () => OnPressSuggestionResponse('weapon')
+            onPress: () => this.SelectSuggestionResponse(this.weaponButton)
         });
 
         this.roomButton = new InteractiveButton({
@@ -92,7 +64,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "room-button",
-            onPress: () => OnPressSuggestionResponse('room')
+            onPress: () => this.SelectSuggestionResponse(this.roomButton)
         });
 
         this.unknownButton = new InteractiveButton({
@@ -100,7 +72,7 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "unknown-button",
-            onPress: () => OnPressSuggestionResponse(SYMBOLS.possibleCard)
+            onPress: () => this.SelectSuggestionResponse(this.unknownButton)
         });
 
         this.noneButton = new InteractiveButton({
@@ -108,75 +80,44 @@ export class ControlPanel {
             parent: this.suggestionButtonContainer,
             type: "secondary",
             id: "none-button",
-            onPress: () => OnPressSuggestionResponse(SYMBOLS.knownVoid)
+            onPress: () => this.SelectSuggestionResponse(this.noneButton)
         });
+
+        this.suggestionButtons = [this.suspectButton, this.weaponButton, this.roomButton, this.unknownButton, this.noneButton];
+        this.selectedSuggestionButton = null;
 
         /// States
         this.NEW_GAME = new State({
-            mainText: "",
-            forwardButtonText: "Start",
-            forwardButtonFunction: () => OnPressStart(),
-            backButtonContainerHidden: true
+            hidden: true
         });
 
         this.STARTING_CARDS = new State({
-            mainText: "Select Starting Cards",
-            forwardButtonText: "Confirm",
-            backButtonText: "Back",
-            backButtonContainerHidden: false,
+            mainText: "Select Your Cards",
             forwardButtonFunction: () => OnPressConfirmStarting()
         });
 
         this.EXTRA_CARDS = new State({
             mainText: "Select Extra Cards",
-            forwardButtonText: "Confirm",
-            backButtonText: "Back",
-            backButtonContainerHidden: false,
             forwardButtonFunction: () => OnPressConfirmExtra()
-        });
-
-        this.NEW_SUGGESTION = new State({
-            mainText: "New Suggestion",
-            //forwardButtonText: "Confirm",
-            backButtonText: "Back",
-            backButtonContainerHidden: false,
-            //forwardButtonFunction: () => OnPressNewSuggestion()
-            forwardButtonFunction: () => OnPressForward()
         });
 
         this.SUGGESTION = new State({
             suggestionButtonContainerHidden: false,
-
+            forwardButtonFunction: () => OnPressConfirmSuggestionResponse(this.ConfirmSuggestionResponse())
         });
-
-
-        //this.HideElement(this.controlPanel);
     }
 
     ChangeState(state) {
+        if (state.hidden) {
+            this.controlPanel.classList.add('hidden')
+        } else {
+            this.controlPanel.classList.remove('hidden')
+        }
         this.SetMainText(state.mainText);
         this.SetValidationText(state.validationText);
         this.HideSuggestionButtonContainer(state.suggestionButtonContainerHidden);
-        this.HideBackButtonContainer(state.backButtonContainerHidden);
         this.forwardButton.SetText(state.forwardButtonText);
         this.forwardButton.onPress = state.forwardButtonFunction;
-        this.backButton.SetText(state.backButtonText);
-    }
-
-    HideElement(element) {
-        if (element instanceof HTMLElement) {
-            element.classList.add('hidden');
-        } else {
-            console.warn(`Can't hide element: ${element} is not an HtmlElement`);
-        }
-    }
-
-    ShowElement(element) {
-        if (element instanceof HTMLElement) {
-            element.classList.remove('hidden');
-        } else {
-            console.warn(`Can't show element: ${element} is not an HtmlElement`);
-        }
     }
 
     HideSuggestionButtonContainer(hide) {
@@ -187,19 +128,63 @@ export class ControlPanel {
         }
     }
 
-    HideBackButtonContainer(hide) {
-        if (hide) {
-            this.backButtonContainer.classList.add('hidden');
-        } else {
-            this.backButtonContainer.classList.remove('hidden');
-        }
-    }
-
     SetMainText(text) {
         this.mainText.textContent = text;
     }
 
     SetValidationText(text) {
         this.validationText.textContent = text;
+    }
+
+    ConfirmButtonEnabled(enabled) {
+        this.forwardButton.SetEnabled(enabled);
+    }
+
+    SuggestionButtonsEnabled(enabled) {
+        this.suspectButton.SetEnabled(enabled);
+        this.weaponButton.SetEnabled(enabled);
+        this.roomButton.SetEnabled(enabled);
+        this.unknownButton.SetEnabled(enabled);
+        this.noneButton.SetEnabled(enabled);
+    }
+
+    SelectSuggestionResponse(responseButton) {
+        if (responseButton.GetState().selected) {
+            this.selectedSuggestionButton = null;
+        } else {
+            this.selectedSuggestionButton = responseButton;
+            this.UnselectSuggestionButtons();
+        }
+        if (this.selectedSuggestionButton != null) {
+            this.ConfirmButtonEnabled(true);
+        } else {
+            this.ConfirmButtonEnabled(false);
+        }
+    }
+
+    UnselectSuggestionButtons() {
+        this.suggestionButtons.forEach(button => {
+            if (this.selectedSuggestionButton != button) {
+                button.SetSelected(false);
+            }
+        });
+    }
+
+    ConfirmSuggestionResponse() {
+        if (this.selectedSuggestionButton == this.suspectButton) {
+            return 'suspect'
+        } else if (this.selectedSuggestionButton == this.weaponButton) {
+            return 'weapon'
+        } else if (this.selectedSuggestionButton == this.roomButton) {
+            return 'room'
+        } else if (this.selectedSuggestionButton == this.unknownButton) {
+            return SYMBOLS.possibleCard
+        } else if (this.selectedSuggestionButton == this.noneButton) {
+            return SYMBOLS.knownVoid
+        }
+    }
+
+    HideUnknownButton(){
+        this.unknownButton.SetButtonDisplayNone(true)
     }
 }
