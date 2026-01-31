@@ -17,7 +17,7 @@ function DisplayTurn(turn) {
 window.DisplayTurn = DisplayTurn;
 
 //DebugGame0();
-DebugGameA();
+//DebugGameA();
 //DebugGameB();
 //DebugGameC();
 

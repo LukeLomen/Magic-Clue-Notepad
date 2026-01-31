@@ -49,6 +49,9 @@ export class GameManager {
             const selectedIndex = Array.from(selectedRowsSet)[0] - 1;
             this.dm.SetSuggester(this.currentTurn, selectedIndex);
             this.dm.SetSuggestee(this.currentTurn, this.dm.GetNextPlayer(selectedIndex));
+        } else {
+            this.dm.SetSuggester(this.currentTurn, undefined);
+            this.dm.SetSuggestee(this.currentTurn, undefined);
         }
         this.WriteControlPanelSuggestionText(this.currentTurn);
         this._ValidateSuggestion();
@@ -233,7 +236,7 @@ export class GameManager {
     }
 
     StartGame(playerNamesArr) {
-        console.log(`Game started with ${this.dm.numPlayers} players`);
+        console.log(`Game started with ${playerNamesArr.length} players`);
         this.dm.CreatePlayers(playerNamesArr);
         this.WritePlayerNamesToTable();
         this.WriteCardNamesToTable();
@@ -346,6 +349,15 @@ export class GameManager {
         });
     }
 
+    WriteControlPanelSuggestionText(turn) {
+        const targetSuggestion = this.dm.GetSuggestion(turn);
+        if (targetSuggestion.suggestee) {
+            this.controlPanel.SetMainText(`${targetSuggestion.suggester.name} asked ${targetSuggestion.suggestee.name}`);
+        } else {
+            this.controlPanel.SetMainText(`Select the player making a suggestion`);
+        }
+    }
+
     WriteControlPanelSuggestionButtons(turn) {
         const targetSuggestion = this.dm.GetSuggestion(turn);
         if (targetSuggestion.cardArray) {
@@ -355,12 +367,46 @@ export class GameManager {
         }
     }
 
-    WriteControlPanelSuggestionText(turn) {
-        const targetSuggestion = this.dm.GetSuggestion(turn);
-        if (targetSuggestion.suggestee) {
-            this.controlPanel.SetMainText(`${targetSuggestion.suggester.name} asked ${targetSuggestion.suggestee.name}`);
+    ValidateSuggestionButtons() {
+        const targetSuggestion = this.dm.GetSuggestion(this.currentTurn);
+        const s = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[0]);
+        const w = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[1]);
+        const r = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[2]);
+
+        if (s == SYMBOLS.knownHave || w == SYMBOLS.knownHave || r == SYMBOLS.knownHave) {
+            this.controlPanel.noneButton.SetEnabled(false);
+        }
+
+        if (targetSuggestion.suggester.index > 0) {
+            /// Someone else is making the suggestion
+            this.controlPanel.suspectButton.SetEnabled(false);
+            this.controlPanel.weaponButton.SetEnabled(false);
+            this.controlPanel.roomButton.SetEnabled(false);
+            if (targetSuggestion.suggestee.index == 0) {
+                this.controlPanel.unknownButton.SetEnabled(false);
+                if (s == SYMBOLS.knownHave) {
+                    this.controlPanel.suspectButton.SetEnabled(true);
+                }
+                if (w == SYMBOLS.knownHave) {
+                    this.controlPanel.weaponButton.SetEnabled(true);
+                }
+                if (r == SYMBOLS.knownHave) {
+                    this.controlPanel.roomButton.SetEnabled(true);
+                }
+            }
         } else {
-            this.controlPanel.SetMainText(`Select the player making a suggestion`);
+            /// You are making the suggestion
+            this.controlPanel.unknownButton.SetEnabled(false);
+
+            if (s === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+                this.controlPanel.suspectButton.SetEnabled(false);
+            }
+            if (w === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+                this.controlPanel.weaponButton.SetEnabled(false);
+            }
+            if (r === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+                this.controlPanel.roomButton.SetEnabled(false);
+            }
         }
     }
 
@@ -388,35 +434,5 @@ export class GameManager {
         this.DisplayTurn(this.currentTurn);
     }
 
-    ValidateSuggestionButtons() {
-        const targetSuggestion = this.dm.GetSuggestion(this.currentTurn);
-        const s = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[0]);
-        const w = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[1]);
-        const r = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[2]);
 
-        if (s == SYMBOLS.knownHave || w == SYMBOLS.knownHave || r == SYMBOLS.knownHave) {
-            this.controlPanel.noneButton.SetEnabled(false);
-        }
-
-        if (targetSuggestion.suggester.index > 0) {
-            this.controlPanel.suspectButton.SetEnabled(false);
-            this.controlPanel.weaponButton.SetEnabled(false);
-            this.controlPanel.roomButton.SetEnabled(false);
-            return
-        }
-
-        this.controlPanel.unknownButton.SetEnabled(false);
-
-        if (s === SYMBOLS.knownVoid) {
-            this.controlPanel.suspectButton.SetEnabled(false);
-            console.log(s, SYMBOLS.knownVoid)
-        }
-        if (w === SYMBOLS.knownVoid) {
-            this.controlPanel.weaponButton.SetEnabled(false);
-        }
-        if (r === SYMBOLS.knownVoid) {
-            this.controlPanel.roomButton.SetEnabled(false);
-        }
-
-    }
 }

@@ -34,6 +34,13 @@ body {
     overscroll-behavior: none;
 }
 
+p {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.4;
+    margin-top: 2rem;
+}
+
 .elevated-container {
     margin: 4rem auto;
     padding: 2rem;
@@ -66,8 +73,9 @@ body {
 }
 
 #suggestion-text {
-    /*flex: 1 1 50%;*/
+    flex: 1 1 50%;
     /*margin: var(--outer-margin);*/
+    width: 100%;
     user-select: none;
     font-size: clamp(20px, 2vw, 30px);
     text-align: center;
@@ -79,7 +87,8 @@ body {
 
 #suggestion-buttons-container {
     display: flex;
-    flex: 1 1 100%;
+
+    /*flex: 1 1 100%;*/
     /*width: 80%;*/
     /*height: 0px;*/
 }
@@ -96,8 +105,7 @@ body {
 }
 
 @media(orientation:portrait) {
-    #control-panel {
-    }
+    #control-panel {}
 
     #forward-button-container,
     #back-button-container {

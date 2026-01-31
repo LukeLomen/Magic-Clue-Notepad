@@ -7,7 +7,7 @@ import {
 
 export class Suggestion {
   constructor({
-    cardArray,
+    cardArray = ['', '', ''],
     suggester,
     suggestee,
     response,
@@ -18,10 +18,6 @@ export class Suggestion {
     this.suggester = suggester;
     this.suggestee = suggestee;
     this.response = response;
-
-    if (cardArray == undefined) {
-      this.cardArray = ['', '', ''];
-    }
   }
   Clone() {
     const clone = new Suggestion({
@@ -60,7 +56,7 @@ class Player {
     this.allCardsKnown = false;
   }
 
-  GetCardSymbol(index){
+  GetCardSymbol(index) {
     return this.cardArray[index];
   }
 
