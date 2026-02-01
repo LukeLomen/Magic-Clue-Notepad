@@ -14,7 +14,6 @@
 
   width: 100%;
   height: 100%;
-  cursor: pointer;
   user-select: none;
   touch-action: none;
   table-layout: fixed;
@@ -27,7 +26,11 @@ td {
   border-right: var(--table-border);
   transition: transform 0.2s ease;
   transition: border 0.2s ease;
-  /*transition: background-color 0.2s ease;*/
+  transition: background-color 0.1s ease;
+}
+
+.selectable{
+  cursor: pointer;
 }
 
 .category-start {
@@ -99,7 +102,6 @@ td {
   /*box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);*/
 
 }
-
 
 .focused-menu {
   transform: scaleX(100);

@@ -144,6 +144,8 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.DisplayTable(true);
         this.interactiveTable.colTargetActive = true;
+        this.interactiveTable.EnableColSelectMode(true);
+        this.interactiveTable.EnableRowSelectMode(false);
         this.controlPanel.ChangeState(this.controlPanel.STARTING_CARDS);
         this._ValidateStartingCards(0)
     }
@@ -156,6 +158,8 @@ export class GameManager {
         this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.DisplayTable(true);
         this.interactiveTable.colTargetActive = true;
+        this.interactiveTable.EnableColSelectMode(true);
+        this.interactiveTable.EnableRowSelectMode(false);
         this.controlPanel.ChangeState(this.controlPanel.EXTRA_CARDS);
         this._ValidateExtraCards(0);
     }
@@ -195,8 +199,8 @@ export class GameManager {
         //this.dm.WritePlayerDataFromSuggestionHistory(suggestion.turn);
         this.WriteTableCellDataFromPlayerData();
         this.interactiveTable.DisplayTable(true);
-        this.interactiveTable.colTargetActive = true;
-        this.interactiveTable.rowTargetActive = true;
+        this.interactiveTable.EnableColSelectMode(true);
+        this.interactiveTable.EnableRowSelectMode(true);
         this.interactiveTable.categorySelectionMode = true;
 
         /*const suggesterName = suggestion.suggester.name;
@@ -271,8 +275,8 @@ export class GameManager {
     StartNewSuggestion() {
         this.dm.CreateNewSuggestion();
         this.DisplaySuggestion();
-        this.interactiveTable.rowTargetActive = true;
-        this.interactiveTable.colTargetActive = true;
+        this.interactiveTable.EnableColSelectMode(true);
+        this.interactiveTable.EnableRowSelectMode(true);
     }
 
     ContinueSuggestion() {
@@ -282,8 +286,8 @@ export class GameManager {
             return
         }
         this.dm.ContinueSuggestion();
-        this.interactiveTable.rowTargetActive = false;
-        this.interactiveTable.colTargetActive = false;
+        this.interactiveTable.EnableColSelectMode(false);
+        this.interactiveTable.EnableRowSelectMode(false);
         this._ValidateSuggestion();
     }
 

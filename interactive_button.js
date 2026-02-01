@@ -1,7 +1,7 @@
 export class InteractiveButton {
     constructor({
         text = "",
-        icon = "",
+        //icon = "",
         type = "primary",
         parent = document.body,
         id = null,
@@ -19,19 +19,19 @@ export class InteractiveButton {
         if (id) this.root.id = id;
         this.root._instance = this;
 
-        this.iconEl = document.createElement("span");
+        /*this.iconEl = document.createElement("span");
         this.iconEl.className = "btn__icon";
-        this.iconEl.textContent = icon;
+        this.iconEl.textContent = icon;*/
 
         this.textEl = document.createElement("span");
         this.textEl.className = "btn__text";
         this.textEl.textContent = text;
 
-        this.root.appendChild(this.iconEl);
+        //this.root.appendChild(this.iconEl);
         this.root.appendChild(this.textEl);
         parent.appendChild(this.root);
 
-        this._ObserveResize();
+        //this._ObserveResize();
 
         this.root.addEventListener('pointerenter', e => this._HandleMove(e));
         this.root.addEventListener('pointerleave', e => this._HandleLeave(e));
@@ -50,6 +50,10 @@ export class InteractiveButton {
     _HandleSubmit(e) {
         if (e.type === 'keydown' && e.key !== 'Enter') return;
         this.SetPressed(true);
+        /*this.SetHovered(false)*/
+        /*if (this.type == "toggle") {
+
+        }*/
         if (this.state.selected) {
             this.SetSelected(false);
         } else {
@@ -97,7 +101,7 @@ export class InteractiveButton {
     SetEnabled(enabled) {
         this.state.enabled = enabled;
         this._ApplyStateClass("disabled", !enabled);
-        if(this.state.selected){
+        if (this.state.selected) {
             //this.onPress();
             this.SetSelected(false);
         }
@@ -111,16 +115,16 @@ export class InteractiveButton {
         this._ApplyStateClass("text-only", display);
     }
 
-    SetIconDisplayNone(display) {
+    /*SetIconDisplayNone(display) {
         this._ApplyStateClass("icon-only", display);
-    }
+    }*/
 
     SetText(text) {
         this.textEl.textContent = text;
-        this._CheckTextOverflow();
+        //this._CheckTextOverflow();
     }
 
-    SetIcon(icon, animate = true) {
+    /*SetIcon(icon, animate = true) {
         if (animate) {
             this.iconEl.style.opacity = 0;
             setTimeout(() => {
@@ -130,7 +134,7 @@ export class InteractiveButton {
         } else {
             this.iconEl.textContent = icon;
         }
-    }
+    }*/
 
     GetState() {
         return {
@@ -143,7 +147,7 @@ export class InteractiveButton {
         this.root.classList.toggle(className, isActive);
     }
 
-    _ObserveResize() {
+    /*_ObserveResize() {
         const ro = new ResizeObserver(() => this._CheckTextOverflow());
         ro.observe(this.root);
     }
@@ -153,5 +157,5 @@ export class InteractiveButton {
         //this.root.classList.toggle("btn--icon-only", shouldHide);
 
         //////////I dont think this or observe resize is nessicary
-    }
+    }*/
 }

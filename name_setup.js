@@ -23,9 +23,8 @@ export class NameSetup {
 
         this.StartButton = new InteractiveButton({
             text: "Start Game",
-            icon: "+",
             parent: document.getElementById('name-setup-lower'),
-            type: "primary",
+            type: "secondary",
             id: "start-button",
             onPress: () => this.StartGame()
         });

@@ -26,6 +26,7 @@ export class InteractiveTable {
     this.spanArray = [];
     this.catetoryStarts = catetoryStarts;
     this.colCatetoryMap = new Map();
+    this.colArray = [];
     /// Selection
     this.selectedColumns = new Set();
     this.selectedRows = new Set();
@@ -80,7 +81,7 @@ export class InteractiveTable {
     }
     this.ClearFocus();
   }
-  
+
   _onPointerLeave(e) {
     if (this.pointerIsDown) {
       this.ClearFocus();
@@ -95,7 +96,7 @@ export class InteractiveTable {
     }
     return el.closest('td, th'); /// Fallback if clicking on child elements inside cell
   }
-  
+
   /// Table Creation
   _CreateTable() {
     let currentCategory = -1;
@@ -118,6 +119,7 @@ export class InteractiveTable {
       th.dataset.col = c.toString();
       headerRow.appendChild(th);
       this.cellArray.push(th);
+      this.colArray.push([th]);
       /// Add a span in each cell for display 
       const span = document.createElement('span');
       this.spanArray.push(span);
@@ -131,6 +133,7 @@ export class InteractiveTable {
         const cell = document.createElement('td');
         cell.dataset.row = r.toString();
         cell.dataset.col = c.toString();
+        this.colArray[c].push(cell);
         if (c == 0) { /// Row header cells
           cell.classList.add('row-head');
         } else { /// Other cells
@@ -373,5 +376,29 @@ export class InteractiveTable {
       this.ToggleCol(col);
       this.OnToggleCol(this.selectedColumns);
     }
+  }
+
+  EnableColSelectMode(enable) {
+    this.colTargetActive = enable;
+    for (let i = 1; i < this.colArray.length; i++) {
+      this.colArray[i].forEach(cell => {
+        if (enable) {
+          cell.classList.add('selectable');
+        } else {
+          cell.classList.remove('selectable');
+        }
+      })
+    }
+  }
+
+  EnableRowSelectMode(enable) {
+    this.rowTargetActive = enable;
+    this.colArray[0].forEach(cell => {
+      if (enable) {
+        cell.classList.add('selectable');
+      } else {
+        cell.classList.remove('selectable');
+      }
+    })
   }
 }
