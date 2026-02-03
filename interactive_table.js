@@ -26,10 +26,10 @@ export class InteractiveTable {
     this.spanArray = [];
     this.catetoryStarts = catetoryStarts;
     this.colCatetoryMap = new Map();
-    this.colArray = [];
     /// Selection
     this.selectedColumns = new Set();
     this.selectedRows = new Set();
+    this.selected2Rows = new Set();
     this.focus = null;
     this.hiddenRows = new Set();
     /// Html Construction
@@ -107,6 +107,7 @@ export class InteractiveTable {
       const th = document.createElement('th');
       if (c == 0) { /// Top-left cell
         th.classList.add('row-head');
+
       } else { /// Column header cells
         th.classList.add('col-head');
         if (this.catetoryStarts.has(c)) {
@@ -119,7 +120,6 @@ export class InteractiveTable {
       th.dataset.col = c.toString();
       headerRow.appendChild(th);
       this.cellArray.push(th);
-      this.colArray.push([th]);
       /// Add a span in each cell for display 
       const span = document.createElement('span');
       this.spanArray.push(span);
@@ -133,7 +133,6 @@ export class InteractiveTable {
         const cell = document.createElement('td');
         cell.dataset.row = r.toString();
         cell.dataset.col = c.toString();
-        this.colArray[c].push(cell);
         if (c == 0) { /// Row header cells
           cell.classList.add('row-head');
         } else { /// Other cells
@@ -180,6 +179,17 @@ export class InteractiveTable {
       colIndex >= 0 && colIndex < this.colTotal
     ) {
       this.spanArray[(rowIndex * this.colTotal + colIndex)].textContent = text;
+    } else {
+      console.warn(`Invalid cell coordinates: (${rowIndex}, ${colIndex})`);
+    }
+  }
+
+  SpinTableCell(rowIndex, colIndex) {
+    if (
+      rowIndex >= 0 && rowIndex <= this.rowCount &&
+      colIndex >= 0 && colIndex < this.colTotal
+    ) {
+      this.spanArray[(rowIndex * this.colTotal + colIndex)].classList.add('spin-cell');
     } else {
       console.warn(`Invalid cell coordinates: (${rowIndex}, ${colIndex})`);
     }
@@ -294,6 +304,7 @@ export class InteractiveTable {
   ClearAllSelection() {
     this.ClearColSelection();
     this.ClearRowSelection();
+    this.Select2Row(0);
 
   }
 
@@ -309,6 +320,7 @@ export class InteractiveTable {
 
   SelectCol(col) {
     this._GetColCellArray(col).forEach(cell => {
+      cell.classList.remove('selected-col');
       cell.classList.add('selected-col');
     });
     this.selectedColumns.add(col);
@@ -316,9 +328,26 @@ export class InteractiveTable {
 
   SelectRow(row) {
     this._GetRowCellArray(row).forEach(cell => {
+      cell.classList.remove('selected-row');
       cell.classList.add('selected-row');
     });
     this.selectedRows.add(row);
+  }
+
+  Select2Row(row) {
+    this.selected2Rows.forEach(row => {
+      this._GetRowCellArray(row).forEach(cell => {
+        cell.classList.remove('selected2-row');
+      });
+    })
+    this.selected2Rows.clear();
+    if (row > 0) {
+      this._GetRowCellArray(row).forEach(cell => {
+        cell.classList.remove('selected2-row');
+        cell.classList.add('selected2-row');
+      });
+      this.selected2Rows.add(row);
+    }
   }
 
   /// Toggle
@@ -351,6 +380,7 @@ export class InteractiveTable {
     const col = parseInt(target.dataset.col, 10);
     if (row == null || col == null) return;
     if (row === 0 && col === 0) {
+      this.ClearFocus();
       /// Corner Menu
     } else if (col === 0) {
       if (!this.rowTargetActive) return;
@@ -380,8 +410,8 @@ export class InteractiveTable {
 
   EnableColSelectMode(enable) {
     this.colTargetActive = enable;
-    for (let i = 1; i < this.colArray.length; i++) {
-      this.colArray[i].forEach(cell => {
+    for (let i = 1; i < this.colTotal; i++) {
+      this._GetColCellArray(i).forEach(cell => {
         if (enable) {
           cell.classList.add('selectable');
         } else {
@@ -393,7 +423,7 @@ export class InteractiveTable {
 
   EnableRowSelectMode(enable) {
     this.rowTargetActive = enable;
-    this.colArray[0].forEach(cell => {
+    this._GetColCellArray(0).forEach(cell => {
       if (enable) {
         cell.classList.add('selectable');
       } else {

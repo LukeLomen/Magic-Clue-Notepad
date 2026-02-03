@@ -49,9 +49,12 @@ export class GameManager {
             const selectedIndex = Array.from(selectedRowsSet)[0] - 1;
             this.dm.SetSuggester(this.currentTurn, selectedIndex);
             this.dm.SetSuggestee(this.currentTurn, this.dm.GetNextPlayer(selectedIndex));
+            this.interactiveTable.Select2Row(this.dm.suggestionHistory[this.currentTurn].suggestee.index + 1);
+
         } else {
             this.dm.SetSuggester(this.currentTurn, undefined);
             this.dm.SetSuggestee(this.currentTurn, undefined);
+            this.interactiveTable.Select2Row(0);
         }
         this.WriteControlPanelSuggestionText(this.currentTurn);
         this._ValidateSuggestion();
@@ -248,7 +251,7 @@ export class GameManager {
     }
 
     SetStartingCards(cardArray) {
-        console.log(`Starting cards selected ${cardArray}`);
+        console.log(`Starting cards selected ${cardArray.map(card =>cardsAPI.getCardFromIndex(card))}`);
         this.dm.SetStartingCards(cardArray);
         if (this.dm.numExtra > 0) {
             this.DisplayExtraCards();
@@ -262,7 +265,7 @@ export class GameManager {
     }
 
     SetExtraCards(cardArray) {
-        console.log(`Extra cards selected ${cardArray}`);
+        console.log(`Extra cards selected ${cardArray.map(card =>cardsAPI.getCardFromIndex(card))}`);
         this.dm.SetExtraCards(cardArray);
         this.StartNewSuggestion();
         this.controlPanel.ConfirmButtonEnabled(false);
@@ -289,6 +292,7 @@ export class GameManager {
         this.interactiveTable.EnableColSelectMode(false);
         this.interactiveTable.EnableRowSelectMode(false);
         this._ValidateSuggestion();
+        this.interactiveTable.Select2Row(this.dm.suggestionHistory[this.currentTurn].suggestee.index + 1);
     }
 
     EndSuggestion() {
@@ -339,6 +343,7 @@ export class GameManager {
         this.interactiveTable.HideRows(1, 6, false);
         this.dm.players.forEach((player, index) => {
             this.interactiveTable.WriteTableData(index + 1, 0, player.name);
+            //this.interactiveTable.AnimateTableCell(index + 1, 0)
         });
         this.interactiveTable.HideRows(this.dm.numPlayers + 1, 6, true);
     }
@@ -349,6 +354,13 @@ export class GameManager {
             player.cardArray.forEach((card, index) => {
                 const col = index + 1;
                 this.interactiveTable.WriteTableData(row, col, card);
+                if (card != SYMBOLS.unknown) {
+                    if (row == 0 || col == 0) {
+
+                    } else {
+                        this.interactiveTable.SpinTableCell(row, col);
+                    }
+                }
             });
         });
     }
@@ -372,20 +384,47 @@ export class GameManager {
     }
 
     ValidateSuggestionButtons() {
+        /// They dont have the card. knownVoid, extraCard, hiddenCard
         const targetSuggestion = this.dm.GetSuggestion(this.currentTurn);
         const s = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[0]);
         const w = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[1]);
         const r = targetSuggestion.suggestee.GetCardSymbol(targetSuggestion.cardArray[2]);
 
+        var voidCount = 0;
+
+        if (this.DoesntHave(s)) {
+            this.controlPanel.suspectButton.SetEnabled(false);
+            voidCount++;
+        }
+        if (this.DoesntHave(w)) {
+            this.controlPanel.weaponButton.SetEnabled(false);
+            voidCount++;
+        }
+        if (this.DoesntHave(r)) {
+            this.controlPanel.roomButton.SetEnabled(false);
+            voidCount++;
+        }
+        if (voidCount == 3) {
+            this.controlPanel.unknownButton.SetEnabled(false);
+        }
+        if (voidCount == 2) {
+            console.log('only one possible card')
+        }
+
         if (s == SYMBOLS.knownHave || w == SYMBOLS.knownHave || r == SYMBOLS.knownHave) {
             this.controlPanel.noneButton.SetEnabled(false);
         }
+
+        /*if (s == SYMBOLS.knownVoid && w == SYMBOLS.knownVoid && r == SYMBOLS.knownVoid) {
+            this.controlPanel.unknownButton.SetEnabled(false);
+        }*/
 
         if (targetSuggestion.suggester.index > 0) {
             /// Someone else is making the suggestion
             this.controlPanel.suspectButton.SetEnabled(false);
             this.controlPanel.weaponButton.SetEnabled(false);
             this.controlPanel.roomButton.SetEnabled(false);
+
             if (targetSuggestion.suggestee.index == 0) {
                 this.controlPanel.unknownButton.SetEnabled(false);
                 if (s == SYMBOLS.knownHave) {
@@ -402,15 +441,23 @@ export class GameManager {
             /// You are making the suggestion
             this.controlPanel.unknownButton.SetEnabled(false);
 
-            if (s === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+            /*if (s === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard || s === SYMBOLS.extraCard) {
                 this.controlPanel.suspectButton.SetEnabled(false);
             }
-            if (w === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+            if (w === SYMBOLS.knownVoid || w === SYMBOLS.hiddenCard || w === SYMBOLS.extraCard) {
                 this.controlPanel.weaponButton.SetEnabled(false);
             }
-            if (r === SYMBOLS.knownVoid || s === SYMBOLS.hiddenCard) {
+            if (r === SYMBOLS.knownVoid || r === SYMBOLS.hiddenCard || r === SYMBOLS.extraCard) {
                 this.controlPanel.roomButton.SetEnabled(false);
-            }
+            }*/
+        }
+    }
+
+    DoesntHave(c) {
+        if (c == SYMBOLS.knownVoid || c == SYMBOLS.extraCard || c == SYMBOLS.hiddenCard) {
+            return true
+        } else {
+            return false
         }
     }
 

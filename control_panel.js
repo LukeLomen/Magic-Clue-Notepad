@@ -37,7 +37,6 @@ export class ControlPanel {
 
         this.forwardButton = new InteractiveButton({
             text: "Confirm",
-            //icon: "→",
             parent: this.forwardButtonContainer,
             type: "secondary",
             id: "forward-button",
