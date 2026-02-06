@@ -1,5 +1,7 @@
 #control-panel {
-    --text-size: clamp(14px, 2dvh, 30px);
+    --vt: calc(1dvh + 1.5dvw);
+
+    --text-size: clamp(14px, var(--vt), 60px);
     --button-height: 12px;
 
 
@@ -15,7 +17,7 @@
     user-select: none;
     font-size: var(--text-size);
     text-align: center;
-    margin: 0.1dvh;
+    margin: 1dvh;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -27,14 +29,16 @@
 }
 
 #buttons-container {
-    width: 100%;
-    flex-direction: column;
+    display: flex;
+    width: 100dvw;
+    flex-direction: row;
     align-items: center;
 }
 
 #suggestion-area {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 #suggestion-buttons-container {
@@ -47,11 +51,11 @@
     flex-direction: row;
 }
 
-#forward-button-container{
-    margin: 4px,0px;
-}
+/*#forward-button-container {
 
-#suggestion-area span {
+}*/
+
+#control-panel span {
     font-size: var(--text-size);
 }
 
@@ -61,13 +65,13 @@
     }
 }
 
-@media screen and (max-height: 652px) {
-    #buttons-container{
-        flex-direction: row;
+@media screen and (min-height: 752px) {
+    #buttons-container {
+        flex-direction: column;
     }
 }
 
-@media screen and (max-height: 432px) {
+@media screen and (max-height: 460px) {
     #suggestion-area {
         flex-direction: row;
     }

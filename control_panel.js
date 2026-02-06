@@ -39,7 +39,7 @@ export class ControlPanel {
         this.forwardButton = new InteractiveButton({
             text: "Confirm",
             parent: this.forwardButtonContainer,
-            type: "secondary",
+            type: "button-37",
             id: "forward-button",
         });
 
