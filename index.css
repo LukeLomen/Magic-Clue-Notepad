@@ -1,5 +1,6 @@
 :root {
-    --outer-margin: 6px;
+    --outer-margin: calc(0.15dvw + 0.15dvh);
+    --double-margin: calc(var(--outer-margin) * 2);
 
     --primary-color: #9c9;
     --secondary-color: rgb(178, 241, 178);
@@ -7,7 +8,7 @@
     --min-font-size: calc(1dvw + 1dvh);
 
     --table-height: 70dvh;
-    --contro-panel-height: calc(100dvh - var(--table-height));
+    /*--contro-panel-height: calc(98dvh - var(--table-height));*/
 }
 
 html {
@@ -27,33 +28,35 @@ body {
 
 html,
 body {
-    height: 100%;
-    margin: 0;
+    height: calc(100dvh - var(--double-margin));
+    margin: var(--outer-margin);
     overflow: hidden;
     touch-action: none;
     overscroll-behavior: none;
 }
 
-p {
+#top-container {
+    margin-bottom: var(--outer-margin);
+}
+
+#control-panel {
+    height: 100%;
+}
+
+#interactive-table-container {
+    height: var(--table-height);
+}
+
+/*p {
     font-size: 0.9rem;
     color: #444;
     line-height: 1.4;
     margin-top: 2rem;
-}
+}*/
 
 .elevated-container {
-    margin: 4rem auto;
-    padding: 2rem;
+    /*margin: 4rem auto;
+    padding: 2rem;*/
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
-
-#top-container {
-    margin: var(--outer-margin);
-    height: var(--table-height);
-}
-
-#interactive-table-container {
-    height: 100%;
-}
-

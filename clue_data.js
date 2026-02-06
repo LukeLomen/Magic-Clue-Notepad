@@ -60,6 +60,19 @@ class Player {
     return this.cardArray[index];
   }
 
+  TheyDontHave(card) {
+    const c = this.cardArray[card];
+    if (
+      c == SYMBOLS.knownVoid ||
+      c == SYMBOLS.extraCard ||
+      c == SYMBOLS.hiddenCard
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   SetCardArray(card, value) {
     this.cardArray[card] = value;
   }
@@ -69,21 +82,23 @@ class Player {
   }
 
   SetKnownVoid(card) {
-    if (this.cardArray[card] == SYMBOLS.extraCard) {
+    if (this.TheyDontHave(card)) {
       return;
     }
     this.SetCardArray(card, SYMBOLS.knownVoid);
+    this.RemovePossibleCard(card);
     this.CheckPossibleCards();
   }
 
   SetKnownHave(card) {
-    this.SetCardArray(card, SYMBOLS.knownHave);
+    if (this.cardArray[card] == SYMBOLS.knownHave || this.TheyDontHave(card)) {
+      return
+    }
     this.cardsKnown++;
     if (this.cardsKnown == this.numCards) {
       this.AllCardsKnown();
-    } else {
-      this.CheckPossibleCards();
     }
+    this.SetCardArray(card, SYMBOLS.knownHave);
     this.playersArray.forEach(p => {
       if (p != this) {
         p.SetKnownVoid(card);
@@ -92,25 +107,51 @@ class Player {
   }
 
   SetPossible(possibleCardsArray) {
-    this.possibleCards.push(structuredClone(possibleCardsArray));
+    var pArray = new Array();
     possibleCardsArray.forEach(card => {
-      if (this.cardArray[card] == SYMBOLS.unknown) {
-        this.SetCardArray(card, SYMBOLS.possibleCard);
+      const c = this.cardArray[card]
+      if (c == SYMBOLS.unknown || c == SYMBOLS.possibleCard || c == SYMBOLS.knownHave) {
+        pArray.push(card);
+        if (c == SYMBOLS.unknown) {
+          this.SetCardArray(card, SYMBOLS.possibleCard);
+        }
       }
     });
+    if (pArray.length > 0) {
+      this.possibleCards.forEach((array, i) => {
+        if (this.AreArraysEqual(pArray, array)) {
+          return
+        }
+      })
+      this.possibleCards.push(structuredClone(pArray));
+    }
     this.CheckPossibleCards();
+  }
+
+  AreArraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+    return arr1.every((element, index) => {
+      return element === arr2[index];
+    });
+  }
+
+  RemovePossibleCard(card) {
+    this.possibleCards.forEach((array, i) => {
+      array.forEach((c, index) => {
+        if (c == card) {
+          array.splice(index, 1);
+        }
+      });
+    })
   }
 
   CheckPossibleCards() {
     this.possibleCards.forEach((array, i) => {
-      /// First look through all the arrays. Then compare each item in the nested arrays with this.cardArray; if the number in the possible card array is known void or have then remove that number and setknownvoid; after removing impossible cards if any of the array lengths are 1 then that card has been inferred: setknownhave and remove the 1 length array.
-      array.forEach((card, index) => {
-        if (this.cardArray[card] != SYMBOLS.possibleCard) {
-          array.splice(index, 1);
-        }
-      });
       if (array.length == 1) {
         this.SetKnownHave(array[0]);
+        this.possibleCards.splice(i, 1);
       } else if (array.length == 0) {
         this.possibleCards.splice(i, 1);
       }
@@ -118,6 +159,7 @@ class Player {
   }
 
   SetHidden(card) {
+    this.RemovePossibleCard(card);
     this.SetCardArray(card, SYMBOLS.hiddenCard);
   }
 
@@ -125,7 +167,7 @@ class Player {
     this.allCardsKnown = true;
     this.possibleCards = new Array();
     this.cardArray.forEach((card, index) => {
-      if (card != SYMBOLS.knownHave) {
+      if (card != SYMBOLS.knownHave && card != SYMBOLS.hiddenCard) {
         this.SetKnownVoid(index);
       }
     });
@@ -277,7 +319,7 @@ export class DataManager {
     }
   }
 
-  CheckCategoriesForHiddenCard() {
+  /*CheckCategoriesForHiddenCard() {
     let suspectSet = new Set([0, 1, 2, 3, 4, 5]);
     let weaponSet = new Set([6, 7, 8, 9, 10, 11]);
     let roomSet = new Set([12, 13, 14, 15, 16, 17, 18, 19, 20]);
@@ -295,13 +337,13 @@ export class DataManager {
         this.SetHiddenCard(categoryArray.values().next().value);
       }
     });
-  }
+  }*/
 
   CheckForHiddenCards() {
     for (let card = 0; card < 21; card++) {
       this.CheckForHiddenCard(card);
     }
-    this.CheckCategoriesForHiddenCard();
+    //this.CheckCategoriesForHiddenCard();
   }
 
   InterpretSuggestion(suggestion) {

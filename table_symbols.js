@@ -1,8 +1,8 @@
 export const SYMBOLS = {
     unknown: '',
     knownHave: 'X',
-    knownVoid: '/',
     possibleCard: '?',
+    knownVoid: '/',
     hiddenCard: '$',
     extraCard: '|'
 }
