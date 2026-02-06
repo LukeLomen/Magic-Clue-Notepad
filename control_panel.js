@@ -34,6 +34,7 @@ export class ControlPanel {
         this.mainText = document.getElementById('main-text');
         this.forwardButtonContainer = document.getElementById('forward-button-container');
         this.suggestionButtonContainer = document.getElementById('suggestion-buttons-container');
+        this.secondaryButtonContainer = document.getElementById('secondary-buttons-container');
 
         this.forwardButton = new InteractiveButton({
             text: "Confirm",
@@ -68,7 +69,7 @@ export class ControlPanel {
 
         this.unknownButton = new InteractiveButton({
             text: "Unknown",
-            parent: this.suggestionButtonContainer,
+            parent: this.secondaryButtonContainer,
             type: "secondary",
             id: "unknown-button",
             onPress: () => this.SelectSuggestionResponse(this.unknownButton)
@@ -76,7 +77,7 @@ export class ControlPanel {
 
         this.noneButton = new InteractiveButton({
             text: "None",
-            parent: this.suggestionButtonContainer,
+            parent: this.secondaryButtonContainer,
             type: "secondary",
             id: "none-button",
             onPress: () => this.SelectSuggestionResponse(this.noneButton)

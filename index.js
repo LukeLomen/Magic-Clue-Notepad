@@ -16,9 +16,9 @@ function DisplayTurn(turn) {
 /// Allows user to display turn from the browser console
 window.DisplayTurn = DisplayTurn;
 
-DebugGame0();
+//DebugGame0();
 //DebugGameA();
-//DebugGameB();
+DebugGameB();
 //DebugGameC();
 
 function DebugGame0() {

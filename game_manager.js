@@ -436,15 +436,18 @@ export class GameManager {
                 if (r == SYMBOLS.knownHave) {
                     this.controlPanel.roomButton.SetEnabled(true);
                 }
-            } else if (voidCount >= 2) {
-                this.controlPanel.unknownButton.SetEnabled(false);
-                if (s == SYMBOLS.unknown || s == SYMBOLS.possibleCard) {
+            }
+            if (voidCount >= 2) {
+                if (voidCount == 3) {
+                    this.controlPanel.unknownButton.SetEnabled(false);
+                }
+                if (s == SYMBOLS.unknown || s == SYMBOLS.possibleCard || s == SYMBOLS.knownHave) {
                     this.controlPanel.suspectButton.SetEnabled(true);
                 }
-                if (w == SYMBOLS.unknown || w == SYMBOLS.possibleCard) {
+                if (w == SYMBOLS.unknown || w == SYMBOLS.possibleCard || w == SYMBOLS.knownHave) {
                     this.controlPanel.weaponButton.SetEnabled(true);
                 }
-                if (r == SYMBOLS.unknown || r == SYMBOLS.possibleCard) {
+                if (r == SYMBOLS.unknown || r == SYMBOLS.possibleCard || r == SYMBOLS.knownHave) {
                     this.controlPanel.roomButton.SetEnabled(true);
                 }
 
