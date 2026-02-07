@@ -13,6 +13,10 @@
     justify-content: start;
 }
 
+#turn-text{
+    font-weight: 800;
+}
+
 #suggestion-text {
     user-select: none;
     font-size: var(--text-size);

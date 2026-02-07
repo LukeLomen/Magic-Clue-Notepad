@@ -31,6 +31,7 @@ export class InteractiveButton {
         this.root.addEventListener('keydown', e => this._HandleSubmit(e));
     }
 
+    /// Event handlers
     _HandleMove() {
         this.SetHovered(true);
     }
@@ -87,9 +88,7 @@ export class InteractiveButton {
     SetEnabled(enabled) {
         this.state.enabled = enabled;
         this._ApplyStateClass("disabled", !enabled);
-        if (this.state.selected) {
-            this.SetSelected(false);
-        }
+        this.SetSelected(false);
     }
 
     SetButtonDisplayNone(display) {

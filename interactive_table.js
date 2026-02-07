@@ -1,3 +1,7 @@
+import {
+  InteractiveBadge
+} from './interactive_badge.js';
+
 export class InteractiveTable {
   constructor({
     container = document.body,
@@ -26,6 +30,7 @@ export class InteractiveTable {
     this.spanArray = [];
     this.catetoryStarts = catetoryStarts;
     this.colCatetoryMap = new Map();
+    this.badgeArray = [];
     /// Selection
     this.selectedColumns = new Set();
     this.selectedRows = new Set();
@@ -135,6 +140,11 @@ export class InteractiveTable {
         cell.dataset.col = c.toString();
         if (c == 0) { /// Row header cells
           cell.classList.add('row-head');
+          const b = (new InteractiveBadge({
+            symbol: "0",
+            parent: cell
+          }))
+          this.badgeArray.push(b);
         } else { /// Other cells
           if (this.catetoryStarts.has(c)) {
             cell.classList.add('category-start');
@@ -430,5 +440,9 @@ export class InteractiveTable {
         cell.classList.remove('selectable');
       }
     })
+  }
+
+  UpdateBadge(index, value) {
+    this.badgeArray[index].UpdateBadge(value);
   }
 }

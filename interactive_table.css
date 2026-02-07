@@ -18,19 +18,17 @@
   touch-action: none;
   table-layout: fixed;
   border-collapse: collapse;
-
 }
 
 #interactive-table-container th,
 td {
+  position: relative;
   border-bottom: var(--table-border);
   border-right: var(--table-border);
   transition:
     background-color 0.4s ease,
     box-shadow 0.4s ease;
-
 }
-
 
 .selectable {
   cursor: pointer;
@@ -43,14 +41,11 @@ td {
 #interactive-table-container th {
   height: calc(50dvh - (5dvh * var(--row-count)));
   border-top: var(--table-border);
-
 }
 
 #interactive-table-container .row-head {
   width: var(--row-head-width);
   border-left: var(--table-border);
-
-
 }
 
 #interactive-table-container span {
@@ -80,12 +75,9 @@ td {
   padding: 4px;
 }
 
-
-
 .selected-col {
   background-color: var(--secondary-color);
   animation: table-pop-vertical 0.08s ease 2 alternate;
-
 }
 
 .selected-col span {}
@@ -96,25 +88,20 @@ td {
 
 .selected-row span {
   /*animation: table-pop-vertical 0.1s ease 2 alternate;*/
-
 }
 
 .selected2-row {
   background-color: oklch(from var(--secondary-color) calc(l + 0.1) c h);
-
 }
 
 .selected2-row span {
   /*animation: table-pop-vertical 0.1s ease 2 alternate;*/
-
 }
 
 .selected-col.selected2-row {
   /*background-image: radial-gradient(white, var(--secondary-color));*/
   box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.333);
 }
-
-
 
 .focused-col {
   /*transform: scaleX(1.5);*/

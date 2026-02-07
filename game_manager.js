@@ -177,30 +177,10 @@ export class GameManager {
         this._ValidateExtraCards([]);
     }
 
-    /*DisplayNewSuggestion() {
-        this.state = 'suggestion';
-
-        this.nameSetup.DisplayNameSetup(false);
-        this.dm.WritePlayerDataFromSuggestionHistory(10000);
-        this.WriteTableCellDataFromPlayerData();
-        this.interactiveTable.DisplayTable(true);
-        this.interactiveTable.colTargetActive = true;
-        this.interactiveTable.rowTargetActive = true;
-        this.interactiveTable.categorySelectionMode = true;
-        this.interactiveTable.ClearAllSelection();
-        this.controlPanel.ChangeState(this.controlPanel.SUGGESTION);
-    }*/
-
-    /*
-        Instead of having a confirm button for new suggestions, if the suggestion is the first suggestion (table interaction not avaliable if round continues past the first person) of the round: Text & Buttons are displayed and written as table cols + rows are selected - once all 4 requirements have been selected buttons become active according to the dm possible check
-        - when displaying history: no table interaction for first suggestion
-
-        - suggestion text and buttons should be written by the suggestion object in suggestionHistory that is currently displayed. Selecting table rows and cols should instantly modify the suggestion that is displayed which in turn tells the suggestion area what to write.
-        - maybe in suggestion add bools for changing the active state of buttons (possibility check done internally in DM somehow)
-    */
-
     DisplaySuggestion() {
         const turn = this.currentTurn;
+
+
         // instead of writing the control panel from suggestions, select table rows and cols, control panel is writen from table selection
 
         // Display suggestion only needs to be called once after exiting the setup phase
@@ -258,6 +238,7 @@ export class GameManager {
         this.WritePlayerNamesToTable();
         this.WriteCardNamesToTable();
         this.DisplayStartingCards();
+        this.controlPanel.ConfirmButtonEnabled(false);
     }
 
     SetStartingCards(cardArray) {
@@ -290,6 +271,8 @@ export class GameManager {
         this.DisplaySuggestion();
         this.interactiveTable.EnableColSelectMode(true);
         this.interactiveTable.EnableRowSelectMode(true);
+        this.controlPanel.SetTurnText(this.currentTurn + 1);
+
     }
 
     ContinueSuggestion() {
@@ -303,6 +286,8 @@ export class GameManager {
         this.interactiveTable.EnableRowSelectMode(false);
         this._ValidateSuggestion();
         this.interactiveTable.Select2Row(this.dm.suggestionHistory[this.currentTurn].suggestee.index + 1);
+        this.controlPanel.SetTurnText(this.currentTurn + 1);
+
     }
 
     EndSuggestion() {
@@ -360,6 +345,7 @@ export class GameManager {
 
     WriteTableCellDataFromPlayerData() {
         this.dm.players.forEach((player, index) => {
+            this.interactiveTable.UpdateBadge(index, player.cardsKnown)
             const row = index + 1;
             player.cardArray.forEach((card, index) => {
                 const col = index + 1;
@@ -387,9 +373,10 @@ export class GameManager {
     WriteControlPanelSuggestionButtons(turn) {
         const targetSuggestion = this.dm.GetSuggestion(turn);
         if (targetSuggestion.cardArray) {
-            this.controlPanel.suspectButton.SetText(cardsAPI.getCardFromIndex(targetSuggestion.cardArray[0]));
-            this.controlPanel.weaponButton.SetText(cardsAPI.getCardFromIndex(targetSuggestion.cardArray[1]));
-            this.controlPanel.roomButton.SetText(cardsAPI.getCardFromIndex(targetSuggestion.cardArray[2]));
+            var s = cardsAPI.getCardFromIndex(targetSuggestion.cardArray[0]);
+            var w = cardsAPI.getCardFromIndex(targetSuggestion.cardArray[1]);
+            var r = cardsAPI.getCardFromIndex(targetSuggestion.cardArray[2]);
+            this.controlPanel.WriteSuggestionButtons(s, w, r);
         }
     }
 

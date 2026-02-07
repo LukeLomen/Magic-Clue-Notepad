@@ -3,6 +3,8 @@
     --header-color: black;
     --instructions-color: #666;
 
+    --margin-anim-time: 0.4s;
+
 
     display: flex;
     flex-direction: column;
@@ -12,13 +14,14 @@
     width: 100dvw;
 }
 
+#name-setup * {}
+
 #name-setup-upper {
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     width: 100%;
-    margin: clamp(1dvw, 1dvh, 3dvw);
 }
 
 #name-input-container {
@@ -35,35 +38,40 @@
     justify-content: start;
     align-items: center;
     width: 100%;
-    margin: clamp(1dvw, 1dvh, 3dvw);
 }
 
 #name-setup h1 {
-    font-size: clamp(1rem, 8vw, 3rem);
+    font-size: clamp(1rem, 8dvw, 3rem);
     color: var(--header-color);
     margin: 0px;
     text-align: center;
-    margin-bottom: clamp(4px, 2dvh, 40px);
+    margin-bottom: clamp(1px, 1dvh, 40px);
+    padding: 0px 4px;
+    transition: margin var(--margin-anim-time) ease;
 }
 
 #name-setup h3 {
-    font-size: clamp(0.5rem, 4vw, 1.25rem);
+    font-size: clamp(0.5rem, 4dvw, 1.25rem);
     color: var(--instructions-color);
     text-align: center;
     margin: 0px;
+    padding: 0px 4px;
+    transition: margin var(--margin-anim-time) ease;
 }
 
 #name-setup input[type="text"] {
     display: flex;
-    padding: clamp(.75dvw, 3dvw, 1.5dvh);
-    margin: clamp(.25dvw, .75dvh, 1dvw);
-    font-size: clamp(12px, 1vw, 18px);
+    padding: clamp(.75dvw, 3dvw, 1.4dvh);
+    margin: clamp(1px, .5dvh, 4px);
+    font-size: clamp(12px, 1.8dvw, 18px);
     border: 1px solid #ccc;
     border-radius: 8px;
     outline: none;
     background: transparent;
-    transition: border 0.4s ease;
-    transition: box-shadow 0.2s ease;
+    transition:
+        border 0.4s ease,
+        box-shadow 0.2s ease,
+        margin var(--margin-anim-time) ease;
 }
 
 #name-setup input[type="text"]::placeholder {
@@ -89,5 +97,19 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
+    }
+}
+
+@media only screen and (min-height: 800px) {
+    #name-setup h1 {
+        margin: clamp(4px, 8dvh, 40px);
+    }
+
+    #name-input-container {
+        margin: clamp(1px, 2dvh, 16px);
+    }
+
+    #name-setup input[type="text"] {
+        margin: clamp(1px, 2dvh, 8px);
     }
 }

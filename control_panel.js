@@ -30,16 +30,19 @@ export class ControlPanel {
         OnPressConfirmSuggestionResponse
     }) {
         this.controlPanel = document.getElementById('control-panel');
+        this.turnText = document.getElementById('turn-text');
         this.validationText = document.getElementById('validation-text');
         this.mainText = document.getElementById('main-text');
+        this.suggestionArea = document.getElementById('suggestion-area');
         this.forwardButtonContainer = document.getElementById('forward-button-container');
         this.suggestionButtonContainer = document.getElementById('suggestion-buttons-container');
         this.secondaryButtonContainer = document.getElementById('secondary-buttons-container');
 
+
         this.forwardButton = new InteractiveButton({
             text: "Confirm",
             parent: this.forwardButtonContainer,
-            type: "button-37",
+            type: "primary",
             id: "forward-button",
         });
 
@@ -86,6 +89,8 @@ export class ControlPanel {
         this.suggestionButtons = [this.suspectButton, this.weaponButton, this.roomButton, this.unknownButton, this.noneButton];
         this.selectedSuggestionButton = null;
 
+        this.forwardButton.SetEnabled(false);
+
         /// States
         this.NEW_GAME = new State({
             hidden: true
@@ -122,10 +127,14 @@ export class ControlPanel {
 
     HideSuggestionButtonContainer(hide) {
         if (hide) {
-            this.suggestionButtonContainer.classList.add('hidden');
+            this.suggestionArea.classList.add('hidden');
         } else {
-            this.suggestionButtonContainer.classList.remove('hidden');
+            this.suggestionArea.classList.remove('hidden');
         }
+    }
+
+    SetTurnText(turnNumber) {
+        this.turnText.textContent = `${turnNumber}: `;
     }
 
     SetMainText(text) {
@@ -184,7 +193,27 @@ export class ControlPanel {
         }
     }
 
-    HideUnknownButton(){
-        this.unknownButton.SetButtonDisplayNone(true)
+    WriteSuggestionButtons(s, w, r) {
+        if (s == undefined) {
+            s = 'Suspect'
+            this.suspectButton.root.classList.add('no-border');
+        } else {
+            this.suspectButton.root.classList.remove('no-border');
+        }
+        if (w == undefined) {
+            w = 'Weapon'
+            this.weaponButton.root.classList.add('no-border');
+        } else {
+            this.weaponButton.root.classList.remove('no-border');
+        }
+        if (r == undefined) {
+            r = 'Room'
+            this.roomButton.root.classList.add('no-border');
+        } else {
+            this.roomButton.root.classList.remove('no-border');
+        }
+        this.suspectButton.SetText(s);
+        this.weaponButton.SetText(w);
+        this.roomButton.SetText(r);
     }
 }

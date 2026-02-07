@@ -5,6 +5,8 @@
     --primary-color: #9c9;
     --secondary-color: rgb(178, 241, 178);
 
+    --dark-grey: #1a1a1a;
+
     --min-font-size: calc(1dvw + 1dvh);
 
     --table-height: 70dvh;
@@ -30,8 +32,10 @@ html,
 body {
     height: calc(100dvh - var(--double-margin));
     margin: var(--outer-margin);
+
     overflow: hidden;
-    touch-action: none;
+    user-select: none;
+    touch-action: manipulation;
     overscroll-behavior: none;
 }
 
@@ -47,6 +51,10 @@ body {
     height: var(--table-height);
 }
 
+#name-setup {
+    animation: fadeIn 2s ease-in-out;
+}
+
 /*p {
     font-size: 0.9rem;
     color: #444;
@@ -59,4 +67,14 @@ body {
     padding: 2rem;*/
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
