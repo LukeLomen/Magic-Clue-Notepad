@@ -1,6 +1,6 @@
 .btn {
     /* Theming colors*/
-    --background-color: white;
+    --background-color: var(--color-9);
     --hover-color: #9c9;
     --selected-color: rgb(178, 241, 178);
     --disabled-color: #f0f0f0;
@@ -19,7 +19,7 @@
     --elev-hover: 0 4px 8px rgba(0, 0, 0, .15);
     --elev-pressed: 0 6px 20px rgba(0, 0, 0, .2);
 
-    margin: 4px;
+    margin: .25dvw;
     min-width: 44px;
     min-height: 44px;
     position: relative;
@@ -28,6 +28,7 @@
     justify-content: center;
     padding: var(--btn-padding-y) var(--btn-padding-x);
     background: var(--background-color);
+    background-color: white;
     border: solid;
     border-width: 2px;
     border-color: var(--primary-color);
@@ -42,10 +43,11 @@
     line-height: 1;
 
     transition:
-        background-color .5s ease,
+        color 1s ease,
+        background-color .6s ease,
         box-shadow .2s ease,
         transform .2s ease,
-        border-color .8s ease,
+        border-color .4s,
         border-width .8s ease,
         border-radius .2s ease;
 }
@@ -68,7 +70,10 @@
 
 .btn--primary span {
     color: white;
-    font-weight: 600;
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    padding: 8px;
 }
 
 /* States */
@@ -90,10 +95,10 @@
 
 .btn--disabled {
     background-color: var(--disabled-color);
-    color: #999;
+    color: #929292;
     box-shadow: none;
     cursor: not-allowed;
-    border-color: rgb(190, 190, 190);
+    border-color: white;
     border-radius: 2px;
 }
 
@@ -115,9 +120,8 @@
     animation: ripple 0.4s forwards;
 }
 
-.no-border {
-    border-color: white;
-    text-decoration: underline;
+.disable-highlight {
+    border-color: rgb(190, 190, 190);
 }
 
 @keyframes ripple {

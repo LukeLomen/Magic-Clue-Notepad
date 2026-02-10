@@ -25,13 +25,49 @@ export class InteractiveButton {
         this.root.appendChild(this.textEl);
         parent.appendChild(this.root);
 
+        let touchInside = false;
         this.root.addEventListener('pointerenter', e => this._HandleMove(e));
         this.root.addEventListener('pointerleave', e => this._HandleLeave(e));
         this.root.addEventListener('pointerup', e => this._HandleSubmit(e));
         this.root.addEventListener('keydown', e => this._HandleSubmit(e));
+
+        //Buttons not tracking touch movement to deselect or select when touch moves into button area
+        
+        //************** */ Trying to get buttons to work with touch so that they stop hover when touch leaves button and they only get pressed with touch up on the specific button*/
+
+        /*document.addEventListener('touchmove', (event) => {
+            const touch = event.touches[0];
+            if (touchInside && !this._IsTouchInside(this.root, touch)) {
+                touchInside = false;
+                this.SetHovered(false);
+            } else if (!touchInside && this._IsTouchInside(this.root, touch)) {
+                touchInside = true;
+                this.SetHovered(true);
+            }
+        });
+
+        this.root.addEventListener('touchend', (event) => {
+            if (touchInside) {
+                if (this.state.selected) {
+                    this.SetSelected(false);
+                } else {
+                    this.SetSelected(true);
+                }
+                this.SetPressed(true);
+            }
+            touchInside = false; // Reset state
+        });*/
     }
 
     /// Event handlers
+    _IsTouchInside(button, touch) {
+        const rect = button.getBoundingClientRect();
+        return touch.clientX >= rect.left &&
+            touch.clientX <= rect.right &&
+            touch.clientY >= rect.top &&
+            touch.clientY <= rect.bottom;
+    }
+
     _HandleMove() {
         this.SetHovered(true);
     }
@@ -42,6 +78,7 @@ export class InteractiveButton {
 
     _HandleSubmit(e) {
         if (e.type === 'keydown' && e.key !== 'Enter') return;
+        if (e.target != this.root) return;
         this.SetPressed(true);
         if (this.state.selected) {
             this.SetSelected(false);

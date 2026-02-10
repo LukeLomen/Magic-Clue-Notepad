@@ -2,8 +2,6 @@
     --vt: calc(1dvh + 1.5dvw);
 
     --text-size: clamp(14px, var(--vt), 60px);
-    --button-height: 12px;
-
 
     width: calc(100% - (var(--outer-margin)*2));
     margin-bottom: var(--outer-margin);
@@ -13,7 +11,7 @@
     justify-content: start;
 }
 
-#turn-text{
+#turn-text {
     font-weight: 800;
 }
 
@@ -25,6 +23,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-variant: small-caps;
+    font-weight: 600;
 }
 
 .button-container {
@@ -54,10 +54,6 @@
     display: flex;
     flex-direction: row;
 }
-
-/*#forward-button-container {
-
-}*/
 
 #control-panel span {
     font-size: var(--text-size);

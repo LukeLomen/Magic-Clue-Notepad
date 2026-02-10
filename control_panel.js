@@ -196,21 +196,21 @@ export class ControlPanel {
     WriteSuggestionButtons(s, w, r) {
         if (s == undefined) {
             s = 'Suspect'
-            this.suspectButton.root.classList.add('no-border');
+            this.suspectButton.root.classList.add('disable-highlight');
         } else {
-            this.suspectButton.root.classList.remove('no-border');
+            this.suspectButton.root.classList.remove('disable-highlight');
         }
         if (w == undefined) {
             w = 'Weapon'
-            this.weaponButton.root.classList.add('no-border');
+            this.weaponButton.root.classList.add('disable-highlight');
         } else {
-            this.weaponButton.root.classList.remove('no-border');
+            this.weaponButton.root.classList.remove('disable-highlight');
         }
         if (r == undefined) {
             r = 'Room'
-            this.roomButton.root.classList.add('no-border');
+            this.roomButton.root.classList.add('disable-highlight');
         } else {
-            this.roomButton.root.classList.remove('no-border');
+            this.roomButton.root.classList.remove('disable-highlight');
         }
         this.suspectButton.SetText(s);
         this.weaponButton.SetText(w);

@@ -10,7 +10,7 @@ export class InteractiveBadge {
         this.root._instance = this;
 
         this.symbol = document.createElement("span");
-        this.symbol.className = "badge_symbol";
+        this.symbol.className = "badge-symbol";
         this.symbol.textContent = symbol;
 
         this.root.appendChild(this.symbol);

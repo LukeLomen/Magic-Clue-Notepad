@@ -1,32 +1,18 @@
 .interactive-badge {
-    --badge-color: grey;
-    --text-color: white;
-
-    --size: clamp(2px, calc(var(--vt) + 2px), 80px);
-
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-
-    background: var(--badge-color);
-    color: var(--text-color);
-    /*opacity: .25;*/
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: end;
+    justify-content: end;
 
     position: absolute;
     bottom: 0;
     right: 0;
 
-    margin: 2px;
-
-    /* Prevent layout shift during animation */
     transform-origin: center;
 }
 
-/* Animation class */
+.badge-symbol {
+    color: var(--mid-grey);
+}
+
 .animate-badge {
     animation: badge-pop .4s ease-out;
 }

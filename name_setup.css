@@ -10,11 +10,11 @@
     flex-direction: column;
     align-items: center;
 
-    height: 100dvh;
+    touch-action: none;
+
+    height: 94dvh;
     width: 100dvw;
 }
-
-#name-setup * {}
 
 #name-setup-upper {
     display: flex;
@@ -41,17 +41,19 @@
 }
 
 #name-setup h1 {
+    font-variant: small-caps;
     font-size: clamp(1rem, 8dvw, 3rem);
     color: var(--header-color);
     margin: 0px;
     text-align: center;
     margin-bottom: clamp(1px, 1dvh, 40px);
+    margin-top: 6px;
     padding: 0px 4px;
     transition: margin var(--margin-anim-time) ease;
 }
 
 #name-setup h3 {
-    font-size: clamp(0.5rem, 4dvw, 1.25rem);
+    font-size: clamp(0.3rem, 3.5dvw, 1.25rem);
     color: var(--instructions-color);
     text-align: center;
     margin: 0px;
@@ -64,10 +66,10 @@
     padding: clamp(.75dvw, 3dvw, 1.4dvh);
     margin: clamp(1px, .5dvh, 4px);
     font-size: clamp(12px, 1.8dvw, 18px);
-    border: 1px solid #ccc;
+    border: 1px solid #b1b1b1;
     border-radius: 8px;
     outline: none;
-    background: transparent;
+    background: white;
     transition:
         border 0.4s ease,
         box-shadow 0.2s ease,
@@ -84,13 +86,15 @@
     box-shadow: 0 0 0 2px rgba(100, 100, 100, 0.1);
 }
 
-#name-setup button {
-    max-width: 400px;
-    min-width: 44px;
+#start-button {
     padding: clamp(.75dvw, 3dvw, 2dvh);
-    font-size: clamp(0.75rem, 3dvw, 3rem);
-    margin: 0px, clamp(1dvw, 5dvw, 4dvh)
+    margin: 0px, clamp(1dvw, 5dvw, 4dvh);
 }
+
+#start-button span {
+    font-size: clamp(14px, var(--vt), 60px);
+}
+
 
 @media only screen and (max-height: 600px) {
     #name-setup {
@@ -102,7 +106,7 @@
 
 @media only screen and (min-height: 800px) {
     #name-setup h1 {
-        margin: clamp(4px, 8dvh, 40px);
+        margin: clamp(4px, 8dvh, 30px);
     }
 
     #name-input-container {
