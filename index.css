@@ -1,4 +1,6 @@
 :root {
+    --background-image-url: url('./Images/HGAM_CLUE_23_PAT_02_WHITE.png');
+
     --primary-color: #9c9;
     --secondary-color: rgb(178, 241, 178);
 
@@ -13,7 +15,6 @@
     --double-margin: calc(var(--outer-margin) * 2);
 
     --table-height: 70dvh;
-    /*--contro-panel-height: calc(98dvh - var(--table-height));*/
 }
 
 html {
@@ -26,6 +27,9 @@ html {
 }
 
 body {
+    background-image: var(--background-image-url);
+    background-size: 100%;
+    background-position: center;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,15 +58,8 @@ body {
     height: var(--table-height);
 }
 
-#name-setup {
-    animation: fadeIn 2s ease-in-out;
-}
-
-.clue-background {
-    background-image: url('./Images/HGAM_CLUE_23_PAT_02_WHITE.png');
-    background-attachment: fixed;
-    background-size: 100%;
-    
+.animation-fadeIn {
+    animation: fadeIn 1s ease-in;
 }
 
 @keyframes fadeIn {
