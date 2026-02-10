@@ -7,6 +7,8 @@
     right: 0;
 
     transform-origin: center;
+
+    border-radius: 100%;
 }
 
 .badge-symbol {

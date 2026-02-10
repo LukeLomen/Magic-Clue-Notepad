@@ -199,7 +199,16 @@ export class InteractiveTable {
       rowIndex >= 0 && rowIndex <= this.rowCount &&
       colIndex >= 0 && colIndex < this.colTotal
     ) {
-      this.spanArray[(rowIndex * this.colTotal + colIndex)].classList.add('spin-cell');
+      const targetSpan = this.spanArray[(rowIndex * this.colTotal + colIndex)];
+
+      targetSpan.classList.add("animation-spingrow");
+
+      //This should be readded: condition needs to be more robust than just the first time it changes(in GM and DM)
+      /*targetSpan.addEventListener("animationend", () =>
+        targetSpan.classList.remove("animation-spingrow"), {
+          once: true
+        }
+      );*/
     } else {
       console.warn(`Invalid cell coordinates: (${rowIndex}, ${colIndex})`);
     }
@@ -264,6 +273,8 @@ export class InteractiveTable {
       this._GetRowCellArray(this.focus[1]).forEach(cell => {
         cell.classList.remove('focused-row');
       });
+    } else if (this.focus[0] == "menu") {
+      this.cellArray[0].classList.remove('focused-menu');
     }
     this.focus = null;
   }
@@ -282,6 +293,12 @@ export class InteractiveTable {
       cell.classList.add('focused-row');
     });
     this.focus = ["row", row];
+  }
+
+  FocusMenu() {
+    this.ClearFocus();
+    this.cellArray[0].classList.add('focused-menu');
+    this.focus = ["menu"];
   }
 
   /// Select
@@ -332,6 +349,7 @@ export class InteractiveTable {
     this._GetColCellArray(col).forEach(cell => {
       cell.classList.remove('selected-col');
       cell.classList.add('selected-col');
+      this.PopVerticalAnimation(cell);
     });
     this.selectedColumns.add(col);
   }
@@ -340,6 +358,7 @@ export class InteractiveTable {
     this._GetRowCellArray(row).forEach(cell => {
       cell.classList.remove('selected-row');
       cell.classList.add('selected-row');
+      this.PopHorizontalAnimation(cell);
     });
     this.selectedRows.add(row);
   }
@@ -391,6 +410,7 @@ export class InteractiveTable {
     if (row == null || col == null) return;
     if (row === 0 && col === 0) {
       this.ClearFocus();
+      this.FocusMenu();
       /// Corner Menu
     } else if (col === 0) {
       if (!this.rowTargetActive) return;
@@ -444,5 +464,23 @@ export class InteractiveTable {
 
   UpdateBadge(index, value) {
     this.badgeArray[index].UpdateBadge(value);
+  }
+
+  /// Animations
+  PopVerticalAnimation(cell) {
+    cell.classList.add("animation-tablepopvertical");
+    cell.addEventListener("animationend", () =>
+      cell.classList.remove("animation-tablepopvertical"), {
+        once: true
+      }
+    );
+  }
+  PopHorizontalAnimation(cell) {
+    cell.classList.add("animation-tablepophorizontal");
+    cell.addEventListener("animationend", () =>
+      cell.classList.remove("animation-tablepophorizontal"), {
+        once: true
+      }
+    );
   }
 }

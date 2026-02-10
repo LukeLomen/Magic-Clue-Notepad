@@ -97,12 +97,12 @@ export class ControlPanel {
         });
 
         this.STARTING_CARDS = new State({
-            mainText: "Select Your Cards",
+            mainText: "Select your cards",
             forwardButtonFunction: () => OnPressConfirmStarting()
         });
 
         this.EXTRA_CARDS = new State({
-            mainText: "Select Extra Cards",
+            mainText: "Select extra cards",
             forwardButtonFunction: () => OnPressConfirmExtra()
         });
 

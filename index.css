@@ -1,4 +1,6 @@
 :root {
+    --vt: calc(1dvh + 1dvw);
+
     --background-image-url: url('./Images/HGAM_CLUE_23_PAT_02_WHITE.png');
 
     --primary-color: #9c9;
@@ -28,7 +30,6 @@ html {
 
 body {
     background-image: var(--background-image-url);
-    background-size: 100%;
     background-position: center;
     display: flex;
     flex-direction: column;
@@ -59,7 +60,7 @@ body {
 }
 
 .animation-fadeIn {
-    animation: fadeIn 1s ease-in;
+    animation: fadeIn 0.5s ease-in;
 }
 
 @keyframes fadeIn {

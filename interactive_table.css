@@ -1,7 +1,5 @@
 :root {
   --row-count: 0;
-
-  --vt: calc(1dvh + 1dvw);
 }
 
 #interactive-table-container table {
@@ -48,14 +46,12 @@ td {
   height: calc(50dvh - (5dvh * var(--row-count)));
   border-top: var(--table-border);
   border-color: var(--border-color);
-
 }
 
 #interactive-table-container .row-head {
   width: var(--row-head-width);
   border-left: var(--table-border);
   border-color: var(--border-color);
-
 }
 
 #interactive-table-container span {
@@ -89,23 +85,10 @@ td {
 
 .selected-col {
   background-color: var(--secondary-color);
-  animation: table-pop-vertical 0.08s ease 2 alternate;
 }
-
-.selected-col span {}
 
 .selected-row {
   background-color: var(--secondary-color);
-}
-
-.selected-row span {
-  /*animation: table-pop-vertical 0.1s ease 2 alternate;*/
-}
-
-.selected2-row {}
-
-.selected2-row span {
-  /*animation: table-pop-vertical 0.1s ease 2 alternate;*/
 }
 
 .selected-col.selected2-row {
@@ -116,37 +99,29 @@ td {
 .focused-col {
   background-image: linear-gradient(var(--focused-color), var(--focused-color));
   border-radius: 1px;
-
-  /*transform: scaleX(1.5);*/
-  /*background-color: var(--focused-color);*/
-
-  /*box-shadow: 0 20px 10px 5px rgba(0, 0, 0, 0.1);*/
-  /*border-left-style: dashed;
-  border-right-style: dashed;*/
-  /*transition: background-color 0s;*/
 }
 
 .focused-row {
   background-image: linear-gradient(var(--focused-color), var(--focused-color));
   border-radius: 1px;
-
-  /*border: 5px;*/
-
-  /*border-color: var(--focused-color);*/
-  /*transform: scaleY(1.2);*/
-  /*background-color: var(--focused-color);*/
-  /*box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.1);*/
-  /*transition: background-color 0s;*/
-
 }
 
-/*
 .focused-menu {
-  transform: scaleX(100);
-  background-color: #555;
-}*/
+  background-image: linear-gradient(var(--focused-color), var(--focused-color));
+  border-radius: 1px;
+}
 
-.spin-cell {
+.animation-tablepopvertical {
+  box-shadow: none;
+  animation: table-pop-vertical 0.08s 2 alternate;
+}
+
+.animation-tablepophorizontal {
+  box-shadow: none;
+  animation: table-pop-horizontal 0.08s 2 alternate;
+}
+
+.animation-spingrow {
   animation:
     spin 0.2s ease-in-out 1 forwards,
     grow 0.2s ease-in-out 2 alternate;
@@ -155,14 +130,16 @@ td {
 
 @keyframes table-pop-vertical {
   to {
-    transform: translate(0%, -30%) scale(1.5);
+    transform: translate(0%, -10%);
     opacity: 0;
   }
 }
 
 @keyframes table-pop-horizontal {
   to {
-    transform: translate(-50%, 0%) scale(2);
+    transform: translate(10%, 0%)
+      /*scale(2)*/
+    ;
     opacity: 0;
   }
 }
