@@ -130,6 +130,7 @@ export class GameManager {
         const playerSelected = this.interactiveTable.GetSelectedRows()[0];
         const numCols = this.interactiveTable.GetSelectedCols().length;
 
+        this.controlPanel.ConfirmButtonEnabled(false);
         if (numCols == 3 && playerSelected >= 0) {
             this.controlPanel.SuggestionButtonsEnabled(true);
             this.ValidateSuggestionButtons();
