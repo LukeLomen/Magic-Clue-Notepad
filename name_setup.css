@@ -83,7 +83,7 @@
 
 #name-setup input[type="text"]:focus {
     border-color: var(--focused-color);
-    box-shadow: 0 0 8px 4px rgba(0, 51, 0, 0.349);
+    box-shadow: 0 0 8px 1px var(--focused-color);
 }
 
 #start-button {
@@ -101,6 +101,9 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
+    }
+    #name-input-container{
+        width: fit-content;
     }
 }
 
