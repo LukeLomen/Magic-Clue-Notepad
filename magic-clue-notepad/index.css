@@ -1,0 +1,78 @@
+/* Page-wide layout and shared design tokens (colors, spacing, the table/control-panel height
+   split). Component-specific stylesheets (interactive_*.css, control_panel.css, etc.) build
+   on top of the variables defined here. */
+:root {
+    --vt: calc(1dvh + 1dvw);
+
+    --background-image-url: url('./Images/HGAM_CLUE_23_PAT_02_WHITE.png');
+
+    --primary-color: #9c9;
+    --secondary-color: rgb(178, 241, 178);
+
+    --light-grey: #c2c2c2;
+    --mid-grey: #505050;
+    --dark-grey: #1a1a1a;
+
+
+    --min-font-size: calc(.5dvw + .5dvh);
+
+    --outer-margin: calc(0.15dvw + 0.15dvh);
+    --double-margin: calc(var(--outer-margin) * 2);
+
+    --table-height: 70dvh;
+    --control-panel-height: calc(100dvh - var(--table-height) - var(--double-margin));
+}
+
+html {
+    font-family: 'Inter', sans-serif;
+}
+
+.hidden {
+    display: none;
+    visibility: collapse;
+}
+
+body {
+    background-image: var(--background-image-url);
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+html,
+body {
+    height: calc(100dvh - var(--double-margin));
+    margin: var(--outer-margin);
+
+    overflow: hidden;
+    user-select: none;
+    touch-action: none;
+    overscroll-behavior: none;
+}
+
+#top-container {
+    margin-bottom: var(--outer-margin);
+}
+
+#control-panel {
+    height: 100%;
+}
+
+#interactive-table-container {
+    height: var(--table-height);
+}
+
+.animation-fadeIn {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

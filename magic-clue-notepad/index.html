@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic Clue Notepad</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./Images/favicon-32x32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="control_panel.css">
+  <link rel="stylesheet" href="interactive_table.css">
+  <link rel="stylesheet" href="interactive_button.css">
+  <link rel="stylesheet" href="interactive_badge.css">
+  <link rel="stylesheet" href="interactive_menu.css">
+  <link rel="stylesheet" href="name_setup.css">
+</head>
+
+<body>
+  <!-- Name-entry screen (name_setup.js). Shown first; hidden once the game starts. -->
+  <div id="name-setup" class="animation-fadeIn">
+    <div id=name-setup-upper>
+      <h1 id="title">Magic Clue Notepad</h1>
+      <h3>Enter player names in clockwise order</h3>
+    </div>
+    <div id="name-input-container">
+      <input id="playerName0" type="text" maxlength="15" placeholder="Your name (optional)">
+      <input id="playerName1" type="text" maxlength="15" placeholder="Player 2 name">
+      <input id="playerName2" type="text" maxlength="15" placeholder="Player 3 name">
+      <input id="playerName3" type="text" maxlength="15" placeholder="Player 4 name (optional)">
+      <input id="playerName4" type="text" maxlength="15" placeholder="Player 5 name (optional)">
+      <input id="playerName5" type="text" maxlength="15" placeholder="Player 6 name (optional)">
+    </div>
+    <div id="name-setup-lower">
+    </div>
+  </div>
+
+  <!-- The confirmation popups opened from the corner menu (interactive_menu.js). All of them
+       share the same .popup-overlay/.popup-content/.popup-actions styling. -->
+  <div id="newgame-overlay" class="hidden popup-overlay">
+    <div class="popup-content">
+      <h2>Start New Game?</h2>
+      <p class="popup-tooltip">This erases all current progress&mdash;player names, card selections, and every
+        recorded turn&mdash;and takes you back to entering player names.</p>
+      <div class="popup-actions">
+        <button id="newgame-back-button" type="button" class="popup-btn-secondary">Back</button>
+        <button id="newgame-confirm-button" type="button" class="popup-btn-primary">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="undo-overlay" class="hidden popup-overlay">
+    <div class="popup-content">
+      <h2>Undo Last Turn</h2>
+      <p class="popup-tooltip">This removes the most recently recorded turn so you can redo it from scratch. To
+        fix the answer on an earlier turn instead, use the back arrow in the control panel&mdash;that lets you
+        edit any past turn without losing anything after it.</p>
+      <div class="popup-actions">
+        <button id="undo-back-button" type="button" class="popup-btn-secondary">Back</button>
+        <button id="undo-confirm-button" type="button" class="popup-btn-primary">Undo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donate confirmation - explains where the link goes before leaving the app, and the
+       confirm button opens it in a new tab (see interactive_menu.js) rather than navigating
+       this page away. DONATE_URL/DONATE_SITE_NAME below are placeholders until a real donation
+       page exists - update both here and in interactive_menu.js when it does. -->
+  <div id="donate-overlay" class="hidden popup-overlay" data-donate-url="https://example.com/donate">
+    <div class="popup-content">
+      <h2>Support Magic Clue Notepad</h2>
+      <p class="popup-tooltip">This opens <strong id="donate-site-name">example.com</strong> in a new browser
+        tab, where you can leave a donation. This app stays free either way&mdash;this is completely
+        optional.</p>
+      <div class="popup-actions">
+        <button id="donate-back-button" type="button" class="popup-btn-secondary">Back</button>
+        <button id="donate-confirm-button" type="button" class="popup-btn-primary">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="about-overlay" class="hidden popup-overlay">
+    <div class="popup-content">
+      <h2>Magic Clue Notepad</h2>
+      <p>This is not a game of Clue vs AI. Magic Clue Notepad is a replacement for the paper notepad while
+        playing the board game with family and friends&mdash;it handles the bookkeeping <em>and</em> the
+        deduction for you. Enter what happens on each turn and it fills in every player's row automatically,
+        including everything that can be worked out by process of elimination.</p>
+      <h3>How to Play</h3>
+      <ul>
+        <li><strong>Setup:</strong> Enter player names in clockwise seating order, then tap your own starting
+          cards on the table. If the cards don't divide evenly among players, you'll also pick the leftover
+          "extra" cards dealt face up.</li>
+        <li><strong>Making a suggestion:</strong> Tap a row to pick who's suggesting, then tap one suspect, one
+          weapon, and one room. Tap the response the suggestee gave&mdash;the specific card if you can see it,
+          <strong>Unknown</strong> if they showed someone else a card you couldn't see, or <strong>None</strong>
+          if they have none of the three. A "None" automatically passes the same suggestion to the next player
+          in the circle.</li>
+        <li><strong>Browsing history:</strong> The &lsaquo;/&rsaquo; arrows step back and forward through past
+          turns, showing the table exactly as it looked at that point. On a past turn, pick a different response
+          and press <strong>Edit</strong> to correct a mistake&mdash;everything after it is automatically
+          recomputed.</li>
+        <li><strong>The corner menu (&#9776;):</strong> New Game resets everything; the card list switches
+          between real and themed Clue editions; Undo removes the most recent turn to redo it from scratch; and
+          Manual Entry (below) records a card you already know without going through a suggestion.</li>
+      </ul>
+      <h3>Manual Entry</h3>
+      <p>Sometimes you already know a card is in someone's hand&mdash;you saw it dealt, someone told you outside
+        the game, or you're just confident from a real Clue accusation. Manual Entry lets you tap the player and
+        the card directly, without a suggestion, and it's undone the same way as any other turn.</p>
+      <h3>Table Symbols</h3>
+      <ul>
+        <li><strong>X</strong> &mdash; this player has this card</li>
+        <li><strong>/</strong> &mdash; this player does <em>not</em> have this card</li>
+        <li><strong>?</strong> &mdash; this player showed someone one of a few possible cards, not yet narrowed
+          down to one</li>
+        <li><strong>|</strong> &mdash; an extra card, dealt face up rather than into anyone's hand</li>
+        <li><strong>$</strong> &mdash; the hidden card&mdash;nobody's hand; it's the answer, in the envelope</li>
+      </ul>
+      <h3>Clue Strategy</h3>
+      <ul>
+        <li>Target the last player in the round.</li>
+        <li>Focus on the category with the fewest known/extra cards (often rooms).</li>
+        <li>Avoid consistency when suggesting&mdash;reusing the same "bait" card lets opponents catch on,
+          especially if they know it's in your hand.</li>
+      </ul>
+      <p class="popup-tooltip">Made by Luke Lomen. &copy; 2026 Luke Lomen. You're free to use, share, and modify
+        this software, but not to sell it&mdash;or any modified version of it.</p>
+      <div class="popup-actions">
+        <button id="about-close-button" type="button" class="popup-btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The deduction table itself is built entirely in JS (interactive_table.js) into this
+       container - no <table> markup lives here. The corner menu panel is positioned
+       absolutely on top of the table's top-left cell (see interactive_menu.css). -->
+  <div id="top-container">
+    <div id="interactive-table-container">
+      <div id="table-menu-panel" class="hidden">
+        <button id="menu-newgame-btn" type="button" class="menu-item">New Game</button>
+        <div class="menu-item menu-preset-item">
+          <label for="menu-preset-select">Cards</label>
+          <select id="menu-preset-select"></select>
+        </div>
+        <button id="menu-undo-btn" type="button" class="menu-item">Undo</button>
+        <button id="menu-manual-btn" type="button" class="menu-item">Manual Entry</button>
+        <button id="menu-about-btn" type="button" class="menu-item">About</button>
+        <button id="menu-donate-btn" type="button" class="menu-item">Donate</button>
+      </div>
+    </div>
+  </div>
+  <!-- Lower control panel (control_panel.js). History back/forward arrows live in their own
+       side containers so the main column can stay a fixed 2-line layout regardless of state. -->
+  <div id="control-panel">
+    <div id="history-back-container" class="side-button-container"></div>
+    <div id="control-panel-main">
+      <div id="suggestion-text">
+        <span id="turn-text"></span>
+        <span id="main-text"></span>
+        <span id="validation-text"></span>
+      </div>
+      <div id="buttons-container" class="button-container">
+        <div id="suggestion-area">
+          <div id="suggestion-buttons-container" class="button-container"></div>
+          <div id="secondary-buttons-container" class="button-container"></div>
+        </div>
+        <div id="forward-button-container" class="button-container"></div>
+      </div>
+    </div>
+    <div id="history-forward-container" class="side-button-container"></div>
+  </div>
+
+  <!-- Load order matters: each file below only imports from files listed above it
+       (table_symbols -> button/table/badge/menu/name_setup -> control_panel -> clue_cards ->
+       clue_data -> game_manager -> index), so this order also happens to satisfy every
+       import's dependency, though ES module imports would resolve correctly in any order. -->
+  <script type="module" src="table_symbols.js"></script>
+  <script type="module" src="interactive_button.js"></script>
+  <script type="module" src="interactive_table.js"></script>
+  <script type="module" src="interactive_badge.js"></script>
+  <script type="module" src="interactive_menu.js"></script>
+  <script type="module" src="name_setup.js"></script>
+  <script type="module" src="control_panel.js"></script>
+  <script type="module" src="clue_cards.js"></script>
+  <script type="module" src="clue_data.js"></script>
+  <script type="module" src="game_manager.js"></script>
+  <script type="module" src="index.js"></script>
+</body>
+</html>

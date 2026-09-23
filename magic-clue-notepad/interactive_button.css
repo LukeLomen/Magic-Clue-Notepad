@@ -1,0 +1,157 @@
+/* Styling for InteractiveButton (interactive_button.js). Visual state (hovered/selected/
+   pressed/disabled) is applied as btn--<state> classes by that file; this stylesheet only
+   defines what each one looks like. */
+.btn {
+    /* Theming colors*/
+    /* NOTE (dead/broken variable, left as-is for review): --color-9 is never defined anywhere
+       in the project, so this custom property resolves to nothing; it's also immediately
+       overridden by the plain `background-color: white` a few lines down and by the
+       `background-color` set on `.btn` itself, so --background-color has no visible effect
+       today. Safe to remove unless a real --color-9 token is meant to be added later. */
+    --background-color: var(--color-9);
+    --hover-color: #9c9;
+    --selected-color: rgb(178, 241, 178);
+    --disabled-color: #f0f0f0;
+    --ripple-color: rgba(0, 0, 0, 0.25);
+    --primary-color: green;
+
+    /* Sizing & typography */
+    --btn-padding-y: 8px;
+    --btn-padding-x: 16px;
+    --btn-min-font: 12px;
+    --btn-max-font: 50px;
+    --btn-radius: 32px;
+
+    /* Elevations */
+    --elev-default: 0 2px 4px rgba(0, 0, 0, .1);
+    --elev-hover: 0 4px 8px rgba(0, 0, 0, .15);
+    --elev-pressed: 0 6px 20px rgba(0, 0, 0, .2);
+
+    margin: .25dvw;
+    min-width: 44px;
+    min-height: 44px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--btn-padding-y) var(--btn-padding-x);
+    background: var(--background-color);
+    background-color: white;
+    border: solid;
+    border-width: 2px;
+    border-color: var(--primary-color);
+    border-radius: var(--btn-radius);
+    box-shadow: var(--elev-default);
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    font-size: clamp(var(--btn-min-font),
+            calc(0.9dvw + 0.4dvh),
+            var(--btn-max-font));
+    line-height: 1;
+
+    transition:
+        color 1s ease,
+        background-color .6s ease,
+        box-shadow .2s ease,
+        transform .2s ease,
+        border-color .4s,
+        border-width .8s ease,
+        border-radius .2s ease;
+}
+
+.btn__text {
+    pointer-events: none;
+    flex-shrink: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: '';
+    width: 100%;
+    padding: 8px 0px;
+    font-size: clamp(12px, 1dvw, 24px);
+}
+
+/* Variants */
+.btn--primary {
+    background-color: var(--primary-color);
+}
+
+.btn--primary span {
+    color: white;
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    padding: 8px;
+}
+
+/* States */
+.btn--hidden {
+    display: none;
+}
+
+.btn--selected {
+    background-color: var(--selected-color);
+    box-shadow: var(--elev-pressed);
+    transform: scale(1);
+}
+
+.btn--hovered {
+    background-color: var(--hover-color);
+    box-shadow: var(--elev-hover);
+    transform: scale(1.05);
+}
+
+.btn--disabled {
+    background-color: var(--disabled-color);
+    color: #929292;
+    box-shadow: none;
+    cursor: not-allowed;
+    border-color: white;
+    border-radius: 2px;
+}
+
+.btn--pressed {
+    box-shadow: var(--elev-pressed);
+    transform: scale(0.95);
+}
+
+.btn--pressed::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: var(--ripple-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.4s forwards;
+}
+
+.disable-highlight {
+    border-color: rgb(182, 182, 182);
+}
+
+@keyframes ripple {
+    to {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* NOTE (unused/dead code): no class references "enable" - nothing plays this animation.
+   Safe to delete unless you have a use for it planned (e.g. a pop when a button becomes
+   enabled). */
+@keyframes enable {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.5);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,38 @@
+/* Small corner badge (interactive_badge.js) showing a player's known-card count, pinned to
+   the bottom-right of their row-header cell. */
+.interactive-badge {
+    align-items: end;
+    justify-content: end;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    transform-origin: center;
+
+    border-radius: 100%;
+}
+
+.badge-symbol {
+    color: var(--mid-grey);
+}
+
+.animate-badge {
+    animation: badge-pop .4s ease-out;
+}
+
+@keyframes badge-pop {
+    0% {
+        transform: scale(0.7);
+        opacity: 0.6;
+    }
+
+    60% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

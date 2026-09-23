@@ -1,0 +1,104 @@
+/* The lower control panel (control_panel.js): status text, suggestion response buttons, and
+   the history back/forward arrows in their own side containers so the main column keeps a
+   fixed layout regardless of which state (starting/extra/suggestion) is active. */
+#control-panel {
+    --vt: calc(1dvh + 1.5dvw);
+
+    --text-size: clamp(14px, var(--vt), 60px);
+
+    width: calc(100% - (var(--outer-margin)*2));
+    margin-bottom: var(--outer-margin);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+#control-panel-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+}
+
+.side-button-container {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-button-container .btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px 10px;
+}
+
+#turn-text {
+    font-weight: 800;
+}
+
+#suggestion-text {
+    user-select: none;
+    font-size: var(--text-size);
+    text-align: center;
+    margin: 1dvh;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-variant: small-caps;
+    font-weight: 600;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+#buttons-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+}
+
+#suggestion-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#suggestion-buttons-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#secondary-buttons-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#control-panel span {
+    font-size: var(--text-size);
+}
+
+@media screen and (max-width: 768px) {
+    #suggestion-area {
+        flex-direction: column;
+    }
+}
+
+@media screen and (min-height: 752px) {
+    #buttons-container {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-height: 460px) {
+    #suggestion-area {
+        flex-direction: row;
+    }
+}

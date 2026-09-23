@@ -1,0 +1,138 @@
+/* The first screen the player sees (name_setup.js) - collecting player names before the
+   game starts. */
+#name-setup {
+    --focused-color: rgb(0, 77, 0);
+    --header-color: black;
+    --instructions-color: #666;
+
+    --margin-anim-time: 0.4s;
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    touch-action: none;
+
+    height: 94dvh;
+    width: 100dvw;
+}
+
+#name-setup-upper {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
+#name-input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
+#name-setup-lower {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
+#name-setup h1 {
+    font-variant: small-caps;
+    font-size: clamp(1rem, 8dvw, 3rem);
+    color: rgb(0, 17, 0);
+    margin: 0px;
+    text-align: center;
+    margin-bottom: clamp(1px, 1dvh, 40px);
+    margin-top: 6px;
+    padding: 0px 4px;
+    transition: margin var(--margin-anim-time) ease;
+}
+
+#name-setup h3 {
+    font-size: clamp(0.3rem, 3.5dvw, 1.25rem);
+    color: var(--instructions-color);
+    text-align: center;
+    margin: 0px;
+    padding: 0px 4px;
+    transition: margin var(--margin-anim-time) ease;
+}
+
+#name-setup input[type="text"] {
+    display: flex;
+    padding: clamp(.75dvw, 3dvw, 1.4dvh);
+    margin: clamp(1px, .5dvh, 4px);
+    font-size: clamp(12px, 1.8dvw, 18px);
+    border: 2px solid #686868;
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    transition:
+        border 0.4s ease,
+        box-shadow 0.2s ease,
+        margin var(--margin-anim-time) ease;
+}
+
+#name-setup input[type="text"]::placeholder {
+    color: #999;
+    transition: opacity 0.2s ease;
+}
+
+#name-setup input[type="text"]:focus {
+    border-color: var(--focused-color);
+    box-shadow: 0 0 8px 1px var(--focused-color);
+}
+
+#start-button {
+    padding: clamp(.75dvw, 3dvw, 2dvh);
+    margin: 0px clamp(1dvw, 5dvw, 4dvh);
+}
+
+#start-button span {
+    font-size: clamp(14px, var(--vt), 60px);
+}
+
+/* Sits below the Start button (see #name-setup-lower's column flex layout) with its own
+   top margin so it reads as a separate, secondary action rather than crowding Start.
+   Padding and font-size are both defined as a fraction of Start's own values (rather than
+   independent clamp()s) so this button is guaranteed smaller than Start at every viewport
+   size, not just in the middle of the clamp range. */
+#name-setup-about-button {
+    padding: calc(0.6 * clamp(.75dvw, 3dvw, 2dvh)) calc(0.6 * clamp(1dvw, 5dvw, 4dvh));
+    margin: clamp(12px, 3dvh, 24px) clamp(1dvw, 5dvw, 4dvh) 0px;
+}
+
+#name-setup-about-button span {
+    font-size: calc(0.7 * clamp(14px, var(--vt), 60px));
+}
+
+
+@media only screen and (max-height: 600px) {
+    #name-setup {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    #name-input-container{
+        width: fit-content;
+    }
+}
+
+@media only screen and (min-height: 800px) {
+    #name-setup h1 {
+        margin: clamp(4px, 8dvh, 30px);
+    }
+
+    #name-input-container {
+        margin: clamp(1px, 2dvh, 16px);
+    }
+
+    #name-setup input[type="text"] {
+        margin: clamp(1px, 2dvh, 8px);
+    }
+}

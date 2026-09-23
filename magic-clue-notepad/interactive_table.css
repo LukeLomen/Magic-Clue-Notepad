@@ -1,0 +1,283 @@
+/* Styling for the deduction table built by interactive_table.js. Selection/focus/discovery
+   states are all applied as CSS classes on <td>/<th> elements by that file; this stylesheet
+   only defines what each class/animation looks like. */
+:root {
+  /* Set from JS (InteractiveTable._ResizeTopRow) to however many player rows are currently
+     visible, so the header row height formula below can scale to fill the table regardless
+     of player count (3-6 players). */
+  --row-count: 0;
+}
+
+/* NOTE (possible bug, left as-is for review): this selector is
+   "#interactive-table-container th, td" - the comma means the `td` half is NOT scoped to
+   #interactive-table-container, so it actually matches every <td> in the whole document, not
+   just ones inside the table. It happens to work today because this page has no other <td>
+   elements, but it's fragile - the intended selector was probably
+   "#interactive-table-container th, #interactive-table-container td". */
+#interactive-table-container table {
+  --row-head-width: 10%;
+
+  --table-border: 1px solid;
+
+  --selected-color: var(--primary-color);
+  --focused-color: oklch(from var(--selected-color) calc(1 - 0.2) c h);
+
+  --border-color: #afafaf;
+  --animation-time: 0.4s;
+
+  --discover-have-color: oklch(from var(--primary-color) calc(l + 0.15) c h);
+
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  touch-action: none;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+#interactive-table-container th,
+td {
+  position: relative;
+  border-bottom: var(--table-border);
+  border-right: var(--table-border);
+  border-color: var(--border-color);
+  transition:
+    background-color var(--animation-time) ease,
+    box-shadow var(--animation-time) ease;
+}
+
+/* Added by InteractiveTable while a column/row can currently be clicked to select it
+   (EnableColSelectMode/EnableRowSelectMode) - purely a cursor hint, selection itself is
+   handled in JS via pointer events, not by this class. */
+.selectable {
+  cursor: pointer;
+}
+
+/* Dashed divider marking the first column of a new card category (suspects/weapons/rooms). */
+.category-start {
+  border-left: 2px dashed var(--border-color);
+}
+
+#interactive-table-container th {
+  height: calc(50dvh - (5dvh * var(--row-count)));
+  border-top: var(--table-border);
+  border-color: var(--border-color);
+}
+
+#interactive-table-container .row-head {
+  width: var(--row-head-width);
+  border-left: var(--table-border);
+  border-color: var(--border-color);
+}
+
+/* pointer-events: none so that a click always resolves to the containing <td>/<th> - see
+   InteractiveTable._GetTableCellFromEvent, which relies on being able to .closest('td, th')
+   from whatever elementFromPoint returns. */
+#interactive-table-container span {
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#interactive-table-container td span {
+  display: block;
+  text-overflow: '';
+  text-align: center;
+  font-size: var(--vt);
+  font-weight: 900;
+}
+
+/* Card-name column headers are rotated sideways so long names fit in a narrow column. */
+#interactive-table-container .col-head span {
+  height: 100%;
+  display: inline-block;
+  writing-mode: sideways-lr;
+  text-overflow: clip;
+  text-align: start;
+  font-size: var(--vt);
+}
+
+#interactive-table-container .row-head span {
+  text-align: start;
+  padding: 4px;
+  font-weight: 600;
+}
+
+/* The corner cell (row 0, col 0) doubles as the menu button. */
+#interactive-table-container thead .row-head {
+  cursor: pointer;
+}
+
+/* The ☰ menu glyph itself. No `color` override here on purpose - it inherits the default
+   text color so it matches the rest of the header cell text, per an earlier request. */
+#interactive-table-container thead .row-head span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--vt) * 1.4);
+  font-weight: 900;
+  padding: 0;
+}
+
+/* Persisted "this is chosen" state - a suggested card column, or the suggester's row. */
+.selected-col {
+  background-color: var(--secondary-color);
+}
+
+.selected-row {
+  background-color: var(--secondary-color);
+}
+
+/* Where a selected column crosses the "second" selected row (the suggestee) - a slightly
+   darker fill plus an inset border so the intersection cell reads as doubly-significant. */
+.selected-col.selected2-row {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.333);
+  background-color: var(--focused-color);
+}
+
+/* Manual Entry only (see InteractiveTable.SetManualMode): the chosen player's whole row and
+   the chosen card's whole column both use the normal .selected-row/.selected-col fill, and
+   this rule gives their one intersection cell the same "doubly-significant" treatment as
+   .selected-col.selected2-row above, without changing how a normal suggestion's row/column
+   overlap looks (that combination is deliberately left as plain .selected-row/.selected-col). */
+.manual-entry-mode .selected-row.selected-col {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.333);
+  background-color: var(--focused-color);
+}
+
+/* Transient "the pointer is currently over this" highlight during a drag-select, distinct
+   from the persisted .selected-* classes above. */
+.focused-col {
+  background-image: linear-gradient(var(--focused-color), var(--focused-color));
+  border-radius: 1px;
+}
+
+.focused-row {
+  background-image: linear-gradient(var(--focused-color), var(--focused-color));
+  border-radius: 1px;
+}
+
+.focused-menu {
+  background-image: linear-gradient(var(--focused-color), var(--focused-color));
+  border-radius: 1px;
+}
+
+/* Quick "pop and fade toward the edge" flourish played once when a column/row is newly
+   selected (see InteractiveTable.PopVerticalAnimation/PopHorizontalAnimation). */
+.animation-tablepopvertical {
+  box-shadow: none;
+  animation: table-pop-vertical 0.08s 2 alternate;
+}
+
+.animation-tablepophorizontal {
+  box-shadow: none;
+  animation: table-pop-horizontal 0.08s 2 alternate;
+}
+
+/* Ordinary (non-discovery) cell-update animation - a quick spin + grow-and-settle, played via
+   InteractiveTable.SpinTableCell whenever a cell's symbol changes for a reason other than a
+   first-time discovery. */
+.animation-spingrow {
+  animation:
+    spin 0.2s ease-in-out 1 forwards,
+    grow 0.2s ease-in-out 2 alternate;
+}
+
+/* Discovery animations: play once (in code, gated by a "seen" log) when a cell first
+   becomes known-have or hidden-card.
+   - known-have: the cell's text spins briefly and its background flashes in color, for ~2s
+     total - noticeable but quick, and deliberately only the found cell itself (a known-have
+     is a single fact about a single cell). The pulse keyframes below only set a value at 50%
+     and leave 0%/100% undefined on purpose: browsers interpolate the missing endpoints from
+     whatever background-color the element already has (e.g. the green/grey from
+     .selected-col, .focused-col, etc.), so the flash blends into and back out of the current
+     selection highlight instead of snapping to/from transparent and fighting with it.
+   - hidden-card: no background color at all (a plain symbol animation instead) - just the "$"
+     spinning a full turn while growing and shrinking back down, once, over ~2s. */
+.animation-discover-spin {
+  animation: spin 0.4s linear 5;
+}
+
+.animation-discover-have {
+  animation: discover-pulse-have 2s ease-in-out 1;
+}
+
+@keyframes discover-pulse-have {
+  50% {
+    background-color: var(--discover-have-color);
+  }
+}
+
+/* Played on the cell's <span> (the "$" text) for a hidden-card discovery - see
+   InteractiveTable.PlayDiscoveryAnimation. One full spin while growing to 1.8x size at the
+   midpoint and shrinking back to normal by the end, no color change. */
+.animation-discover-hidden-spin {
+  animation: discover-spin-grow-shrink 2s ease-in-out 1;
+}
+
+@keyframes discover-spin-grow-shrink {
+  0% {
+    transform: rotate(0turn) scale(1);
+  }
+
+  50% {
+    transform: rotate(0.5turn) scale(1.8);
+  }
+
+  100% {
+    transform: rotate(1turn) scale(1);
+  }
+}
+
+
+@keyframes table-pop-vertical {
+  to {
+    transform: translate(0%, -10%);
+    opacity: 0;
+  }
+}
+
+@keyframes table-pop-horizontal {
+  to {
+    transform: translate(10%, 0%)
+      /*scale(2)*/
+    ;
+    opacity: 0;
+  }
+}
+
+/* NOTE (unused/dead code): no class in this file or elsewhere references "slidein" - nothing
+   plays this animation. Safe to delete unless you have a use for it planned. */
+@keyframes slidein {
+  0% {
+    transform: translateX(0%);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translateX(50%);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0turn);
+  }
+
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes grow {
+  to {
+    transform: scale(2);
+  }
+}
