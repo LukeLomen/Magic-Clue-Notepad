@@ -1,0 +1,162 @@
+/* Menu panel, anchored to the table's top-left corner cell (interactive_menu.js), plus the
+   shared popup-overlay/popup-content styling used by all three of its confirmation dialogs
+   (New Game / Undo / About). */
+#interactive-table-container {
+    position: relative;
+    --menu-text-color: oklch(from var(--primary-color) calc(l - 0.18) c h);
+}
+
+/* Starts invisible/shrunk (opacity 0, scale 0.85); InteractiveMenu.OpenMenu adds
+   .menu-visible to transition it in, and .menu-locked briefly disables pointer-events on it
+   right after opening so the click that opened it can't also fire a menu item underneath. */
+#table-menu-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    min-width: 180px;
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 0 0 12px 0;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 2px;
+    transform-origin: top left;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+#table-menu-panel.hidden {
+    display: none;
+}
+
+#table-menu-panel.menu-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#table-menu-panel.menu-locked {
+    pointer-events: none;
+}
+
+#table-menu-panel .menu-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 9px 11px;
+    font-size: 18px;
+    font-weight: 700;
+    font-variant: small-caps;
+    color: var(--menu-text-color);
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+#table-menu-panel button.menu-item:hover {
+    background: var(--secondary-color);
+}
+
+#table-menu-panel .menu-item.menu-item-disabled {
+    color: var(--light-grey);
+    cursor: not-allowed;
+}
+
+#table-menu-panel .menu-preset-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+#table-menu-panel .menu-preset-item select {
+    color: var(--menu-text-color);
+    font-weight: 700;
+    font-size: 16px;
+    border: 1px solid var(--menu-text-color);
+    border-radius: 6px;
+    background: white;
+    padding: 3px 4px;
+    font-family: inherit;
+}
+
+/* Shared popup style: New Game confirm, Undo confirm, About */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6dvw;
+}
+
+.popup-overlay.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 480px;
+    max-height: 80dvh;
+    overflow-y: auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    text-align: left;
+}
+
+.popup-content h2 {
+    margin-top: 0;
+    font-variant: small-caps;
+    color: rgb(0, 17, 0);
+}
+
+.popup-content h3 {
+    margin-bottom: 4px;
+}
+
+.popup-content ul {
+    margin-top: 4px;
+    padding-left: 20px;
+}
+
+.popup-content li {
+    margin-bottom: 6px;
+}
+
+.popup-tooltip {
+    color: var(--mid-grey);
+    font-size: 14px;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    justify-content: flex-end;
+}
+
+.popup-actions button {
+    padding: 8px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+    border: 2px solid green;
+    font-family: inherit;
+}
+
+.popup-actions .popup-btn-primary {
+    background: #9c9;
+}
+
+.popup-actions .popup-btn-secondary {
+    background: white;
+    border-color: var(--light-grey);
+    color: var(--mid-grey);
+}

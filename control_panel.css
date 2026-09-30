@@ -1,3 +1,6 @@
+/* The lower control panel (control_panel.js): status text, suggestion response buttons, and
+   the history back/forward arrows in their own side containers so the main column keeps a
+   fixed layout regardless of which state (starting/extra/suggestion) is active. */
 #control-panel {
     --vt: calc(1dvh + 1.5dvw);
 
@@ -6,9 +9,32 @@
     width: calc(100% - (var(--outer-margin)*2));
     margin-bottom: var(--outer-margin);
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+#control-panel-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
+}
+
+.side-button-container {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-button-container .btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px 10px;
 }
 
 #turn-text {
@@ -34,7 +60,7 @@
 
 #buttons-container {
     display: flex;
-    width: 100dvw;
+    width: 100%;
     flex-direction: row;
     align-items: center;
 }

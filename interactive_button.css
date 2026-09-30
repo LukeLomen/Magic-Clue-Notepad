@@ -1,5 +1,13 @@
+/* Styling for InteractiveButton (interactive_button.js). Visual state (hovered/selected/
+   pressed/disabled) is applied as btn--<state> classes by that file; this stylesheet only
+   defines what each one looks like. */
 .btn {
     /* Theming colors*/
+    /* NOTE (dead/broken variable, left as-is for review): --color-9 is never defined anywhere
+       in the project, so this custom property resolves to nothing; it's also immediately
+       overridden by the plain `background-color: white` a few lines down and by the
+       `background-color` set on `.btn` itself, so --background-color has no visible effect
+       today. Safe to remove unless a real --color-9 token is meant to be added later. */
     --background-color: var(--color-9);
     --hover-color: #9c9;
     --selected-color: rgb(178, 241, 178);
@@ -131,6 +139,9 @@
     }
 }
 
+/* NOTE (unused/dead code): no class references "enable" - nothing plays this animation.
+   Safe to delete unless you have a use for it planned (e.g. a pop when a button becomes
+   enabled). */
 @keyframes enable {
     0% {
         transform: scale(1);

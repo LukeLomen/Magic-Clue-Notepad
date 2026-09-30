@@ -1,3 +1,6 @@
+/* Page-wide layout and shared design tokens (colors, spacing, the table/control-panel height
+   split). Component-specific stylesheets (interactive_*.css, control_panel.css, etc.) build
+   on top of the variables defined here. */
 :root {
     --vt: calc(1dvh + 1dvw);
 
@@ -17,6 +20,7 @@
     --double-margin: calc(var(--outer-margin) * 2);
 
     --table-height: 70dvh;
+    --control-panel-height: calc(100dvh - var(--table-height) - var(--double-margin));
 }
 
 html {

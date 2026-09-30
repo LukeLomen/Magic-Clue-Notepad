@@ -1,3 +1,5 @@
+/* The first screen the player sees (name_setup.js) - collecting player names before the
+   game starts. */
 #name-setup {
     --focused-color: rgb(0, 77, 0);
     --header-color: black;
@@ -88,11 +90,25 @@
 
 #start-button {
     padding: clamp(.75dvw, 3dvw, 2dvh);
-    margin: 0px, clamp(1dvw, 5dvw, 4dvh);
+    margin: 0px clamp(1dvw, 5dvw, 4dvh);
 }
 
 #start-button span {
     font-size: clamp(14px, var(--vt), 60px);
+}
+
+/* Sits below the Start button (see #name-setup-lower's column flex layout) with its own
+   top margin so it reads as a separate, secondary action rather than crowding Start.
+   Padding and font-size are both defined as a fraction of Start's own values (rather than
+   independent clamp()s) so this button is guaranteed smaller than Start at every viewport
+   size, not just in the middle of the clamp range. */
+#name-setup-about-button {
+    padding: calc(0.6 * clamp(.75dvw, 3dvw, 2dvh)) calc(0.6 * clamp(1dvw, 5dvw, 4dvh));
+    margin: clamp(12px, 3dvh, 24px) clamp(1dvw, 5dvw, 4dvh) 0px;
+}
+
+#name-setup-about-button span {
+    font-size: calc(0.7 * clamp(14px, var(--vt), 60px));
 }
 
 

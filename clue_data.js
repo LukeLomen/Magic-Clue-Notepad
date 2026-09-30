@@ -5,19 +5,29 @@ import {
   cardsAPI
 } from './clue_cards.js';
 
+/// One row of the game's "history log": a single suggestion made by one player to another
+/// (or, for a solo player's own turn, a note about which card(s) they showed). The entire
+/// board state is never stored directly - it's always recomputed by replaying every
+/// Suggestion in `suggestionHistory` in order (see DataManager.WritePlayerDataFromSuggestionHistory).
+/// That's what makes it possible to browse back to an old turn, edit just its response, and
+/// have every downstream deduction recompute correctly.
 export class Suggestion {
   constructor({
-    cardArray = ['', '', ''],
-    suggester,
-    suggestee,
-    response,
-    turn
+    cardArray = ['', '', ''], /// the [suspect, weapon, room] card indexes that were suggested
+    suggester, /// Player who made the suggestion
+    suggestee, /// Player who was asked to respond
+    response, /// how they responded - see ConfirmSuggestionResponse for the possible shapes
+    turn, /// index of this suggestion within suggestionHistory (also its "turn number")
+    roundNumber = 1, /// which suggestion this is overall, 1-based (the "3" in "3:2")
+    stepInRound = 1 /// which player-in-the-circle this is for that suggestion, 1-based (the "2" in "3:2")
   }) {
     this.turn = turn;
     this.cardArray = cardArray;
     this.suggester = suggester;
     this.suggestee = suggestee;
     this.response = response;
+    this.roundNumber = roundNumber;
+    this.stepInRound = stepInRound;
   }
   Clone() {
     const clone = new Suggestion({
@@ -25,30 +35,44 @@ export class Suggestion {
       suggester: this.suggester,
       suggestee: this.suggestee,
       response: this.response,
-      turn: this.turn
+      turn: this.turn,
+      roundNumber: this.roundNumber,
+      stepInRound: this.stepInRound
     })
     return clone;
   }
 }
 
+/// Tracks one player's per-card knowledge state (their row on the table) plus the
+/// "possible card" groups used for process-of-elimination deduction. A Player object is
+/// rebuilt from scratch on every WritePlayerDataFromSuggestionHistory() replay - it never
+/// persists across turns, so any bug here only affects the CURRENT recompute, not stored data.
 class Player {
   constructor(name, index, numPlayers, playersArray, numCards) {
     this.name = name;
-    this.index = index;
+    this.index = index; /// this player's seat position, used to find "the next player" in turn order
     this.numPlayers = numPlayers;
-    this.playersArray = playersArray;
-    this.numCards = numCards;
+    this.playersArray = playersArray; /// shared reference to ALL players, so a player can update others (e.g. SetKnownHave marking everyone else void for that card)
+    this.numCards = numCards; /// how many cards this player was dealt - once this many are known, the rest can be inferred void
 
+    /// One symbol per possible card index (0-20: 6 suspects + 6 weapons + 9 rooms).
     this.cardArray = new Array(21).fill(SYMBOLS.unknown);
+    /// Groups of "could be any one of these cards" from an unresolved possible-card response.
+    /// Each entry is an array of card indexes; as other suggestions narrow things down, cards
+    /// get removed from these groups until only one is left, at which point it's promoted to
+    /// a known-have (see CheckPossibleCards).
     this.possibleCards = new Array();
     this.cardsKnown = 0;
     this.allCardsKnown = false;
   }
 
+  /// The next player in turn order (clockwise), used to figure out who gets asked next when a
+  /// suggestion is passed around the table ("stepInRound" increasing).
   GetNextPlayer() {
     return this.playersArray[(this.index + 1) % this.numPlayers];
   }
 
+  /// Wipes this player back to a blank slate, ready to be replayed forward again.
   ClearData() {
     this.cardArray.fill(SYMBOLS.unknown);
     this.possibleCards = new Array();
@@ -60,6 +84,8 @@ class Player {
     return this.cardArray[index];
   }
 
+  /// True if we've already proven this player doesn't hold `card` - void, extra (dealt
+  /// face-down, so nobody holds it), or the hidden/envelope card.
   TheyDontHave(card) {
     const c = this.cardArray[card];
     if (
@@ -81,6 +107,10 @@ class Player {
     this.SetCardArray(card, SYMBOLS.extraCard);
   }
 
+  /// Marks a card void for this player, unless we already know something stronger/conflicting
+  /// about it (TheyDontHave short-circuits so this never overwrites e.g. an extra-card marker).
+  /// Also cleans up any possible-card groups that included this card, which may in turn resolve
+  /// another group down to a single card (see CheckPossibleCards).
   SetKnownVoid(card) {
     if (this.TheyDontHave(card)) {
       return;
@@ -90,6 +120,10 @@ class Player {
     this.CheckPossibleCards();
   }
 
+  /// Marks a card as confirmed held by this player. This is the one place that can cascade
+  /// across ALL players: everyone else is automatically marked void for this card (nobody
+  /// else can hold a card that's already someone's), and if this pushes this player's known
+  /// count up to their full hand size, every remaining card of theirs becomes inferable void.
   SetKnownHave(card) {
     if (this.cardArray[card] == SYMBOLS.knownHave || this.TheyDontHave(card)) {
       return
@@ -106,6 +140,10 @@ class Player {
     });
   }
 
+  /// Records a "showed one of these cards, but we don't know which" response. Cards in the
+  /// group that are still unknown get marked with the possibleCard symbol on the table; the
+  /// group itself is tracked so future information can narrow it down (see RemovePossibleCard/
+  /// CheckPossibleCards). Duplicate groups (the exact same set of cards) are not tracked twice.
   SetPossible(possibleCardsArray) {
     var pArray = new Array();
     possibleCardsArray.forEach(card => {
@@ -118,12 +156,10 @@ class Player {
       }
     });
     if (pArray.length > 0) {
-      this.possibleCards.forEach((array, i) => {
-        if (this.AreArraysEqual(pArray, array)) {
-          return
-        }
-      })
-      this.possibleCards.push(structuredClone(pArray));
+      const alreadyTracked = this.possibleCards.some(array => this.AreArraysEqual(pArray, array));
+      if (!alreadyTracked) {
+        this.possibleCards.push(structuredClone(pArray));
+      }
     }
     this.CheckPossibleCards();
   }
@@ -137,32 +173,43 @@ class Player {
     });
   }
 
+  /// Removes `card` from every tracked possible-card group (e.g. once it's been proven void
+  /// or known-have some other way, it can't still be "one of the possible cards" in a group).
+  /// Iterates backward so splicing mid-loop doesn't skip the next element.
   RemovePossibleCard(card) {
-    this.possibleCards.forEach((array, i) => {
-      array.forEach((c, index) => {
-        if (c == card) {
+    this.possibleCards.forEach(array => {
+      for (let index = array.length - 1; index >= 0; index--) {
+        if (array[index] == card) {
           array.splice(index, 1);
         }
-      });
+      }
     })
   }
 
+  /// Resolves any possible-card group that's been narrowed down to exactly one remaining
+  /// card (promote it to known-have) or emptied out entirely (nothing left to track).
+  /// Iterates backward since SetKnownHave/splice can shrink `possibleCards` mid-loop.
   CheckPossibleCards() {
-    this.possibleCards.forEach((array, i) => {
+    for (let i = this.possibleCards.length - 1; i >= 0; i--) {
+      const array = this.possibleCards[i];
       if (array.length == 1) {
         this.SetKnownHave(array[0]);
         this.possibleCards.splice(i, 1);
       } else if (array.length == 0) {
         this.possibleCards.splice(i, 1);
       }
-    });
+    }
   }
 
+  /// Marks a card as the hidden/envelope card (or an un-held extra) for this player's row.
   SetHidden(card) {
     this.RemovePossibleCard(card);
     this.SetCardArray(card, SYMBOLS.hiddenCard);
   }
 
+  /// Once every card this player was dealt is accounted for, every other card on their row
+  /// that isn't already known-have or hidden must be void - there's nothing left to be unsure
+  /// about for them.
   AllCardsKnown() {
     this.allCardsKnown = true;
     this.possibleCards = new Array();
@@ -174,6 +221,10 @@ class Player {
   }
 }
 
+/// The top-level data/deduction engine. Owns the list of players and the append-only
+/// `suggestionHistory` log, and is responsible for turning that log into the current
+/// (or any past) board state on demand. GameManager is the only thing that talks to this
+/// class directly; it never touches Player objects itself.
 export class DataManager {
   constructor() {
     this.numPlayers = 0;
@@ -190,6 +241,8 @@ export class DataManager {
     return nextPlayer
   }
 
+  /// Clue always deals all 18 non-envelope cards out as evenly as possible; whatever doesn't
+  /// divide evenly becomes "extra" cards dealt face up/known rather than into anyone's hand.
   CalculateNumCards(numPlayers) {
     this.numCards = Math.floor(18 / numPlayers);
     this.numExtra = 18 - numPlayers * this.numCards;
@@ -220,6 +273,12 @@ export class DataManager {
     this.extraCards = cardArray;
   }
 
+  /// NOTE (unused/outdated): nothing in the app calls this anymore. Suggestions are created
+  /// incrementally instead, via CreateNewSuggestion() (first ask of a new round) and
+  /// ContinueSuggestion() (passing the same suggestion to the next player), with the
+  /// suggester/suggestee/cardArray/response filled in afterward through the setter methods
+  /// below as the user makes selections. This all-at-once constructor looks like an earlier
+  /// version of that flow and is a candidate for deletion.
   AddSuggestion(cardArray, suggester, suggestee, response) {
     this.suggestionHistory.push(new Suggestion({
       cardArray: cardArray,
@@ -230,9 +289,15 @@ export class DataManager {
     }));
   }
 
+  /// Starts a brand new suggestion (a new "round") with nothing filled in yet - GameManager
+  /// fills in suggester/cardArray/suggestee/response as the user makes each selection.
   CreateNewSuggestion() {
+    const previous = this.GetMostRecentSuggestion();
+    const roundNumber = previous ? previous.roundNumber + 1 : 1;
     this.suggestionHistory.push(new Suggestion({
-      turn: this.suggestionHistory.length
+      turn: this.suggestionHistory.length,
+      roundNumber: roundNumber,
+      stepInRound: 1
     }))
     console.log(`Creating suggestion # : ${this.suggestionHistory.length}`)
   }
@@ -249,6 +314,9 @@ export class DataManager {
     this.GetSuggestion(turn).suggestee = suggestee;
   }
 
+  /// Turns whatever the user picked in the response buttons ('suspect'/'weapon'/'room' meaning
+  /// "showed me the suggested card of that category", or a raw knownVoid/possibleCard symbol)
+  /// into the actual card index or symbol stored on the Suggestion, then logs it.
   ConfirmSuggestionResponse(turn, newResponse) {
     const selectedSuggestion = this.GetSuggestion(turn);
 
@@ -268,9 +336,16 @@ export class DataManager {
     selectedSuggestion.response = newResponse;
   }
 
+  /// Advances the SAME suggestion (same cards asked) to the next player in the circle - used
+  /// when a suggestion is passed along because a player said "none" and the same three cards
+  /// get asked to whoever's next, still within the same round/roundNumber.
   ContinueSuggestion() {
-    this.CreateNewSuggestion();
-    const previousSuggestion = this.GetSuggestion(this.suggestionHistory.length - 2);
+    const previousSuggestion = this.GetMostRecentSuggestion();
+    this.suggestionHistory.push(new Suggestion({
+      turn: this.suggestionHistory.length,
+      roundNumber: previousSuggestion.roundNumber,
+      stepInRound: previousSuggestion.stepInRound + 1
+    }));
     this.GetMostRecentSuggestion().suggester = previousSuggestion.suggester;
     this.GetMostRecentSuggestion().suggestee = previousSuggestion.suggestee.GetNextPlayer();
     this.GetMostRecentSuggestion().cardArray = previousSuggestion.cardArray;
@@ -289,7 +364,7 @@ export class DataManager {
 
   -1 Every card known must be void for all other players
   -2 If the count of known cards = total cards per player then all other player cards must be void
-  -3 If a card is void for all players then it is the hidden card (extra cards don't count) 
+  -3 If a card is void for all players then it is the hidden card (extra cards don't count)
   -4 If every card from a category is known except 1 then that one is the hidden card
 
   // Suggestion Interpretation:
@@ -301,6 +376,9 @@ export class DataManager {
   If the all cards are known for the suggestee there is no need to do any more logic for them
   */ //
 
+  /// Rule -3 above, applied to one card: if every player has been proven void for it, it must
+  /// be the hidden/envelope card (extra cards are dealt separately and already marked, so they
+  /// don't get counted as "voided" players here - see SetExtra, which never sets knownVoid).
   SetHiddenCard(card) {
     this.players.forEach(player => {
       player.SetHidden(card);
@@ -319,35 +397,27 @@ export class DataManager {
     }
   }
 
-  /*CheckCategoriesForHiddenCard() {
-    let suspectSet = new Set([0, 1, 2, 3, 4, 5]);
-    let weaponSet = new Set([6, 7, 8, 9, 10, 11]);
-    let roomSet = new Set([12, 13, 14, 15, 16, 17, 18, 19, 20]);
-    let categoryArrays = [suspectSet, weaponSet, roomSet]
-
-    categoryArrays.forEach((categoryArray) => {
-      categoryArray.forEach((card) => {
-        this.players.forEach(player => {
-          if (player.cardArray[card] == SYMBOLS.knownHave || player.cardArray[card] == SYMBOLS.extraCard) {
-            categoryArray.delete(card);
-          }
-        });
-      });
-      if (categoryArray.size == 1) {
-        this.SetHiddenCard(categoryArray.values().next().value);
-      }
-    });
-  }*/
-
+  /// Sweeps all 21 cards looking for any that just became provably hidden. Run once per
+  /// full replay (see WritePlayerDataFromSuggestionHistory) rather than after every single
+  /// SetKnownVoid, since one suggestion can create several newly-void cards at once.
   CheckForHiddenCards() {
     for (let card = 0; card < 21; card++) {
       this.CheckForHiddenCard(card);
     }
-    //this.CheckCategoriesForHiddenCard();
   }
 
+  /// Applies the information from one confirmed suggestion to the suggestee's row. This is
+  /// called once per suggestion, in order, during a full replay - never called standalone for
+  /// a single suggestion in isolation, since a card might only resolve given everything that
+  /// came before it.
   InterpretSuggestion(suggestion) {
+    /// An in-progress/unconfirmed suggestion (the live turn, browsed back to and not yet
+    /// answered) has no suggestee and/or no response yet - skip it rather than crashing,
+    /// since it carries no information until it's actually confirmed.
     const suggestee = suggestion.suggestee;
+    if (!suggestee || suggestion.response === undefined) {
+      return;
+    }
     if (suggestee.allCardsKnown) {
       return;
     }
@@ -362,6 +432,14 @@ export class DataManager {
     }
   }
 
+  /// The heart of the whole app's "editable history" design: instead of storing the board
+  /// state directly, EVERY read of "what does the board look like" is produced by wiping all
+  /// players back to blank and replaying suggestionHistory from turn 0 up to (and including)
+  /// `toTurn`. This means editing an old suggestion's response, or fixing a card selection,
+  /// just requires calling this again - there's no separate "patch up all the derived state"
+  /// step to get wrong. The tradeoff is that this does get more expensive to run as the game
+  /// goes on (O(turns) every call), but suggestion counts in a real game are small enough
+  /// that this has never needed optimizing.
   WritePlayerDataFromSuggestionHistory(toTurn) {
     this.players.forEach(player => {
       player.ClearData();

@@ -1,3 +1,5 @@
+/* Small corner badge (interactive_badge.js) showing a player's known-card count, pinned to
+   the bottom-right of their row-header cell. */
 .interactive-badge {
     align-items: end;
     justify-content: end;
